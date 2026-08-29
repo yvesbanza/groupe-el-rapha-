@@ -1,201 +1,56 @@
 <!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EL-RAPHA | Portail Officiel</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<title>EL-RAPHA</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#f6f7fb;color:#0f172a}
-header{background:#0f172a;color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.logo{font-weight:800;font-size:18px;letter-spacing:.5px}.logo span{color:#facc15}
-.btn{border:0;padding:10px 16px;border-radius:12px;font-weight:600;cursor:pointer}
-.btn-yellow{background:#facc15;color:#0f172a}.btn-dark{background:#0f172a;color:#fff;width:100%}
-.container{max-width:1100px;margin:0 auto;padding:18px}
-.login-box{max-width:420px;margin:40px auto;background:#fff;border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
-.tabs{display:flex;background:#f1f5f9;border-radius:12px;padding:4px;margin-bottom:18px}
-.tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-weight:600;color:#64748b}
-.tab.active{background:#0f172a;color:#fff}
-.input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:12px;outline:none}
-.input:focus{border-color:#facc15}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
-.stat{background:#fff;border-radius:16px;padding:14px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.04)}
-.stat b{font-size:22px;display:block}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 6px 20px rgba(0,0,0,.05);border:1px solid #f1f5f9}
-.badge{background:#f1f5f9;padding:5px 10px;border-radius:20px;font-size:12px;color:#475569}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
-.modal.active{display:flex}.modal-inner{background:#fff;width:100%;max-width:480px;border-radius:20px;padding:22px;max-height:90vh;overflow:auto}
-.hidden{display:none}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#f2f4f8} header{background:#0f172a;color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:800} .logo span{color:#facc15}
+.container{max-width:1000px;margin:0 auto;padding:16px}
+.box{max-width:420px;margin:30px auto;background:#fff;border-radius:18px;padding:22px;box-shadow:0 8px 24px rgba(0,0,0,.07)}
+.tabs{display:flex;background:#eef2f7;border-radius:12px;padding:4px;margin:12px 0}
+.tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-weight:700;color:#64748b}
+.tab.on{background:#0f172a;color:#fff}
+.input{width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:10px}
+.btn{border:0;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;width:100%}
+.btn-d{background:#0f172a;color:#fff}.btn-y{background:#facc15;color:#0f172a}
+.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.hidden{display:none} .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.kpi{background:#f8fafc;padding:10px;border-radius:12px;text-align:center}.kpi.y{background:#fef9c3}
 </style></head><body>
-<header><div class="logo">GROUPE EL-<span>RAPHA</span></div><div id="headerAction"></div></header>
+<header><div class="logo">GROUPE EL-<span>RAPHA</span></div><div id="h"></div></header>
 <div class="container">
-<div id="view-login">
-<div class="login-box">
-<h2 style="text-align:center;margin-bottom:6px">Portail EL-RAPHA</h2>
-<p style="text-align:center;color:#64748b;font-size:14px;margin-bottom:16px">Choisissez votre accès</p>
-<div class="tabs"><div class="tab active" id="tab-dg" onclick="switchTab('dg')">DG - Direction</div><div class="tab" id="tab-maison" onclick="switchTab('maison')">Gérant Maison</div></div>
-<div id="form-dg">
-<input id="dgCode" class="input" type="password" placeholder="Code DG (par défaut: elrapha2024)">
-<button class="btn btn-dark" onclick="loginDG()">Entrer comme DG →</button>
-<p style="font-size:12px;color:#94a3b8;margin-top:8px;text-align:center">Accès total à toutes les maisons</p>
-</div>
-<div id="form-maison" class="hidden">
-<select id="selMaison" class="input"></select>
-<input id="maisonCode" class="input" type="password" placeholder="Code secret de la maison">
-<button class="btn btn-dark" onclick="loginMaison()">Entrer dans ma Maison →</button>
-</div>
-</div>
-</div>
-<div id="view-dg" class="hidden">
-<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-<div><h1>Tableau de Bord DG</h1><p style="color:#64748b">Gestion globale du Groupe</p></div>
-<div style="display:flex;gap:8px"><button class="btn btn-yellow" onclick="openModal()">+ Nouvelle Maison</button><button class="btn" style="background:#fff" onclick="logout()">Déconnexion</button></div>
-</div>
-<div class="stats"><div class="stat"><b id="stMaisons">0</b><small>Maisons</small></div><div class="stat"><b id="stStock">0</b><small>Produits en Stock</small></div><div class="stat"><b id="stVentes">0</b><small>Ventes Totales</small></div></div>
-<input id="search" class="input" placeholder="🔍 Rechercher une maison (ex: MATUMONA)..." oninput="renderDG()">
-<div id="listDG" class="grid"></div>
-</div>
-<div id="view-maison" class="hidden">
-<div id="maisonHeader"></div>
-<div id="maisonContent" class="grid" style="margin-top:16px"></div>
-</div>
-</div>
-<div class="modal" id="modal"><div class="modal-inner">
-<h3>Nouvelle Maison de Vente</h3><br>
-<input id="mNom" class="input" placeholder="Nom Ex: ETS. MATUMONA">
-<input id="mActivite" class="input" placeholder="Activité Ex: Matériaux">
-<input id="mAdresse" class="input" placeholder="Adresse Ex: Kinshasa - Limete">
-<input id="mGerant" class="input" placeholder="Nom du Gérant">
-<input id="mPhone" class="input" placeholder="Téléphone Gérant">
-<input id="mCode" class="input" placeholder="Code secret pour gérant (4 chiffres)">
-<div style="display:flex;gap:8px"><button class="btn" style="flex:1;background:#f1f5f9" onclick="closeModal()">Annuler</button><button class="btn btn-yellow" style="flex:1" onclick="saveMaison()">Créer Maison</button></div>
+<div id="login">
+<div class="box">
+<h2 style="text-align:center">Portail EL-RAPHA</h2><p style="text-align:center;color:#64748b;font-size:14px">Choisissez votre accès</p>
+<div class="tabs"><div id="t1" class="tab on" onclick="tab('dg')">DG - Direction</div><div id="t2" class="tab" onclick="tab('gm')">Gérant Maison</div></div>
+<div id="f-dg"><input id="cDG" class="input" type="password" placeholder="Code DG (elrapha2024)"><button class="btn btn-d" onclick="goDG()">Entrer comme DG →</button><p style="text-align:center;font-size:11px;color:#94a3b8;margin-top:6px">Accès total à toutes les maisons</p></div>
+<div id="f-gm" class="hidden"><select id="sel" class="input"></select><input id="cGM" class="input" type="password" placeholder="Code maison (ex: 1234)"><button class="btn btn-d" onclick="goGM()">Entrer dans ma Maison →</button></div>
 </div></div>
+
+<div id="dg" class="hidden">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><h2>Mes Maisons de Vente</h2><p style="color:#64748b;font-size:14px">Gérez toutes vos maisons à distance. Exemple : ETS MATUMONA</p></div><div style="display:flex;gap:8px"><button class="btn btn-y" style="width:auto" onclick="addM()">+ Ajouter Maison</button><button class="btn" style="width:auto;background:#fff" onclick="out()">Quitter</button></div></div>
+<div id="list" style="margin-top:16px"></div>
+</div>
+
+<div id="gmview" class="hidden">
+<div id="gmHead"></div><div id="gmList" style="margin-top:14px"></div>
+</div>
+</div>
+
 <script>
-let maisons=JSON.parse(localStorage.getItem('elrapha_v2')||'[]');
-if(maisons.length==0){
- maisons=[{id:1,nom:'ETS. MATUMONA',activite:'Vente matériaux & divers',adresse:'Kinshasa - Limete',gerant:'Gérant Matumona',phone:'+243 000 000 000',code:'1234',produits:[{nom:'Ciment',qte:100,prix:12000},{nom:'Fer à béton',qte:56,prix:4500}],ventes:12}];
- save();
-}
-function save(){localStorage.setItem('elrapha_v2',JSON.stringify(maisons))}
-let currentTab='dg', currentMaison=null;
-function switchTab(t){
- currentTab=t;
- document.getElementById('tab-dg').classList.toggle('active',t=='dg');
- document.getElementById('tab-maison').classList.toggle('active',t=='maison');
- document.getElementById('form-dg').classList.toggle('hidden',t!='dg');
- document.getElementById('form-maison').classList.toggle('hidden',t!='maison');
- if(t=='maison') fillSelect();
-}
-function fillSelect(){
- const s=document.getElementById('selMaison');
- s.innerHTML=maisons.map(m=>`<option value="${m.id}">${m.nom} - ${m.gerant}</option>`).join('');
-}
-function loginDG(){
- const c=document.getElementById('dgCode').value;
- if(c!=='elrapha2024' && c!==''){alert('Code DG incorrect. Code par défaut: elrapha2024');return}
- document.getElementById('view-login').classList.add('hidden');
- document.getElementById('view-dg').classList.remove('hidden');
- document.getElementById('headerAction').innerHTML='<span style="font-size:12px">DG CONNECTÉ</span>';
- renderDG();
-}
-function loginMaison(){
- const id=parseInt(document.getElementById('selMaison').value);
- const code=document.getElementById('maisonCode').value;
- const m=maisons.find(x=>x.id===id);
- if(!m){alert('Maison non trouvée');return}
- if(m.code!==code){alert('Code maison incorrect');return}
- currentMaison=m;
- document.getElementById('view-login').classList.add('hidden');
- document.getElementById('view-maison').classList.remove('hidden');
- document.getElementById('headerAction').innerHTML=`<button class="btn" style="background:#fff;padding:6px 12px" onclick="logout()">Quitter</button>`;
- renderMaisonPage();
-}
-function logout(){
- document.getElementById('view-login').classList.remove('hidden');
- document.getElementById('view-dg').classList.add('hidden');
- document.getElementById('view-maison').classList.add('hidden');
- document.getElementById('headerAction').innerHTML='';
-}
-function openModal(){document.getElementById('modal').classList.add('active')}
-function closeModal(){document.getElementById('modal').classList.remove('active')}
-function saveMaison(){
- const nom=document.getElementById('mNom').value.trim();
- const activite=document.getElementById('mActivite').value.trim();
- const adresse=document.getElementById('mAdresse').value.trim();
- const gerant=document.getElementById('mGerant').value.trim();
- const phone=document.getElementById('mPhone').value.trim();
- const code=document.getElementById('mCode').value.trim();
- if(!nom||!gerant||!code){alert('Nom, Gérant et Code obligatoires');return}
- maisons.push({id:Date.now(),nom,activite,adresse,gerant,phone,code,produits:[],ventes:0});
- save();closeModal();renderDG();fillSelect();
- document.getElementById('mNom').value='';document.getElementById('mGerant').value='';document.getElementById('mCode').value='';
-}
-function renderDG(){
- const q=(document.getElementById('search').value||'').toLowerCase();
- let list=maisons.filter(m=>m.nom.toLowerCase().includes(q)||m.gerant.toLowerCase().includes(q));
- document.getElementById('stMaisons').innerText=maisons.length;
- document.getElementById('stStock').innerText=maisons.reduce((a,m)=>a+m.produits.reduce((s,p)=>s+p.qte,0),0);
- document.getElementById('stVentes').innerText=maisons.reduce((a,m)=>a+m.ventes,0);
- document.getElementById('listDG').innerHTML=list.map(m=>`
- <div class="card">
- <div style="display:flex;justify-content:space-between"><h3>${m.nom}</h3><span style="cursor:pointer" onclick="delMaison(${m.id})">🗑️</span></div>
- <span class="badge">${m.activite}</span>
- <p style="color:#64748b;font-size:13px;margin:8px 0">📍 ${m.adresse}<br>👤 ${m.gerant} - ${m.phone}<br>🔑 Code: ${m.code}</p>
- <div style="display:flex;gap:8px;margin-top:10px">
- <div style="flex:1;background:#f8fafc;padding:10px;border-radius:10px;text-align:center"><b>${m.produits.reduce((s,p)=>s+p.qte,0)}</b><br><small>Stock</small></div>
- <div style="flex:1;background:#fef9c3;padding:10px;border-radius:10px;text-align:center"><b>${m.ventes}</b><br><small>Ventes</small></div>
- </div>
- <button class="btn btn-dark" style="margin-top:10px" onclick="enterAsDG(${m.id})">Gérer cette maison →</button>
- </div>`).join('')||'<p style="color:#94a3b8">Aucune maison trouvée</p>';
-}
-function delMaison(id){if(confirm('Supprimer?')){maisons=maisons.filter(m=>m.id!==id);save();renderDG();}}
-function enterAsDG(id){
- const m=maisons.find(x=>x.id===id);
- currentMaison=m;
- document.getElementById('view-dg').classList.add('hidden');
- document.getElementById('view-maison').classList.remove('hidden');
- renderMaisonPage(true);
-}
-function renderMaisonPage(isDG=false){
- const m=currentMaison;
- document.getElementById('maisonHeader').innerHTML=`
- <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
- <div><h1>${m.nom}</h1><p style="color:#64748b">${m.gerant} - ${m.adresse}</p></div>
- <div style="display:flex;gap:8px">
- <button class="btn" style="background:#fff" onclick="backToDG()">${isDG?'← Retour DG':'Déconnexion'}</button>
- <button class="btn btn-yellow" onclick="openAddProd()">+ Ajouter Produit</button>
- </div>
- </div>
- <div class="stats"><div class="stat"><b>${m.produits.length}</b><small>Types Produits</small></div><div class="stat"><b>${m.produits.reduce((s,p)=>s+p.qte,0)}</b><small>Qté Stock</small></div><div class="stat"><b>${m.ventes}</b><small>Ventes</small></div></div>`;
- document.getElementById('maisonContent').innerHTML=m.produits.map((p,i)=>`
- <div class="card"><h3>${p.nom}</h3><p style="margin:6px 0;color:#475569">Stock: <b>${p.qte}</b> - Prix: ${p.prix} FC</p>
- <div style="display:flex;gap:6px;margin-top:8px">
- <button class="btn" style="flex:1;background:#f1f5f9" onclick="vendre(${i})">Vendre -1</button>
- <button class="btn" style="flex:1;background:#fee2e2" onclick="supProd(${i})">Supprimer</button>
- </div></div>`).join('')||'<p style="color:#94a3b8">Aucun produit. Ajoutez le premier.</p>';
-}
-function backToDG(){
- if(document.getElementById('view-dg').classList.contains('hidden') && maisons.length>0){
-  const wasDG=document.getElementById('headerAction').innerHTML.includes('DG CONNECTÉ') || true;
-  if(wasDG){document.getElementById('view-maison').classList.add('hidden');document.getElementById('view-dg').classList.remove('hidden');renderDG();return}
- }
- logout();
-}
-function openAddProd(){
- const nom=prompt('Nom du produit:');
- if(!nom) return;
- const qte=parseInt(prompt('Quantité:')||'0');
- const prix=parseInt(prompt('Prix unitaire FC:')||'0');
- currentMaison.produits.push({nom,qte,prix});
- maisons=maisons.map(x=>x.id===currentMaison.id?currentMaison:x);
- save();renderMaisonPage();
-}
-function vendre(i){
- if(currentMaison.produits[i].qte<=0){alert('Stock vide');return}
- currentMaison.produits[i].qte--; currentMaison.ventes++;
- maisons=maisons.map(x=>x.id===currentMaison.id?currentMaison:x);
- save();renderMaisonPage();
-}
-function supProd(i){if(confirm('Supprimer produit?')){currentMaison.produits.splice(i,1);maisons=maisons.map(x=>x.id===currentMaison.id?currentMaison:x);save();renderMaisonPage();}}
-fillSelect();
+let maisons=JSON.parse(localStorage.getItem('el_v3')||'[]');
+if(maisons.length==0){maisons=[{id:1,nom:'ETS. MATUMONA',act:'Vente matériaux & divers',adr:'Kinshasa - Limete',ger:'Gérant Matumona',tel:'+243 000 000 000',code:'1234',stock:156,ventes:12}];localStorage.setItem('el_v3',JSON.stringify(maisons))}
+let cur=null; let mode='dg';
+function tab(m){mode=m;document.getElementById('t1').className=m=='dg'?'tab on':'tab';document.getElementById('t2').className=m=='gm'?'tab on':'tab';document.getElementById('f-dg').className=m=='dg'?'':'hidden';document.getElementById('f-gm').className=m=='gm'?'':'hidden';if(m=='gm')fill();}
+function fill(){document.getElementById('sel').innerHTML=maisons.map(x=>`<option value="${x.id}">${x.nom}</option>`).join('')}
+function goDG(){let c=document.getElementById('cDG').value;if(c!='elrapha2024' && c!=''){alert('Code faux. Utilise: elrapha2024');return}document.getElementById('login').classList.add('hidden');document.getElementById('dg').classList.remove('hidden');document.getElementById('h').innerHTML='DG';renderDG();}
+function renderDG(){document.getElementById('list').innerHTML=maisons.map(m=>`<div class="card"><div style="display:flex;justify-content:space-between"><h3>${m.nom}</h3><span onclick="del(${m.id})" style="cursor:pointer">🗑️</span></div><span style="background:#f1f5f9;padding:4px 10px;border-radius:20px;font-size:12px">${m.act}</span><p style="margin:8px 0;color:#64748b;font-size:13px">📍 ${m.adr}<br><b>Gérant:</b> ${m.ger} <br><b>Tel:</b> ${m.tel} - Code: ${m.code}</p><div class="grid"><div class="kpi"><b>${m.stock}</b><br>Stock</div><div class="kpi y"><b>${m.ventes}</b><br>Ventes</div></div><button class="btn btn-d" onclick="openM(${m.id})">Gérer →</button></div>`).join('')}
+function del(id){if(confirm('Supprimer?')){maisons=maisons.filter(x=>x.id!=id);localStorage.setItem('el_v3',JSON.stringify(maisons));renderDG();}}
+function addM(){let nom=prompt('Nom maison:');if(!nom)return;let act=prompt('Activité:')||'';let adr=prompt('Adresse:')||'';let ger=prompt('Gérant:')||'';let tel=prompt('Tel:')||'';let code=prompt('Code gérant 4 chiffres:')||'1234';maisons.push({id:Date.now(),nom,act,adr,ger,tel,code,stock:0,ventes:0});localStorage.setItem('el_v3',JSON.stringify(maisons));renderDG();fill();}
+function openM(id){cur=maisons.find(x=>x.id==id);document.getElementById('dg').classList.add('hidden');document.getElementById('gmview').classList.remove('hidden');document.getElementById('gmHead').innerHTML=`<button class="btn" style="width:auto;background:#fff" onclick="backDG()">← Retour</button><h2 style="margin-top:10px">${cur.nom}</h2><p>${cur.ger} - ${cur.adr}</p><div class="grid" style="max-width:300px"><div class="kpi"><b>${cur.stock}</b><br>Stock</div><div class="kpi y"><b>${cur.ventes}</b><br>Ventes</div></div>`;document.getElementById('gmList').innerHTML=`<div class="card"><p>Bienvenue dans l'espace de gestion de <b>${cur.nom}</b>. Ici tu pourras ajouter produits, ventes, bilan.</p><button class="btn btn-y" onclick="alert('Module Stock bientôt!')">+ Ajouter Produit</button></div>`}
+function backDG(){document.getElementById('gmview').classList.add('hidden');document.getElementById('dg').classList.remove('hidden');renderDG();}
+function goGM(){let id=parseInt(document.getElementById('sel').value);let c=document.getElementById('cGM').value;let m=maisons.find(x=>x.id==id);if(!m){alert('Choisis une maison');return}if(m.code!=c){alert('Code incorrect');return}cur=m;document.getElementById('login').classList.add('hidden');document.getElementById('gmview').classList.remove('hidden');openM(id);}
+function out(){document.getElementById('dg').classList.add('hidden');document.getElementById('gmview').classList.add('hidden');document.getElementById('login').classList.remove('hidden');document.getElementById('h').innerHTML='';}
+fill();
 </script>
 </body></html>
