@@ -69,3 +69,133 @@ header{background:#0f172a;color:#fff;padding:14px 18px;display:flex;justify-cont
 <input id="mCode" class="input" placeholder="Code secret pour gérant (4 chiffres)">
 <div style="display:flex;gap:8px"><button class="btn" style="flex:1;background:#f1f5f9" onclick="closeModal()">Annuler</button><button class="btn btn-yellow" style="flex:1" onclick="saveMaison()">Créer Maison</button></div>
 </div></div>
+<script>
+let maisons=JSON.parse(localStorage.getItem('elrapha_v2')||'[]');
+if(maisons.length==0){
+ maisons=[{id:1,nom:'ETS. MATUMONA',activite:'Vente matériaux & divers',adresse:'Kinshasa - Limete',gerant:'Gérant Matumona',phone:'+243 000 000 000',code:'1234',produits:[{nom:'Ciment',qte:100,prix:12000},{nom:'Fer à béton',qte:56,prix:4500}],ventes:12}];
+ save();
+}
+function save(){localStorage.setItem('elrapha_v2',JSON.stringify(maisons))}
+let currentTab='dg', currentMaison=null;
+function switchTab(t){
+ currentTab=t;
+ document.getElementById('tab-dg').classList.toggle('active',t=='dg');
+ document.getElementById('tab-maison').classList.toggle('active',t=='maison');
+ document.getElementById('form-dg').classList.toggle('hidden',t!='dg');
+ document.getElementById('form-maison').classList.toggle('hidden',t!='maison');
+ if(t=='maison') fillSelect();
+}
+function fillSelect(){
+ const s=document.getElementById('selMaison');
+ s.innerHTML=maisons.map(m=>`<option value="${m.id}">${m.nom} - ${m.gerant}</option>`).join('');
+}
+function loginDG(){
+ const c=document.getElementById('dgCode').value;
+ if(c!=='elrapha2024' && c!==''){alert('Code DG incorrect. Code par défaut: elrapha2024');return}
+ document.getElementById('view-login').classList.add('hidden');
+ document.getElementById('view-dg').classList.remove('hidden');
+ document.getElementById('headerAction').innerHTML='<span style="font-size:12px">DG CONNECTÉ</span>';
+ renderDG();
+}
+function loginMaison(){
+ const id=parseInt(document.getElementById('selMaison').value);
+ const code=document.getElementById('maisonCode').value;
+ const m=maisons.find(x=>x.id===id);
+ if(!m){alert('Maison non trouvée');return}
+ if(m.code!==code){alert('Code maison incorrect');return}
+ currentMaison=m;
+ document.getElementById('view-login').classList.add('hidden');
+ document.getElementById('view-maison').classList.remove('hidden');
+ document.getElementById('headerAction').innerHTML=`<button class="btn" style="background:#fff;padding:6px 12px" onclick="logout()">Quitter</button>`;
+ renderMaisonPage();
+}
+function logout(){
+ document.getElementById('view-login').classList.remove('hidden');
+ document.getElementById('view-dg').classList.add('hidden');
+ document.getElementById('view-maison').classList.add('hidden');
+ document.getElementById('headerAction').innerHTML='';
+}
+function openModal(){document.getElementById('modal').classList.add('active')}
+function closeModal(){document.getElementById('modal').classList.remove('active')}
+function saveMaison(){
+ const nom=document.getElementById('mNom').value.trim();
+ const activite=document.getElementById('mActivite').value.trim();
+ const adresse=document.getElementById('mAdresse').value.trim();
+ const gerant=document.getElementById('mGerant').value.trim();
+ const phone=document.getElementById('mPhone').value.trim();
+ const code=document.getElementById('mCode').value.trim();
+ if(!nom||!gerant||!code){alert('Nom, Gérant et Code obligatoires');return}
+ maisons.push({id:Date.now(),nom,activite,adresse,gerant,phone,code,produits:[],ventes:0});
+ save();closeModal();renderDG();fillSelect();
+ document.getElementById('mNom').value='';document.getElementById('mGerant').value='';document.getElementById('mCode').value='';
+}
+function renderDG(){
+ const q=(document.getElementById('search').value||'').toLowerCase();
+ let list=maisons.filter(m=>m.nom.toLowerCase().includes(q)||m.gerant.toLowerCase().includes(q));
+ document.getElementById('stMaisons').innerText=maisons.length;
+ document.getElementById('stStock').innerText=maisons.reduce((a,m)=>a+m.produits.reduce((s,p)=>s+p.qte,0),0);
+ document.getElementById('stVentes').innerText=maisons.reduce((a,m)=>a+m.ventes,0);
+ document.getElementById('listDG').innerHTML=list.map(m=>`
+ <div class="card">
+ <div style="display:flex;justify-content:space-between"><h3>${m.nom}</h3><span style="cursor:pointer" onclick="delMaison(${m.id})">🗑️</span></div>
+ <span class="badge">${m.activite}</span>
+ <p style="color:#64748b;font-size:13px;margin:8px 0">📍 ${m.adresse}<br>👤 ${m.gerant} - ${m.phone}<br>🔑 Code: ${m.code}</p>
+ <div style="display:flex;gap:8px;margin-top:10px">
+ <div style="flex:1;background:#f8fafc;padding:10px;border-radius:10px;text-align:center"><b>${m.produits.reduce((s,p)=>s+p.qte,0)}</b><br><small>Stock</small></div>
+ <div style="flex:1;background:#fef9c3;padding:10px;border-radius:10px;text-align:center"><b>${m.ventes}</b><br><small>Ventes</small></div>
+ </div>
+ <button class="btn btn-dark" style="margin-top:10px" onclick="enterAsDG(${m.id})">Gérer cette maison →</button>
+ </div>`).join('')||'<p style="color:#94a3b8">Aucune maison trouvée</p>';
+}
+function delMaison(id){if(confirm('Supprimer?')){maisons=maisons.filter(m=>m.id!==id);save();renderDG();}}
+function enterAsDG(id){
+ const m=maisons.find(x=>x.id===id);
+ currentMaison=m;
+ document.getElementById('view-dg').classList.add('hidden');
+ document.getElementById('view-maison').classList.remove('hidden');
+ renderMaisonPage(true);
+}
+function renderMaisonPage(isDG=false){
+ const m=currentMaison;
+ document.getElementById('maisonHeader').innerHTML=`
+ <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+ <div><h1>${m.nom}</h1><p style="color:#64748b">${m.gerant} - ${m.adresse}</p></div>
+ <div style="display:flex;gap:8px">
+ <button class="btn" style="background:#fff" onclick="backToDG()">${isDG?'← Retour DG':'Déconnexion'}</button>
+ <button class="btn btn-yellow" onclick="openAddProd()">+ Ajouter Produit</button>
+ </div>
+ </div>
+ <div class="stats"><div class="stat"><b>${m.produits.length}</b><small>Types Produits</small></div><div class="stat"><b>${m.produits.reduce((s,p)=>s+p.qte,0)}</b><small>Qté Stock</small></div><div class="stat"><b>${m.ventes}</b><small>Ventes</small></div></div>`;
+ document.getElementById('maisonContent').innerHTML=m.produits.map((p,i)=>`
+ <div class="card"><h3>${p.nom}</h3><p style="margin:6px 0;color:#475569">Stock: <b>${p.qte}</b> - Prix: ${p.prix} FC</p>
+ <div style="display:flex;gap:6px;margin-top:8px">
+ <button class="btn" style="flex:1;background:#f1f5f9" onclick="vendre(${i})">Vendre -1</button>
+ <button class="btn" style="flex:1;background:#fee2e2" onclick="supProd(${i})">Supprimer</button>
+ </div></div>`).join('')||'<p style="color:#94a3b8">Aucun produit. Ajoutez le premier.</p>';
+}
+function backToDG(){
+ if(document.getElementById('view-dg').classList.contains('hidden') && maisons.length>0){
+  const wasDG=document.getElementById('headerAction').innerHTML.includes('DG CONNECTÉ') || true;
+  if(wasDG){document.getElementById('view-maison').classList.add('hidden');document.getElementById('view-dg').classList.remove('hidden');renderDG();return}
+ }
+ logout();
+}
+function openAddProd(){
+ const nom=prompt('Nom du produit:');
+ if(!nom) return;
+ const qte=parseInt(prompt('Quantité:')||'0');
+ const prix=parseInt(prompt('Prix unitaire FC:')||'0');
+ currentMaison.produits.push({nom,qte,prix});
+ maisons=maisons.map(x=>x.id===currentMaison.id?currentMaison:x);
+ save();renderMaisonPage();
+}
+function vendre(i){
+ if(currentMaison.produits[i].qte<=0){alert('Stock vide');return}
+ currentMaison.produits[i].qte--; currentMaison.ventes++;
+ maisons=maisons.map(x=>x.id===currentMaison.id?currentMaison:x);
+ save();renderMaisonPage();
+}
+function supProd(i){if(confirm('Supprimer produit?')){currentMaison.produits.splice(i,1);maisons=maisons.map(x=>x.id===currentMaison.id?currentMaison:x);save();renderMaisonPage();}}
+fillSelect();
+</script>
+</body></html>
