@@ -52,3 +52,49 @@ header{background:#0f172a;color:#fff;padding:18px 5%;display:flex;justify-conten
 <button style="width:100%;margin-top:10px;background:#f1f5f9;border:none;padding:12px;border-radius:10px" onclick="closeModal()">Annuler</button>
 </div>
   </div>
+<script>
+let maisons = JSON.parse(localStorage.getItem('elrapha_maisons')||'[]');
+if(maisons.length===0){
+ maisons=[{id:Date.now(),nom:'ETS. MATUMONA',activite:'Vente matériaux & divers',adresse:'Kinshasa - Limete',gerant:'Gérant Matumona',phone:'+243 000 000 000',code:'1234',ventes:12,stock:156}];
+ saveLS();
+}
+function saveLS(){localStorage.setItem('elrapha_maisons',JSON.stringify(maisons))}
+function openModal(){document.getElementById('modal').classList.add('active')}
+function closeModal(){document.getElementById('modal').classList.remove('active')}
+function saveMaison(){
+ const nom=document.getElementById('mNom').value.trim();
+ const activite=document.getElementById('mActivite').value.trim();
+ const adresse=document.getElementById('mAdresse').value.trim();
+ const gerant=document.getElementById('mGerant').value.trim();
+ const phone=document.getElementById('mPhone').value.trim();
+ const code=document.getElementById('mCode').value.trim();
+ if(!nom||!gerant){alert('Nom maison et nom gérant obligatoires');return}
+ maisons.push({id:Date.now(),nom,activite,adresse,gerant,phone,code,ventes:0,stock:0});
+ saveLS(); render(); closeModal();
+ document.getElementById('mNom').value='';document.getElementById('mGerant').value='';
+}
+function delMaison(id){
+ if(confirm('Supprimer cette maison ?')){maisons=maisons.filter(m=>m.id!==id);saveLS();render();}
+}
+function render(){
+ const list=document.getElementById('list');
+ const empty=document.getElementById('empty');
+ if(maisons.length===0){list.innerHTML='';empty.style.display='block';return}
+ empty.style.display='none';
+ list.innerHTML=maisons.map(m=>`
+ <div class="card">
+ <div style="display:flex;justify-content:space-between"><h3>${m.nom}</h3><span style="cursor:pointer" onclick="delMaison(${m.id})">🗑️</span></div>
+ <span class="badge">${m.activite||'Général'}</span>
+ <p style="color:#64748b;font-size:14px;margin:8px 0">📍 ${m.adresse||'Non défini'}</p>
+ <p style="font-size:14px"><b>Gérant:</b> ${m.gerant} <br><b>Tel:</b> ${m.phone}</p>
+ <div class="row" style="margin-top:12px">
+ <div style="background:#f8fafc;padding:10px;border-radius:10px;text-align:center"><b>${m.stock}</b><br><small>Stock</small></div>
+ <div style="background:#fef9c3;padding:10px;border-radius:10px;text-align:center"><b>${m.ventes}</b><br><small>Ventes</small></div>
+ </div>
+ <button class="btn" style="width:100%;margin-top:12px;background:#0f172a;color:#fff" onclick="alert('Module gestion de '+ '${m.nom}'.replace(/'/g,'') +':\\n- Stock\\n- Ventes\\n- Bilan\\n\\nTu peux connecter cette page à la suite !')">Gérer →</button>
+ </div>`).join('');
+}
+render();
+</script>
+</body>
+  </html>
