@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EL-RAPHA | Gestion Groupe</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#f5f7fb;color:#111}
+header{background:#0f172a;color:#fff;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo{font-weight:800;letter-spacing:2px}.logo span{color:#facc15}
+.btn{background:#facc15;color:#000;border:none;padding:12px 18px;font-weight:700;border-radius:10px;cursor:pointer}
+.main{padding:25px 5%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-top:20px}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.06);border:1px solid #eef2f7}
+.card h3{font-size:18px;margin-bottom:6px}.badge{background:#f1f5f9;padding:4px 10px;border-radius:20px;font-size:12px;display:inline-block;margin:8px 0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:15px}
+.modal.active{display:flex}.box{background:#fff;width:100%;max-width:500px;border-radius:20px;padding:25px;max-height:90vh;overflow:auto}
+.box input,.box select{width:100%;padding:12px 14px;border:1px solid #e2e8f0;border-radius:10px;margin:8px 0 14px 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.empty{text-align:center;padding:60px 20px;color:#94a3b8}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">GROUPE EL-<span>RAPHA</span></div>
+<button class="btn" onclick="openModal()">+ Ajouter Maison</button>
+</header>
+<div class="main">
+<h2 style="font-size:22px">Mes Maisons de Vente</h2>
+<p style="color:#64748b;margin-top:6px">Gérez toutes vos maisons à distance. Exemple : ETS MATUMONA</p>
+<div id="list" class="grid"></div>
+<div id="empty" class="empty">Aucune maison. Cliquez sur + Ajouter Maison<br><br>Une maison d'exemple <b>ETS MATUMONA</b> va s'ajouter automatiquement.</div>
+</div>
 
+<div id="modal" class="modal">
+<div class="box">
+<h3 style="margin-bottom:15px">Nouvelle Maison EL-RAPHA</h3>
+<label>Nom de la Maison / Établissement</label>
+<input id="mNom" placeholder="Ex: ETS MATUMONA">
+<label>Activité / Secteur</label>
+<input id="mActivite" placeholder="Ex: Vente matériaux, Boutique, Quincaillerie">
+<label>Adresse / Localisation</label>
+<input id="mAdresse" placeholder="Ex: Kinshasa - Matete">
+<div class="row">
+<div><label>Nom du Gérant</label><input id="mGerant" placeholder="Ex: Papy Matumona"></div>
+<div><label>Téléphone Gérant</label><input id="mPhone" placeholder="+243..."></div>
+</div>
+<label>Code d'accès gérant (4 chiffres)</label>
+<input id="mCode" type="password" maxlength="4" placeholder="Ex: 1234">
+<button class="btn" style="width:100%;margin-top:10px" onclick="saveMaison()">Créer la Maison</button>
+<button style="width:100%;margin-top:10px;background:#f1f5f9;border:none;padding:12px;border-radius:10px" onclick="closeModal()">Annuler</button>
+</div>
+  </div>
