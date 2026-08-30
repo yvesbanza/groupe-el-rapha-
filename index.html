@@ -73,6 +73,7 @@ maisons=[{id:1,nom:'ETS. MATUMONA',act:'Vente matériaux & divers',adr:'Kinshasa
 localStorage.setItem('elrapha_v7',JSON.stringify(maisons));
 }
 let curMaison=null,curMaisonChoice=null;
+let editCaisseId=null;
 function save(){localStorage.setItem('elrapha_v7',JSON.stringify(maisons))}
 function updateHint(){document.getElementById('dgHint').innerText=`Défaut: dg@elrapha.cd / elrapha2026 - Actuel: ${dgCreds.email}`}
 function switchTab(t){document.getElementById('tDG').className=t=='dg'?'tab on':'tab';document.getElementById('tET').className=t=='etab'?'tab on':'tab';document.getElementById('formDG').className=t=='dg'?'':'hidden';document.getElementById('formETAB').className=t=='etab'?'':'hidden';document.getElementById('formGerantLogin').className='hidden';if(t=='etab')renderEtabList()}
