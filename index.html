@@ -3,7 +3,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{background:#f2f4f8} header{background:#0f172a;color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.logo{font-weight:800} .logo span{color:#facc15}
+.logo{font-weight:800}.logo span{color:#facc15}
 .container{max-width:1100px;margin:0 auto;padding:16px}
 .box{max-width:460px;margin:28px auto;background:#fff;border-radius:20px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
 .tabs{display:flex;background:#eef2f7;border-radius:12px;padding:4px;margin:12px 0}
@@ -13,133 +13,121 @@ body{background:#f2f4f8} header{background:#0f172a;color:#fff;padding:12px 14px;
 .btn{border:0;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;width:100%}
 .btn-d{background:#0f172a;color:#fff}.btn-y{background:#facc15;color:#0f172a}.btn-w{background:#fff;border:1px solid #e2e8f0}
 .card{background:#fff;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.05)}
-.hidden{display:none} .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hidden{display:none}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .kpi{background:#f8fafc;padding:10px;border-radius:12px;text-align:center}.kpi.y{background:#fef9c3}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
 .modal.on{display:flex}.modal-in{background:#fff;width:100%;max-width:420px;border-radius:20px;padding:20px}
 .etab-item{padding:12px;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
 .count-badge{background:#0f172a;color:#fff;padding:8px 14px;border-radius:12px;font-weight:700;font-size:14px}
+.count-badge-y{background:#facc15;color:#0f172a;padding:8px 14px;border-radius:12px;font-weight:700;font-size:14px}
 .icon-btn{background:#fff;border:1px solid #e2e8f0;width:42px;height:42px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px}
 .step{display:none}.step.on{display:block}
 </style></head><body>
-<header>
-<div class="logo">GROUPE EL-<span>RAPHA</span></div>
-<button id="btnOut" class="hidden" onclick="askLogout()" style="background:#fff;border:0;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer">Déconnexion</button>
-</header>
+<header><div class="logo">GROUPE EL-<span>RAPHA</span></div><button id="btnOutGlobal" class="hidden" onclick="askLogout()" style="background:#fff;border:0;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer">Déconnexion</button></header>
 <div class="container">
-<div id="view-login">
-<div class="box">
+<div id="view-login"><div class="box">
 <h2 style="text-align:center">Portail EL-RAPHA</h2><p style="text-align:center;color:#64748b;font-size:13px">Accès sécurisé</p>
 <div class="tabs"><div id="tDG" class="tab on" onclick="switchTab('dg')">DG - Direction</div><div id="tET" class="tab" onclick="switchTab('etab')">Établissements</div></div>
-<div id="formDG">
-<input id="dgEmail" class="input" type="email" placeholder="Email DG">
-<input id="dgPass" class="input" type="password" placeholder="Mot de passe">
-<button class="btn btn-d" onclick="loginDG()">Entrer comme DG →</button>
-<p id="dgHint" style="text-align:center;font-size:11px;color:#94a3b8;margin-top:8px"></p>
-</div>
-<div id="formETAB" class="hidden">
-<input id="searchEtab" class="input" placeholder="🔍 Rechercher une maison..." oninput="renderEtabList()">
-<div id="etabList"></div>
-</div>
-<div id="formGerantLogin" class="hidden">
-<h3 id="gerantMaisonName" style="text-align:center;margin-bottom:10px"></h3>
-<input id="gEmail" class="input" type="email" placeholder="Email du gérant">
-<input id="gPass" class="input" type="password" placeholder="Mot de passe gérant">
-<div class="grid2"><button class="btn btn-w" onclick="backToEtab()">← Retour</button><button class="btn btn-d" onclick="loginGerant()">Entrer</button></div>
-</div>
+<div id="formDG"><input id="dgEmail" class="input" type="email" placeholder="Email DG"><input id="dgPass" class="input" type="password" placeholder="Mot de passe"><button class="btn btn-d" onclick="loginDG()">Entrer comme DG →</button><p id="dgHint" style="text-align:center;font-size:11px;color:#94a3b8;margin-top:8px"></p></div>
+<div id="formETAB" class="hidden"><input id="searchEtab" class="input" placeholder="🔍 Rechercher une maison..." oninput="renderEtabList()"><div id="etabList"></div></div>
+<div id="formGerantLogin" class="hidden"><h3 id="gerantMaisonName" style="text-align:center;margin-bottom:10px"></h3><input id="gEmail" class="input" type="email" placeholder="Email du gérant"><input id="gPass" class="input" type="password" placeholder="Mot de passe"><div class="grid2"><button class="btn btn-w" onclick="backToEtab()">← Retour</button><button class="btn btn-d" onclick="loginGerant()">Entrer</button></div></div>
 </div></div>
 
 <div id="viewDG" class="hidden">
 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
 <div><h2>Mes Maisons de Vente</h2><p style="color:#64748b;font-size:14px">Gérez toutes vos maisons à distance</p></div>
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-<span class="count-badge" id="countMaisons">0 Maisons</span>
-<button class="icon-btn" onclick="openEditDG()" title="Modifier mon compte">✏️</button>
-<button class="btn btn-y" style="width:auto" onclick="openAdd()">+ Ajouter Maison</button>
-</div>
-</div>
-<div id="dgList" style="margin-top:16px"></div>
+<div style="display:flex;gap:10px;align-items:center"><span class="count-badge" id="countMaisons">0 Maisons</span><button class="icon-btn" onclick="openEditDG()">✏️</button><button class="btn btn-y" style="width:auto" onclick="openAdd()">+ Ajouter Maison</button></div>
+</div><div id="dgList" style="margin-top:16px"></div>
 </div>
 
-<div id="viewMaison" class="hidden"><div id="maisonHead"></div><div id="maisonBody" style="margin-top:12px"></div></div>
+<div id="viewMaison" class="hidden">
+<div id="maisonHead"></div>
+<div id="gerantActions" style="margin-top:12px"></div>
+<div id="maisonBody" style="margin-top:12px"></div>
+</div>
 </div>
 
-<div id="modalChoice" class="modal"><div class="modal-in">
-<h3 id="choiceName" style="text-align:center"></h3><p style="text-align:center;color:#64748b;font-size:13px;margin:8px 0">Choisissez votre espace</p>
-<div class="grid2" style="margin-top:14px"><button class="btn btn-d" onclick="chooseRole('gerant')">👤 Gérant</button><button class="btn btn-y" onclick="chooseRole('caisse')">💰 Caisse</button></div>
-<button class="btn btn-w" style="margin-top:10px" onclick="closeChoice()">Annuler</button>
-</div></div>
+<div id="modalChoice" class="modal"><div class="modal-in"><h3 id="choiceName" style="text-align:center"></h3><p style="text-align:center;color:#64748b;font-size:13px;margin:8px 0">Choisissez</p><div class="grid2"><button class="btn btn-d" onclick="chooseRole('gerant')">👤 Gérant</button><button class="btn btn-y" onclick="chooseRole('caisse')">💰 Caisse</button></div><button class="btn btn-w" style="margin-top:10px" onclick="closeChoice()">Annuler</button></div></div>
+<div id="modalAdd" class="modal"><div class="modal-in"><h3>Nouvelle Maison</h3><br><input id="mNom" class="input" placeholder="Nom"><input id="mAct" class="input" placeholder="Activité"><input id="mAdr" class="input" placeholder="Adresse"><input id="mGer" class="input" placeholder="Nom Gérant"><input id="mGerEmail" class="input" type="email" placeholder="Email Gérant"><input id="mGerPass" class="input" placeholder="Mot de passe Gérant"><input id="mTel" class="input" placeholder="Téléphone"><div class="grid2"><button class="btn btn-w" onclick="closeAdd()">Annuler</button><button class="btn btn-y" onclick="saveM()">Créer</button></div></div></div>
+<div id="modalLogout" class="modal"><div class="modal-in" style="text-align:center"><h3>Voulez-vous vous déconnecter ?</h3><div class="grid2" style="margin-top:16px"><button class="btn btn-w" onclick="closeLogout()">Non</button><button class="btn btn-d" onclick="doLogout()">Oui</button></div></div></div>
 
-<div id="modalAdd" class="modal"><div class="modal-in">
-<h3>Nouvelle Maison</h3><br>
-<input id="mNom" class="input" placeholder="Nom: ETS. MATUMONA">
-<input id="mAct" class="input" placeholder="Activité">
-<input id="mAdr" class="input" placeholder="Adresse">
-<input id="mGer" class="input" placeholder="Nom Gérant">
-<input id="mGerEmail" class="input" type="email" placeholder="Email Gérant">
-<input id="mGerPass" class="input" placeholder="Mot de passe Gérant">
-<input id="mTel" class="input" placeholder="Téléphone">
-<div class="grid2"><button class="btn btn-w" onclick="closeAdd()">Annuler</button><button class="btn btn-y" onclick="saveM()">Créer</button></div>
-</div></div>
+<div id="modalEditDG" class="modal"><div class="modal-in"><div id="dgStep1" class="step on"><h3>✏️ Vérification DG</h3><p style="color:#64748b;font-size:13px;margin:6px 0 12px">Ancien email et mot de passe</p><input id="oldEmail" class="input" type="email" placeholder="Ancien Email"><input id="oldPass" class="input" type="password" placeholder="Ancien Mot de passe"><div class="grid2"><button class="btn btn-w" onclick="closeEditDG()">Annuler</button><button class="btn btn-d" onclick="nextEditDG()">Next →</button></div></div><div id="dgStep2" class="step"><h3>🔑 Nouveau compte DG</h3><input id="newEmail" class="input" type="email" placeholder="Nouveau Email"><input id="newPass" class="input" type="password" placeholder="Nouveau Mot de passe"><div class="grid2"><button class="btn btn-w" onclick="backStepDG()">← Retour</button><button class="btn btn-d" onclick="saveEditDG()">Confirmer</button></div></div></div></div>
 
-<div id="modalLogout" class="modal"><div class="modal-in" style="text-align:center">
-<h3>Voulez-vous vous déconnecter ?</h3><div class="grid2" style="margin-top:16px"><button class="btn btn-w" onclick="closeLogout()">Non</button><button class="btn btn-d" onclick="doLogout()">Oui</button></div>
-</div></div>
+<div id="modalEditGerant" class="modal"><div class="modal-in"><div id="gStep1" class="step on"><h3>✏️ Vérification Gérant</h3><p style="color:#64748b;font-size:13px;margin:6px 0 12px">Entrez votre ancien email et mot de passe</p><input id="gOldEmail" class="input" type="email" placeholder="Ancien Email"><input id="gOldPass" class="input" type="password" placeholder="Ancien Mot de passe"><div class="grid2"><button class="btn btn-w" onclick="closeEditGerant()">Annuler</button><button class="btn btn-d" onclick="nextEditGerant()">Next →</button></div></div><div id="gStep2" class="step"><h3>🔑 Nouveau compte Gérant</h3><p style="color:#64748b;font-size:13px;margin:6px 0 12px">Nouveau email de connexion</p><input id="gNewEmail" class="input" type="email" placeholder="Nouveau Email"><input id="gNewPass" class="input" type="password" placeholder="Nouveau Mot de passe"><div class="grid2"><button class="btn btn-w" onclick="backStepGerant()">← Retour</button><button class="btn btn-d" onclick="saveEditGerant()">Confirmer</button></div></div></div></div>
 
-<div id="modalEditDG" class="modal"><div class="modal-in">
-<!-- ETAPE 1 -->
-<div id="step1" class="step on">
-<h3>✏️ Vérification</h3><p style="color:#64748b;font-size:13px;margin:6px 0 12px">Entrez votre ancien email et mot de passe</p>
-<input id="oldEmail" class="input" type="email" placeholder="Ancien Email">
-<input id="oldPass" class="input" type="password" placeholder="Ancien Mot de passe">
-<div class="grid2"><button class="btn btn-w" onclick="closeEditDG()">Annuler</button><button class="btn btn-d" onclick="nextEdit()">Next →</button></div>
-</div>
-<!-- ETAPE 2 -->
-<div id="step2" class="step">
-<h3>🔑 Nouveau compte DG</h3><p style="color:#64748b;font-size:13px;margin:6px 0 12px">Entrez votre nouveau email de connexion</p>
-<input id="newEmail" class="input" type="email" placeholder="Nouveau Email">
-<input id="newPass" class="input" type="password" placeholder="Nouveau Mot de passe">
-<div class="grid2"><button class="btn btn-w" onclick="backStep()">← Retour</button><button class="btn btn-d" onclick="saveEditDG()">Confirmer</button></div>
-</div>
-</div></div>
-
-<div id="modalCaisse" class="modal"><div class="modal-in">
-<h3 id="caisseName"></h3><input id="caisseCode" class="input" style="margin-top:10px" placeholder="Code Caisse"><div class="grid2"><button class="btn btn-w" onclick="closeCaisse()">Annuler</button><button class="btn btn-d" onclick="loginCaisse()">Entrer</button></div>
-</div></div>
+<div id="modalCaisse" class="modal"><div class="modal-in"><h3 id="caisseName"></h3><input id="caisseCode" class="input" style="margin-top:10px" placeholder="Code Caisse"><div class="grid2"><button class="btn btn-w" onclick="closeCaisse()">Annuler</button><button class="btn btn-d" onclick="loginCaisse()">Entrer</button></div></div></div>
+<div id="modalAddCaisse" class="modal"><div class="modal-in"><h3>+ Ajouter Caisse</h3><br><input id="cNom" class="input" placeholder="Nom caisse (ex: Caisse 2)"><input id="cCode" class="input" placeholder="Code caisse"><div class="grid2"><button class="btn btn-w" onclick="closeAddCaisse()">Annuler</button><button class="btn btn-y" onclick="saveCaisse()">Créer</button></div></div></div>
 
 <script>
-let maisons=JSON.parse(localStorage.getItem('elrapha_v6')||'[]');
+let maisons=JSON.parse(localStorage.getItem('elrapha_v7')||'[]');
 let dgCreds=JSON.parse(localStorage.getItem('elrapha_dg')||'{"email":"dg@elrapha.cd","pass":"elrapha2026"}');
 if(maisons.length==0){
-maisons=[{id:1,nom:'ETS. MATUMONA',act:'Vente matériaux & divers',adr:'Kinshasa - Limete',ger:'Gérant Matumona',gerEmail:'gerant@matumona.cd',gerPass:'1234',tel:'+243 000 000 000',stock:156,ventes:12,caisseCode:'0000'}];
-localStorage.setItem('elrapha_v6',JSON.stringify(maisons));
+maisons=[{id:1,nom:'ETS. MATUMONA',act:'Vente matériaux & divers',adr:'Kinshasa - Limete',ger:'Gérant Matumona',gerEmail:'gerant@matumona.cd',gerPass:'1234',tel:'+243 000 000 000',stock:156,ventes:12,caisses:[{id:1,nom:'Caisse Principale',code:'0000'}]}];
+localStorage.setItem('elrapha_v7',JSON.stringify(maisons));
 }
-let curMaison=null, curMaisonChoice=null;
-function save(){localStorage.setItem('elrapha_v6',JSON.stringify(maisons))}
+let curMaison=null,curMaisonChoice=null;
+function save(){localStorage.setItem('elrapha_v7',JSON.stringify(maisons))}
 function updateHint(){document.getElementById('dgHint').innerText=`Défaut: dg@elrapha.cd / elrapha2026 - Actuel: ${dgCreds.email}`}
 function switchTab(t){document.getElementById('tDG').className=t=='dg'?'tab on':'tab';document.getElementById('tET').className=t=='etab'?'tab on':'tab';document.getElementById('formDG').className=t=='dg'?'':'hidden';document.getElementById('formETAB').className=t=='etab'?'':'hidden';document.getElementById('formGerantLogin').className='hidden';if(t=='etab')renderEtabList()}
 function renderEtabList(){let q=(document.getElementById('searchEtab').value||'').toLowerCase();let list=maisons.filter(m=>m.nom.toLowerCase().includes(q));document.getElementById('etabList').innerHTML=list.map(m=>`<div class="etab-item" onclick="openChoice(${m.id})"><div><b>${m.nom}</b><br><small style="color:#64748b">${m.adr}</small></div><span>→</span></div>`).join('')||'<p style="color:#94a3b8;text-align:center">Aucune maison</p>'}
 function openChoice(id){curMaisonChoice=maisons.find(x=>x.id==id);document.getElementById('choiceName').innerText=curMaisonChoice.nom;document.getElementById('modalChoice').classList.add('on')}
 function closeChoice(){document.getElementById('modalChoice').classList.remove('on')}
-function chooseRole(role){closeChoice();if(role=='gerant'){document.getElementById('formETAB').classList.add('hidden');document.getElementById('formGerantLogin').classList.remove('hidden');document.getElementById('gerantMaisonName').innerText=curMaisonChoice.nom;document.getElementById('gEmail').value=curMaisonChoice.gerEmail||''}else{curMaison=curMaisonChoice;document.getElementById('caisseName').innerText='Caisse - '+curMaison.nom;document.getElementById('modalCaisse').classList.add('on')}}
+function chooseRole(r){closeChoice();if(r=='gerant'){document.getElementById('formETAB').classList.add('hidden');document.getElementById('formGerantLogin').classList.remove('hidden');document.getElementById('gerantMaisonName').innerText=curMaisonChoice.nom;document.getElementById('gEmail').value=curMaisonChoice.gerEmail||''}else{curMaison=curMaisonChoice;document.getElementById('caisseName').innerText='Caisse - '+curMaison.nom;document.getElementById('modalCaisse').classList.add('on')}}
 function backToEtab(){document.getElementById('formGerantLogin').classList.add('hidden');document.getElementById('formETAB').classList.remove('hidden')}
-function loginDG(){let e=document.getElementById('dgEmail').value.trim().toLowerCase();let p=document.getElementById('dgPass').value;if(e!==dgCreds.email.toLowerCase()||p!==dgCreds.pass){alert('Email ou mot de passe incorrect. Actuel: '+dgCreds.email+' / '+dgCreds.pass);return}document.getElementById('view-login').classList.add('hidden');document.getElementById('viewDG').classList.remove('hidden');document.getElementById('btnOut').classList.remove('hidden');renderDG()}
-function renderDG(){document.getElementById('countMaisons').innerText=maisons.length+' Maisons';document.getElementById('dgList').innerHTML=maisons.map(m=>`<div class="card"><div style="display:flex;justify-content:space-between"><h3>${m.nom}</h3><span onclick="delM(${m.id})" style="cursor:pointer">🗑️</span></div><span style="background:#f1f5f9;padding:4px 10px;border-radius:20px;font-size:12px">${m.act}</span><p style="margin:8px 0;color:#64748b;font-size:13px">📍 ${m.adr}<br><b>Gérant:</b> ${m.ger} (${m.gerEmail})</p><div class="grid2"><div class="kpi"><b>${m.stock}</b><br>Stock</div><div class="kpi y"><b>${m.ventes}</b><br>Ventes</div></div><button class="btn btn-d" style="margin-top:8px" onclick="openMaisonFromDG(${m.id})">Gérer →</button></div>`).join('')}
+function loginDG(){let e=document.getElementById('dgEmail').value.trim().toLowerCase();let p=document.getElementById('dgPass').value;if(e!==dgCreds.email.toLowerCase()||p!==dgCreds.pass){alert('Incorrect: '+dgCreds.email+' / '+dgCreds.pass);return}document.getElementById('view-login').classList.add('hidden');document.getElementById('viewDG').classList.remove('hidden');document.getElementById('btnOutGlobal').classList.remove('hidden');renderDG()}
+function renderDG(){document.getElementById('countMaisons').innerText=maisons.length+' Maisons';document.getElementById('dgList').innerHTML=maisons.map(m=>`<div class="card"><div style="display:flex;justify-content:space-between"><h3>${m.nom}</h3><span onclick="delM(${m.id})" style="cursor:pointer">🗑️</span></div><span style="background:#f1f5f9;padding:4px 10px;border-radius:20px;font-size:12px">${m.act}</span><p style="margin:8px 0;color:#64748b;font-size:13px">📍 ${m.adr}<br><b>Gérant:</b> ${m.ger} (${m.gerEmail})</p><div class="grid2"><div class="kpi"><b>${m.stock||0}</b><br>Stock</div><div class="kpi y"><b>${m.ventes||0}</b><br>Ventes</div></div><button class="btn btn-d" style="margin-top:8px" onclick="openMaisonFromDG(${m.id})">Gérer →</button></div>`).join('')}
 function openAdd(){document.getElementById('modalAdd').classList.add('on')} function closeAdd(){document.getElementById('modalAdd').classList.remove('on')}
-function saveM(){let nom=document.getElementById('mNom').value.trim();let act=document.getElementById('mAct').value;let adr=document.getElementById('mAdr').value;let ger=document.getElementById('mGer').value;let gEmail=document.getElementById('mGerEmail').value.trim().toLowerCase();let gPass=document.getElementById('mGerPass').value;let tel=document.getElementById('mTel').value;if(!nom||!gEmail||!gPass){alert('Nom, Email Gérant et Mot de passe obligatoires');return}maisons.push({id:Date.now(),nom,act,adr,ger,gerEmail:gEmail,gerPass:gPass,tel,stock:0,ventes:0,caisseCode:'0000'});save();closeAdd();renderDG();renderEtabList();}
+function saveM(){let nom=document.getElementById('mNom').value.trim();let act=document.getElementById('mAct').value;let adr=document.getElementById('mAdr').value;let ger=document.getElementById('mGer').value;let gEmail=document.getElementById('mGerEmail').value.trim().toLowerCase();let gPass=document.getElementById('mGerPass').value;let tel=document.getElementById('mTel').value;if(!nom||!gEmail||!gPass){alert('Obligatoires');return}maisons.push({id:Date.now(),nom,act,adr,ger,gerEmail:gEmail,gerPass:gPass,tel,stock:0,ventes:0,caisses:[{id:Date.now(),nom:'Caisse Principale',code:'0000'}]});save();closeAdd();renderDG();renderEtabList();}
 function delM(id){if(confirm('Supprimer?')){maisons=maisons.filter(x=>x.id!=id);save();renderDG();renderEtabList()}}
-function openMaisonFromDG(id){curMaison=maisons.find(x=>x.id==id);showMaison('DG')}
-function loginGerant(){let e=document.getElementById('gEmail').value.trim().toLowerCase();let p=document.getElementById('gPass').value;let m=curMaisonChoice;if(e!==m.gerEmail.toLowerCase()||p!==m.gerPass){alert('Email ou mot de passe gérant incorrect');return}curMaison=m;document.getElementById('view-login').classList.add('hidden');document.getElementById('btnOut').classList.remove('hidden');showMaison('Gérant')}
-function showMaison(role){document.getElementById('viewDG').classList.add('hidden');document.getElementById('view-login').classList.add('hidden');document.getElementById('viewMaison').classList.remove('hidden');document.getElementById('maisonHead').innerHTML=`<button class="btn btn-w" style="width:auto" onclick="backToDG()">← Retour</button><h2 style="margin-top:8px">${curMaison.nom}</h2><p style="color:#64748b">${role}</p>`;document.getElementById('maisonBody').innerHTML=`<div class="card"><div class="grid2"><div class="kpi"><b>${curMaison.stock}</b><br>Stock</div><div class="kpi y"><b>${curMaison.ventes}</b><br>Ventes</div></div></div>`}
-function backToDG(){document.getElementById('viewMaison').classList.add('hidden');document.getElementById('viewDG').classList.remove('hidden')}
-function loginCaisse(){let code=document.getElementById('caisseCode').value;if(code!==curMaison.caisseCode){alert('Code caisse incorrect');return}document.getElementById('modalCaisse').classList.remove('on');document.getElementById('view-login').classList.add('hidden');document.getElementById('btnOut').classList.remove('hidden');showMaison('Caisse')}
+function openMaisonFromDG(id){curMaison=maisons.find(x=>x.id==id);showGerant('DG')}
+function loginGerant(){let e=document.getElementById('gEmail').value.trim().toLowerCase();let p=document.getElementById('gPass').value;let m=curMaisonChoice;if(e!==m.gerEmail.toLowerCase()||p!==m.gerPass){alert('Email ou mot de passe gérant incorrect');return}curMaison=m;document.getElementById('view-login').classList.add('hidden');document.getElementById('btnOutGlobal').classList.add('hidden');showGerant('Gérant')}
+
+// --- TABLEAU GERANT EXACT COMME DEMANDÉ ---
+function showGerant(role){
+document.getElementById('viewDG').classList.add('hidden');document.getElementById('view-login').classList.add('hidden');document.getElementById('viewMaison').classList.remove('hidden');
+let nbCaisses=(curMaison.caisses||[]).length;
+// 1. En-tête avec nom maison + crayon + déconnexion
+document.getElementById('maisonHead').innerHTML=`
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+<div><h2 style="font-size:22px">${curMaison.nom}</h2><p style="color:#64748b;font-size:14px">${role}</p></div>
+<div style="display:flex;gap:8px;align-items:center">
+<button class="icon-btn" onclick="openEditGerant()" title="Modifier">✏️</button>
+<button class="btn btn-d" style="width:auto;padding:8px 14px" onclick="askLogout()">Déconnexion</button>
+</div>
+</div>`;
+// 2. Sous le nom: +Ajouter caisse + nombre caisses
+document.getElementById('gerantActions').innerHTML=`
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px">
+<button class="btn btn-y" style="width:auto" onclick="openAddCaisse()">+ Ajouter caisse</button>
+<span class="count-badge-y">${nbCaisses} Caisses</span>
+</div>`;
+// Contenu vide pour l'instant comme sur ta capture
+document.getElementById('maisonBody').innerHTML=`
+<div class="card"><div class="grid2"><div class="kpi"><b>${curMaison.stock||0}</b><br>Stock</div><div class="kpi y"><b>${curMaison.ventes||0}</b><br>Ventes</div></div>
+<div style="margin-top:12px"><h3>Caisses de ${curMaison.nom}</h3>
+${(curMaison.caisses||[]).map(c=>`<div class="etab-item" style="margin-top:8px"><div><b>${c.nom}</b><br><small>Code: ${c.code}</small></div><span onclick="delCaisse(${c.id})" style="cursor:pointer">🗑️</span></div>`).join('')}
+</div></div>`;
+}
+function openAddCaisse(){document.getElementById('modalAddCaisse').classList.add('on')}
+function closeAddCaisse(){document.getElementById('modalAddCaisse').classList.remove('on')}
+function saveCaisse(){let nom=document.getElementById('cNom').value.trim();let code=document.getElementById('cCode').value.trim();if(!nom||!code){alert('Nom et code obligatoires');return}curMaison.caisses=curMaison.caisses||[];curMaison.caisses.push({id:Date.now(),nom,code});maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();closeAddCaisse();showGerant('Gérant');document.getElementById('cNom').value='';document.getElementById('cCode').value='';}
+function delCaisse(id){if(confirm('Supprimer cette caisse?')){curMaison.caisses=curMaison.caisses.filter(c=>c.id!==id);maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();showGerant('Gérant')}}
+
+function loginCaisse(){let c=document.getElementById('caisseCode').value;let ok=(curMaison.caisses||[]).some(x=>x.code===c);if(!ok){alert('Code caisse incorrect');return}document.getElementById('modalCaisse').classList.remove('on');document.getElementById('view-login').classList.add('hidden');showGerant('Caisse')}
 function closeCaisse(){document.getElementById('modalCaisse').classList.remove('on')}
-function askLogout(){document.getElementById('modalLogout').classList.add('on')} function closeLogout(){document.getElementById('modalLogout').classList.remove('on')} function doLogout(){closeLogout();document.getElementById('viewMaison').classList.add('hidden');document.getElementById('viewDG').classList.add('hidden');document.getElementById('view-login').classList.remove('hidden');document.getElementById('btnOut').classList.add('hidden');updateHint();switchTab('dg')}
-// EDIT DG 2 ETAPES
-function openEditDG(){document.getElementById('step1').className='step on';document.getElementById('step2').className='step';document.getElementById('oldEmail').value='';document.getElementById('oldPass').value='';document.getElementById('newEmail').value='';document.getElementById('newPass').value='';document.getElementById('modalEditDG').classList.add('on')}
+function askLogout(){document.getElementById('modalLogout').classList.add('on')} function closeLogout(){document.getElementById('modalLogout').classList.remove('on')}
+function doLogout(){closeLogout();document.getElementById('viewMaison').classList.add('hidden');document.getElementById('viewDG').classList.add('hidden');document.getElementById('view-login').classList.remove('hidden');document.getElementById('btnOutGlobal').classList.add('hidden');updateHint();switchTab('dg')}
+
+// EDIT DG
+function openEditDG(){document.getElementById('dgStep1').className='step on';document.getElementById('dgStep2').className='step';document.getElementById('modalEditDG').classList.add('on')}
 function closeEditDG(){document.getElementById('modalEditDG').classList.remove('on')}
-function nextEdit(){let oe=document.getElementById('oldEmail').value.trim().toLowerCase();let op=document.getElementById('oldPass').value;if(oe!==dgCreds.email.toLowerCase()||op!==dgCreds.pass){alert('Ancien email ou mot de passe incorrect. Actuel: '+dgCreds.email+' / '+dgCreds.pass);return}document.getElementById('step1').className='step';document.getElementById('step2').className='step on'}
-function backStep(){document.getElementById('step2').className='step';document.getElementById('step1').className='step on'}
-function saveEditDG(){let ne=document.getElementById('newEmail').value.trim().toLowerCase();let np=document.getElementById('newPass').value;if(!ne||!np){alert('Remplis nouveau email et mot de passe');return}dgCreds={email:ne,pass:np};localStorage.setItem('elrapha_dg',JSON.stringify(dgCreds));closeEditDG();alert('Modifié ! Nouveau login: '+ne+' / '+np+'. Déconnectez-vous et reconnectez-vous.');updateHint()}
-updateHint();renderEtabList();
-</script></body></html>
+function nextEditDG(){let oe=document.getElementById('oldEmail').value.trim().toLowerCase();let op=document.getElementById('oldPass').value;if(oe!==dgCreds.email.toLowerCase()||op!==dgCreds.pass){alert('Ancien incorrect: '+dgCreds.email+' / '+dgCreds.pass);return}document.getElementById('dgStep1').className='step';document.getElementById('dgStep2').className='step on'}
+function backStepDG(){document.getElementById('dgStep2').className='step';document.getElementById('dgStep1').className='step on'}
+function saveEditDG(){let ne=document.getElementById('newEmail').value.trim().toLowerCase();let np=document.getElementById('newPass').value;if(!ne||!np){alert('Remplis');return}dgCreds={email:ne,pass:np};localStorage.setItem('elrapha_dg',JSON.stringify(dgCreds));closeEditDG();alert('Nouveau: '+ne+' / '+np);updateHint()}
+
+// EDIT GERANT avec même logique que DG
+function openEditGerant(){document.getElementById('gStep1').className='step on';document.getElementById('gStep2').className='step';document.getElementById('gOldEmail').value='';document.getElementById('gOldPass').value='';document.getElementById('gNewEmail').value='';document.getElementById('gNewPass').value='';document.getElementById('modalEditGerant').classList.add('on')}
+function closeEditGerant(){document.getElementById('modalEditGerant').classList.remove('on')}
+function nextEditGerant(){let oe=document.getElementById('gOldEmail').value.trim().toLowerCase();let op=document.getElementById('gOldPass').value;if(oe!==curMaison.gerEmail.toLowerCase()||op!==curMaison.gerPass){alert('Ancien email/mot de passe incorrect. Actuel: '+curMaison.gerEmail+' / '+curMaison.gerPass);return}document.getElementById('gStep1').className='step';document.getElementById('gStep2').className='step on'}
+function backStepGerant(){document.getElementById('gStep2').className='step';document.getElementById('gStep1').className='step on'}
+function saveEditGerant(){let ne=document.getElementById('gNewEmail').value.trim().toLowerCase();let np=document.getElementById('gNewPass').value;if(!ne||!np){alert('Remplis nouveau email et mot de passe');return}curMaison.gerEmail=ne;curMaison.gerPass=np;maisons=maisons.map(m=>m.i
