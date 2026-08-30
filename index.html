@@ -104,11 +104,11 @@ document.getElementById('maisonHead').innerHTML=`
 </div>
 </div>`;
 // 2. Sous le nom: +Ajouter caisse + nombre caisses
-document.getElementById('gerantActions').innerHTML=`
+document.getElementById('gerantActions').innerHTML='
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px">
 <button class="btn btn-y" style="width:auto" onclick="openAddCaisse()">+ Ajouter caisse</button>
-<span class="count-badge-y">${nbCaisses} Caisses</span>
-</div>`;
+<button class="btn btn-y" style="width:auto" onclick="openListeCaisses()">${nbCaisses} Caisses</button>
+</div>';
 // Contenu vide pour l'instant comme sur ta capture
 document.getElementById('maisonBody').innerHTML=`
 <div class="card"><div class="grid2"><div class="kpi"><b>${curMaison.stock||0}</b><br>Stock</div><div class="kpi y"><b>${curMaison.ventes||0}</b><br>Ventes</div></div>
@@ -174,5 +174,51 @@ function nextEditGerant(){let oe=document.getElementById('gOldEmail').value.trim
 function backStepGerant(){document.getElementById('gStep2').className='step';document.getElementById('gStep1').className='step on'}
 function saveEditGerant(){let ne=document.getElementById('gNewEmail').value.trim().toLowerCase();let np=document.getElementById('gNewPass').value;if(!ne||!np){alert('Remplis nouveau email et mot de passe');return}curMaison.gerEmail=ne;curMaison.gerPass=np;maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();closeEditGerant();alert('Compte gérant modifié ! Nouveau: '+ne+' / '+np+' - Vous devrez vous reconnecter avec ce nouveau login.');}
 
-updateHint();renderEtabList();
-</script></body></html>
+function openListeCaisses(){
+let tri=(curMaison.caisses||[]).slice().sort((a,b)=>(a.code||'').localeCompare(b.code||''));
+let html='';
+if(tri.length===0){html='<small>Aucune caisse créée</small>';}
+else{
+html=tri.map(c=>`<div class="etab-item" style="margin-top:8px;cursor:pointer" onclick="showDetailCaisse(${c.id})"><b>${c.code} - ${c.nomCaissier||c.nom}</b><span>👁️</span></div>`).join('');
+}
+document.getElementById('listeCaissesTrie').innerHTML=html;
+document.getElementById('modalListeCaisses').classList.add('on');
+}
+function closeListeCaisses(){
+document.getElementById('modalListeCaisses').classList.remove('on');
+}
+function showDetailCaisse(id){
+let c=(curMaison.caisses||[]).find(x=>x.id===id); if(!c)return;
+closeListeCaisses();
+document.getElementById('detailCaisseTitle').innerText=c.code+' - '+(c.nomCaissier||'');
+document.getElementById('detailCaisseBody').innerHTML=`
+<div style="line-height:1.8">
+<b>Code caisse:</b> ${c.code}<br>
+<b>Nom du Caissier(ère):</b> ${c.nomCaissier||''}<br>
+<b>Téléphone:</b> ${c.tel||''}<br>
+<b>Adresse:</b> ${c.adr||''}<br>
+<b>Outil utilisé:</b> ${c.outil||''}<br>
+<b>Nom complet:</b> ${c.nom||''}<br>
+<b>Nombre de ventes:</b> ${(c.ventes||[]).length}<br>
+</div>`;
+document.getElementById('modalDetailCaisse').classList.add('on');
+}
+function closeDetailCaisse(){
+document.getElementById('modalDetailCaisse').classList.remove('on');
+  }
+  updateHint();renderEtabList();
+</script>
+  <!-- LISTE DES CAISSES TRIEE PAR CODE -->
+<div id="modalListeCaisses" class="modal"><div class="modal-in">
+<h3>Liste des Caisses - ${(curMaison?curMaison.nom:'')}</h3><br>
+<div id="listeCaissesTrie"></div>
+<div class="grid2" style="margin-top:12px"><button class="btn btn-w" onclick="closeListeCaisses()">Fermer</button></div>
+</div></div>
+
+<!-- DETAIL D'UNE CAISSE -->
+<div id="modalDetailCaisse" class="modal"><div class="modal-in">
+<h3 id="detailCaisseTitle">Détail Caisse</h3><br>
+<div id="detailCaisseBody"></div>
+<div class="grid2" style="margin-top:12px"><button class="btn btn-w" onclick="closeDetailCaisse()">Fermer</button></div>
+</div></div>
+</body></html>
