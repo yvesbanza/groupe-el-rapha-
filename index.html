@@ -191,18 +191,10 @@ function showDetailCaisse(id){
 let c=(curMaison.caisses||[]).find(x=>x.id===id); if(!c)return;
 closeListeCaisses();
 document.getElementById('detailCaisseTitle').innerText=c.code+' - '+(c.nomCaissier||'');
-document.getElementById('detailCaisseBody').innerHTML=`
-<div style="line-height:1.8">
-<b>Code caisse:</b> ${c.code}<br>
-<b>Nom du Caissier(ère):</b> ${c.nomCaissier||''}<br>
-<b>Téléphone:</b> ${c.tel||''}<br>
-<b>Adresse:</b> ${c.adr||''}<br>
-<b>Outil utilisé:</b> ${c.outil||''}<br>
-<b>Nom complet:</b> ${c.nom||''}<br>
-<b>Nombre de ventes:</b> ${(c.ventes||[]).length}<br>
-</div>`;
+let d=document.getElementById('detailCaisseBody');
+d.innerHTML='<div style="line-height:1.8"><b>Code caisse:</b> '+c.code+'<br><b>Nom du Caissier(ere):</b> '+(c.nomCaissier||'')+'<br><b>Telephone:</b> '+(c.tel||'')+'<br><b>Adresse:</b> '+(c.adr||'')+'<br><b>Outil:</b> '+(c.outil||'')+'<br><b>Nom complet:</b> '+(c.nom||'')+'<br><b>Ventes:</b> '+((c.ventes||[]).length)+'</div>';
 document.getElementById('modalDetailCaisse').classList.add('on');
-}
+  }
 function closeDetailCaisse(){
 document.getElementById('modalDetailCaisse').classList.remove('on');
 }
