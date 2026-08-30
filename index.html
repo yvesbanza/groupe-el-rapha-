@@ -115,8 +115,8 @@ document.getElementById('maisonBody').innerHTML=`
 ${(curMaison.caisses||[]).map(c=>`<div class="etab-item" style="margin-top:8px;align-items:flex-start"><div><b>Code: ${c.code}</b> - ${c.nomCaissier||c.nom}<br><small>📞 ${c.tel||''} | 📍 ${c.adr||''}<br>🛠️ Outil: ${c.outil||''}</small><br><small style="color:#16a34a">Ventes: ${(c.ventes||[]).length} | Le gérant voit les mouvements, ne vend pas</small></div><div style="display:flex;gap:8px"><span onclick="editCaisse(${c.id})" style="cursor:pointer">✏️</span><span onclick="delCaisse(${c.id})" style="cursor:pointer">🗑️</span></div></div>`).join('')}
 </div></div>`;
 }
-function openAddCaisse(){document.getElementById('modalAddCaisse').classList.add('on')}
-function closeAddCaisse(){document.getElementById('modalAddCaisse').classList.remove('on')}
+function openAddCaisse(){editCaisseId=null;document.getElementById('cCode').value='';document.getElementById('cNomCaissier').value='';document.getElementById('cTel').value='';document.getElementById('cAdr').value='';document.getElementById('cOutil').value='';document.getElementById('modalAddCaisse').classList.add('on')}
+function editCaisse(id){let c=(curMaison.caisses||[]).find(x=>x.id===id);if(!c)return;editCaisseId=id;document.getElementById('cCode').value=c.code||'';document.getElementById('cNomCaissier').value=c.nomCaissier||'';document.getElementById('cTel').value=c.tel||'';document.getElementById('cAdr').value=c.adr||'';document.getElementById('cOutil').value=c.outil||'';document.getElementById('modalAddCaisse').classList.add('on')}
 function saveCaisse(){
 let code=document.getElementById('cCode').value.trim();
 let nomCaissier=document.getElementById('cNomCaissier').value.trim();
@@ -125,12 +125,15 @@ let adr=document.getElementById('cAdr').value.trim();
 let outil=document.getElementById('cOutil').value.trim();
 if(!code||!nomCaissier){alert('Code caisse et Nom du caissier obligatoires');return}
 curMaison.caisses=curMaison.caisses||[];
+if(editCaisseId){
+let i=curMaison.caisses.findIndex(x=>x.id===editCaisseId);
+if(i>=0){curMaison.caisses[i]={...curMaison.caisses[i],code,nomCaissier,tel,adr,outil,nom:'Caisse de '+nomCaissier}}
+}else{
 curMaison.caisses.push({id:Date.now(),code,nomCaissier,tel,adr,outil,nom:'Caisse de '+nomCaissier, ventes:[]});
+}
 maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);
-save();
-closeAddCaisse();
-showGerant('Gérant');
-document.getElementById('cCode').value='';document.getElementById('cNomCaissier').value='';document.getElementById('cTel').value='';document.getElementById('cAdr').value='';document.getElementById('cOutil').value='';
+save();closeAddCaisse();showGerant('Gérant');
+editCaisseId=null;
   }
 function delCaisse(id){if(confirm('Supprimer cette caisse?')){curMaison.caisses=curMaison.caisses.filter(c=>c.id!==id);maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();showGerant('Gérant')}}
 
