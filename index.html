@@ -130,4 +130,7 @@ function openEditGerant(){document.getElementById('gStep1').className='step on';
 function closeEditGerant(){document.getElementById('modalEditGerant').classList.remove('on')}
 function nextEditGerant(){let oe=document.getElementById('gOldEmail').value.trim().toLowerCase();let op=document.getElementById('gOldPass').value;if(oe!==curMaison.gerEmail.toLowerCase()||op!==curMaison.gerPass){alert('Ancien email/mot de passe incorrect. Actuel: '+curMaison.gerEmail+' / '+curMaison.gerPass);return}document.getElementById('gStep1').className='step';document.getElementById('gStep2').className='step on'}
 function backStepGerant(){document.getElementById('gStep2').className='step';document.getElementById('gStep1').className='step on'}
-function saveEditGerant(){let ne=document.getElementById('gNewEmail').value.trim().toLowerCase();let np=document.getElementById('gNewPass').value;if(!ne||!np){alert('Remplis nouveau email et mot de passe');return}curMaison.gerEmail=ne;curMaison.gerPass=np;maisons=maisons.map(m=>m.i
+function saveEditGerant(){let ne=document.getElementById('gNewEmail').value.trim().toLowerCase();let np=document.getElementById('gNewPass').value;if(!ne||!np){alert('Remplis nouveau email et mot de passe');return}curMaison.gerEmail=ne;curMaison.gerPass=np;maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();closeEditGerant();alert('Compte gérant modifié ! Nouveau: '+ne+' / '+np+' - Vous devrez vous reconnecter avec ce nouveau login.');}
+
+updateHint();renderEtabList();
+</script></body></html>
