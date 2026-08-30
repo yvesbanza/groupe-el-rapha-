@@ -179,7 +179,7 @@ let tri=(curMaison.caisses||[]).slice().sort((a,b)=>(a.code||'').localeCompare(b
 let html='';
 if(tri.length===0){html='<small>Aucune caisse créée</small>';}
 else{
-html=tri.map(c=>`<div class="etab-item" style="margin-top:8px;cursor:pointer" onclick="showDetailCaisse(${c.id})"><b>${c.code} - ${c.nomCaissier||c.nom}</b><span>👁️</span></div>`).join('');
+html=tri.map(c=>`<div class="etab-item" style="margin-top:8px;cursor:pointer" onclick="showDetailCaisse(${c.id})"><b>${c.code} - ${c.nomCaissier||''}</b><span>👁️</span></div>`).join('');
 }
 document.getElementById('listeCaissesTrie').innerHTML=html;
 document.getElementById('modalListeCaisses').classList.add('on');
@@ -205,8 +205,8 @@ document.getElementById('modalDetailCaisse').classList.add('on');
 }
 function closeDetailCaisse(){
 document.getElementById('modalDetailCaisse').classList.remove('on');
-  }
-  updateHint();renderEtabList();
+}
+updateHint();renderEtabList();
 </script>
 <!-- LISTE DES CAISSES TRIEE PAR CODE -->
 <div id="modalListeCaisses" class="modal"><div class="modal-in">
