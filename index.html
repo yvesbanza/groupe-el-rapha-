@@ -131,6 +131,10 @@ document.getElementById('btnSaveCaisse').innerText='Modifier';
 document.getElementById('cCode').value=c.code||'';document.getElementById('cNomCaissier').value=c.nomCaissier||'';document.getElementById('cTel').value=c.tel||'';document.getElementById('cAdr').value=c.adr||'';document.getElementById('cOutil').value=c.outil||'';
 document.getElementById('modalAddCaisse').classList.add('on')
   }
+function closeAddCaisse(){
+document.getElementById('modalAddCaisse').classList.remove('on');
+editCaisseId=null;
+  }
 function saveCaisse(){
 let code=document.getElementById('cCode').value.trim();
 let nomCaissier=document.getElementById('cNomCaissier').value.trim();
