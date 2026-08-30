@@ -56,8 +56,15 @@ body{background:#f2f4f8} header{background:#0f172a;color:#fff;padding:12px 14px;
 <div id="modalEditGerant" class="modal"><div class="modal-in"><div id="gStep1" class="step on"><h3>✏️ Vérification Gérant</h3><p style="color:#64748b;font-size:13px;margin:6px 0 12px">Entrez votre ancien email et mot de passe</p><input id="gOldEmail" class="input" type="email" placeholder="Ancien Email"><input id="gOldPass" class="input" type="password" placeholder="Ancien Mot de passe"><div class="grid2"><button class="btn btn-w" onclick="closeEditGerant()">Annuler</button><button class="btn btn-d" onclick="nextEditGerant()">Next →</button></div></div><div id="gStep2" class="step"><h3>🔑 Nouveau compte Gérant</h3><p style="color:#64748b;font-size:13px;margin:6px 0 12px">Nouveau email de connexion</p><input id="gNewEmail" class="input" type="email" placeholder="Nouveau Email"><input id="gNewPass" class="input" type="password" placeholder="Nouveau Mot de passe"><div class="grid2"><button class="btn btn-w" onclick="backStepGerant()">← Retour</button><button class="btn btn-d" onclick="saveEditGerant()">Confirmer</button></div></div></div></div>
 
 <div id="modalCaisse" class="modal"><div class="modal-in"><h3 id="caisseName"></h3><input id="caisseCode" class="input" style="margin-top:10px" placeholder="Code Caisse"><div class="grid2"><button class="btn btn-w" onclick="closeCaisse()">Annuler</button><button class="btn btn-d" onclick="loginCaisse()">Entrer</button></div></div></div>
-<div id="modalAddCaisse" class="modal"><div class="modal-in"><h3>+ Ajouter Caisse</h3><br><input id="cNom" class="input" placeholder="Nom caisse (ex: Caisse 2)"><input id="cCode" class="input" placeholder="Code caisse"><div class="grid2"><button class="btn btn-w" onclick="closeAddCaisse()">Annuler</button><button class="btn btn-y" onclick="saveCaisse()">Créer</button></div></div></div>
-
+<div id="modalAddCaisse" class="modal"><div class="modal-in">
+<h3>+ Ajouter Caisse</h3><br>
+<input id="cCode" class="input" placeholder="Code caisse">
+<input id="cNomCaissier" class="input" placeholder="Nom du caissier(ère)">
+<input id="cTel" class="input" placeholder="Téléphone du Caissier(ère)">
+<input id="cAdr" class="input" placeholder="Adresse du caissier(ère)">
+<input id="cOutil" class="input" placeholder="Outil utilisé par le caissier(ère) (ex: Téléphone, PC)">
+<div class="grid2"><button class="btn btn-w" onclick="closeAddCaisse()">Annuler</button><button class="btn btn-y" onclick="saveCaisse()">Créer</button></div>
+</div></div>
 <script>
 let maisons=JSON.parse(localStorage.getItem('elrapha_v7')||'[]');
 let dgCreds=JSON.parse(localStorage.getItem('elrapha_dg')||'{"email":"dg@elrapha.cd","pass":"elrapha2026"}');
@@ -110,7 +117,21 @@ ${(curMaison.caisses||[]).map(c=>`<div class="etab-item" style="margin-top:8px">
 }
 function openAddCaisse(){document.getElementById('modalAddCaisse').classList.add('on')}
 function closeAddCaisse(){document.getElementById('modalAddCaisse').classList.remove('on')}
-function saveCaisse(){let nom=document.getElementById('cNom').value.trim();let code=document.getElementById('cCode').value.trim();if(!nom||!code){alert('Nom et code obligatoires');return}curMaison.caisses=curMaison.caisses||[];curMaison.caisses.push({id:Date.now(),nom,code});maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();closeAddCaisse();showGerant('Gérant');document.getElementById('cNom').value='';document.getElementById('cCode').value='';}
+function saveCaisse(){
+let code=document.getElementById('cCode').value.trim();
+let nomCaissier=document.getElementById('cNomCaissier').value.trim();
+let tel=document.getElementById('cTel').value.trim();
+let adr=document.getElementById('cAdr').value.trim();
+let outil=document.getElementById('cOutil').value.trim();
+if(!code||!nomCaissier){alert('Code caisse et Nom du caissier obligatoires');return}
+curMaison.caisses=curMaison.caisses||[];
+curMaison.caisses.push({id:Date.now(),code,nomCaissier,tel,adr,outil,nom:'Caisse de '+nomCaissier, ventes:[]});
+maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);
+save();
+closeAddCaisse();
+showGerant('Gérant');
+document.getElementById('cCode').value='';document.getElementById('cNomCaissier').value='';document.getElementById('cTel').value='';document.getElementById('cAdr').value='';document.getElementById('cOutil').value='';
+  }
 function delCaisse(id){if(confirm('Supprimer cette caisse?')){curMaison.caisses=curMaison.caisses.filter(c=>c.id!==id);maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();showGerant('Gérant')}}
 
 function loginCaisse(){let c=document.getElementById('caisseCode').value;let ok=(curMaison.caisses||[]).some(x=>x.code===c);if(!ok){alert('Code caisse incorrect');return}document.getElementById('modalCaisse').classList.remove('on');document.getElementById('view-login').classList.add('hidden');showGerant('Caisse')}
