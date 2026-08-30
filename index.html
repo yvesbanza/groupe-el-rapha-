@@ -57,13 +57,13 @@ body{background:#f2f4f8} header{background:#0f172a;color:#fff;padding:12px 14px;
 
 <div id="modalCaisse" class="modal"><div class="modal-in"><h3 id="caisseName"></h3><input id="caisseCode" class="input" style="margin-top:10px" placeholder="Code Caisse"><div class="grid2"><button class="btn btn-w" onclick="closeCaisse()">Annuler</button><button class="btn btn-d" onclick="loginCaisse()">Entrer</button></div></div></div>
 <div id="modalAddCaisse" class="modal"><div class="modal-in">
-<h3>+ Ajouter Caisse</h3><br>
+<h3 id="titleCaisse">+ Ajouter Caisse</h3><br>
 <input id="cCode" class="input" placeholder="Code caisse">
 <input id="cNomCaissier" class="input" placeholder="Nom du caissier(ère)">
 <input id="cTel" class="input" placeholder="Téléphone du Caissier(ère)">
 <input id="cAdr" class="input" placeholder="Adresse du caissier(ère)">
-<input id="cOutil" class="input" placeholder="Outil utilisé par le caissier(ère) (ex: Téléphone, PC)">
-<div class="grid2"><button class="btn btn-w" onclick="closeAddCaisse()">Annuler</button><button class="btn btn-y" onclick="saveCaisse()">Créer</button></div>
+<input id="cOutil" class="input" placeholder="Outil utilisé par le caissier(ère)">
+<div class="grid2"><button class="btn btn-w" onclick="closeAddCaisse()">Annuler</button><button id="btnSaveCaisse" class="btn btn-y" onclick="saveCaisse()">Créer</button></div>
 </div></div>
 <script>
 let maisons=JSON.parse(localStorage.getItem('elrapha_v7')||'[]');
@@ -116,8 +116,21 @@ document.getElementById('maisonBody').innerHTML=`
 ${(curMaison.caisses||[]).map(c=>`<div class="etab-item" style="margin-top:8px;align-items:flex-start"><div><b>Code: ${c.code}</b> - ${c.nomCaissier||c.nom}<br><small>📞 ${c.tel||''} | 📍 ${c.adr||''}<br>🛠️ Outil: ${c.outil||''}</small><br><small style="color:#16a34a">Ventes: ${(c.ventes||[]).length} | Le gérant voit les mouvements, ne vend pas</small></div><div style="display:flex;gap:8px"><span onclick="editCaisse(${c.id})" style="cursor:pointer">✏️</span><span onclick="delCaisse(${c.id})" style="cursor:pointer">🗑️</span></div></div>`).join('')}
 </div></div>`;
 }
-function openAddCaisse(){editCaisseId=null;document.getElementById('cCode').value='';document.getElementById('cNomCaissier').value='';document.getElementById('cTel').value='';document.getElementById('cAdr').value='';document.getElementById('cOutil').value='';document.getElementById('modalAddCaisse').classList.add('on')}
-function editCaisse(id){let c=(curMaison.caisses||[]).find(x=>x.id===id);if(!c)return;editCaisseId=id;document.getElementById('cCode').value=c.code||'';document.getElementById('cNomCaissier').value=c.nomCaissier||'';document.getElementById('cTel').value=c.tel||'';document.getElementById('cAdr').value=c.adr||'';document.getElementById('cOutil').value=c.outil||'';document.getElementById('modalAddCaisse').classList.add('on')}
+function openAddCaisse(){
+editCaisseId=null;
+document.getElementById('titleCaisse').innerText='+ Ajouter Caisse';
+document.getElementById('btnSaveCaisse').innerText='Créer';
+document.getElementById('cCode').value='';document.getElementById('cNomCaissier').value='';document.getElementById('cTel').value='';document.getElementById('cAdr').value='';document.getElementById('cOutil').value='';
+document.getElementById('modalAddCaisse').classList.add('on')
+}
+function editCaisse(id){
+let c=(curMaison.caisses||[]).find(x=>x.id===id);if(!c)return;
+editCaisseId=id;
+document.getElementById('titleCaisse').innerText='Modifier la caisse';
+document.getElementById('btnSaveCaisse').innerText='Modifier';
+document.getElementById('cCode').value=c.code||'';document.getElementById('cNomCaissier').value=c.nomCaissier||'';document.getElementById('cTel').value=c.tel||'';document.getElementById('cAdr').value=c.adr||'';document.getElementById('cOutil').value=c.outil||'';
+document.getElementById('modalAddCaisse').classList.add('on')
+  }
 function saveCaisse(){
 let code=document.getElementById('cCode').value.trim();
 let nomCaissier=document.getElementById('cNomCaissier').value.trim();
