@@ -112,7 +112,7 @@ document.getElementById('gerantActions').innerHTML=`
 document.getElementById('maisonBody').innerHTML=`
 <div class="card"><div class="grid2"><div class="kpi"><b>${curMaison.stock||0}</b><br>Stock</div><div class="kpi y"><b>${curMaison.ventes||0}</b><br>Ventes</div></div>
 <div style="margin-top:12px"><h3>Caisses de ${curMaison.nom}</h3>
-${(curMaison.caisses||[]).map(c=>`<div class="etab-item" style="margin-top:8px"><div><b>${c.nom}</b><br><small>Code: ${c.code}</small></div><span onclick="delCaisse(${c.id})" style="cursor:pointer">🗑️</span></div>`).join('')}
+${(curMaison.caisses||[]).map(c=>`<div class="etab-item" style="margin-top:8px;align-items:flex-start"><div><b>Code: ${c.code}</b> - ${c.nomCaissier||c.nom}<br><small>📞 ${c.tel||''} | 📍 ${c.adr||''}<br>🛠️ Outil: ${c.outil||''}</small><br><small style="color:#16a34a">Ventes: ${(c.ventes||[]).length} | Le gérant voit les mouvements, ne vend pas</small></div><span onclick="delCaisse(${c.id})" style="cursor:pointer">🗑️</span></div>`).join('')}
 </div></div>`;
 }
 function openAddCaisse(){document.getElementById('modalAddCaisse').classList.add('on')}
