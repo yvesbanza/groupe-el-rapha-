@@ -66,151 +66,109 @@ body{background:#f2f4f8} header{background:#0f172a;color:#fff;padding:12px 14px;
 <div class="grid2"><button class="btn btn-w" onclick="closeAddCaisse()">Annuler</button><button id="btnSaveCaisse" class="btn btn-y" onclick="saveCaisse()">Créer</button></div>
 </div></div>
 <script>
-let maisons=JSON.parse(localStorage.getItem('elrapha_v7')||'[]');
-let dgCreds=JSON.parse(localStorage.getItem('elrapha_dg')||'{"email":"dg@elrapha.cd","pass":"elrapha2026"}');
-if(maisons.length==0){
-maisons=[{id:1,nom:'ETS. MATUMONA',act:'Vente matériaux & divers',adr:'Kinshasa - Limete',ger:'Gérant Matumona',gerEmail:'gerant@matumona.cd',gerPass:'1234',tel:'+243 000 000 000',stock:156,ventes:12,caisses:[{id:1,nom:'Caisse Principale',code:'0000'}]}];
-localStorage.setItem('elrapha_v7',JSON.stringify(maisons));
-}
-let curMaison=null,curMaisonChoice=null;
 let editCaisseId=null;
-function save(){localStorage.setItem('elrapha_v7',JSON.stringify(maisons))}
-function updateHint(){document.getElementById('dgHint').innerText=`Défaut: dg@elrapha.cd / elrapha2026 - Actuel: ${dgCreds.email}`}
-function switchTab(t){document.getElementById('tDG').className=t=='dg'?'tab on':'tab';document.getElementById('tET').className=t=='etab'?'tab on':'tab';document.getElementById('formDG').className=t=='dg'?'':'hidden';document.getElementById('formETAB').className=t=='etab'?'':'hidden';document.getElementById('formGerantLogin').className='hidden';if(t=='etab')renderEtabList()}
-function renderEtabList(){let q=(document.getElementById('searchEtab').value||'').toLowerCase();let list=maisons.filter(m=>m.nom.toLowerCase().includes(q));document.getElementById('etabList').innerHTML=list.map(m=>`<div class="etab-item" onclick="openChoice(${m.id})"><div><b>${m.nom}</b><br><small style="color:#64748b">${m.adr}</small></div><span>→</span></div>`).join('')||'<p style="color:#94a3b8;text-align:center">Aucune maison</p>'}
-function openChoice(id){curMaisonChoice=maisons.find(x=>x.id==id);document.getElementById('choiceName').innerText=curMaisonChoice.nom;document.getElementById('modalChoice').classList.add('on')}
-function closeChoice(){document.getElementById('modalChoice').classList.remove('on')}
-function chooseRole(r){closeChoice();if(r=='gerant'){document.getElementById('formETAB').classList.add('hidden');document.getElementById('formGerantLogin').classList.remove('hidden');document.getElementById('gerantMaisonName').innerText=curMaisonChoice.nom;document.getElementById('gEmail').value=curMaisonChoice.gerEmail||''}else{curMaison=curMaisonChoice;document.getElementById('caisseName').innerText='Caisse - '+curMaison.nom;document.getElementById('modalCaisse').classList.add('on')}}
-function backToEtab(){document.getElementById('formGerantLogin').classList.add('hidden');document.getElementById('formETAB').classList.remove('hidden')}
-function loginDG(){let e=document.getElementById('dgEmail').value.trim().toLowerCase();let p=document.getElementById('dgPass').value;if(e!==dgCreds.email.toLowerCase()||p!==dgCreds.pass){alert('Incorrect: '+dgCreds.email+' / '+dgCreds.pass);return}document.getElementById('view-login').classList.add('hidden');document.getElementById('viewDG').classList.remove('hidden');document.getElementById('btnOutGlobal').classList.remove('hidden');renderDG()}
-function renderDG(){document.getElementById('countMaisons').innerText=maisons.length+' Maisons';document.getElementById('dgList').innerHTML=maisons.map(m=>`<div class="card"><div style="display:flex;justify-content:space-between"><h3>${m.nom}</h3><span onclick="delM(${m.id})" style="cursor:pointer">🗑️</span></div><span style="background:#f1f5f9;padding:4px 10px;border-radius:20px;font-size:12px">${m.act}</span><p style="margin:8px 0;color:#64748b;font-size:13px">📍 ${m.adr}<br><b>Gérant:</b> ${m.ger} (${m.gerEmail})</p><div class="grid2"><div class="kpi"><b>${m.stock||0}</b><br>Stock</div><div class="kpi y"><b>${m.ventes||0}</b><br>Ventes</div></div><button class="btn btn-d" style="margin-top:8px" onclick="openMaisonFromDG(${m.id})">Gérer →</button></div>`).join('')}
-function openAdd(){document.getElementById('modalAdd').classList.add('on')} function closeAdd(){document.getElementById('modalAdd').classList.remove('on')}
-function saveM(){let nom=document.getElementById('mNom').value.trim();let act=document.getElementById('mAct').value;let adr=document.getElementById('mAdr').value;let ger=document.getElementById('mGer').value;let gEmail=document.getElementById('mGerEmail').value.trim().toLowerCase();let gPass=document.getElementById('mGerPass').value;let tel=document.getElementById('mTel').value;if(!nom||!gEmail||!gPass){alert('Obligatoires');return}maisons.push({id:Date.now(),nom,act,adr,ger,gerEmail:gEmail,gerPass:gPass,tel,stock:0,ventes:0,caisses:[{id:Date.now(),nom:'Caisse Principale',code:'0000'}]});save();closeAdd();renderDG();renderEtabList();}
-function delM(id){if(confirm('Supprimer?')){maisons=maisons.filter(x=>x.id!=id);save();renderDG();renderEtabList()}}
-function openMaisonFromDG(id){curMaison=maisons.find(x=>x.id==id);showGerant('DG')}
-function loginGerant(){let e=document.getElementById('gEmail').value.trim().toLowerCase();let p=document.getElementById('gPass').value;let m=curMaisonChoice;if(e!==m.gerEmail.toLowerCase()||p!==m.gerPass){alert('Email ou mot de passe gérant incorrect');return}curMaison=m;document.getElementById('view-login').classList.add('hidden');document.getElementById('btnOutGlobal').classList.add('hidden');showGerant('Gérant')}
 
-// --- TABLEAU GERANT EXACT COMME DEMANDÉ ---
-function showGerant(role){
-document.getElementById('viewDG').classList.add('hidden');document.getElementById('view-login').classList.add('hidden');document.getElementById('viewMaison').classList.remove('hidden');
-let nbCaisses=(curMaison.caisses||[]).length;
-// 1. En-tête avec nom maison + crayon + déconnexion
-document.getElementById('maisonHead').innerHTML=`
-<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-<div><h2 style="font-size:22px">${curMaison.nom}</h2><p style="color:#64748b;font-size:14px">${role}</p></div>
-<div style="display:flex;gap:8px;align-items:center">
-<button class="icon-btn" onclick="openEditGerant()" title="Modifier">✏️</button>
-<button class="btn btn-d" style="width:auto;padding:8px 14px" onclick="askLogout()">Déconnexion</button>
-</div>
-</div>`;
-// 2. Sous le nom: +Ajouter caisse + nombre caisses
-document.getElementById('gerantActions').innerHTML='
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px">
-<button class="btn btn-y" style="width:auto" onclick="openAddCaisse()">+ Ajouter caisse</button>
-<button class="btn btn-y" style="width:auto" onclick="openListeCaisses()">${nbCaisses} Caisses</button>
-</div>';
-// Contenu vide pour l'instant comme sur ta capture
-document.getElementById('maisonBody').innerHTML=`
-<div class="card"><div class="grid2"><div class="kpi"><b>${curMaison.stock||0}</b><br>Stock</div><div class="kpi y"><b>${curMaison.ventes||0}</b><br>Ventes</div></div>
-<div style="margin-top:12px"><h3>Caisses de ${curMaison.nom}</h3>
-${(curMaison.caisses||[]).map(c=>`<div class="etab-item" style="margin-top:8px;align-items:flex-start"><div><b>Code: ${c.code}</b> - ${c.nomCaissier||c.nom}<br><small>📞 ${c.tel||''} | 📍 ${c.adr||''}<br>🛠️ Outil: ${c.outil||''}</small><br><small style="color:#16a34a">Ventes: ${(c.ventes||[]).length} | Le gérant voit les mouvements, ne vend pas</small></div><div style="display:flex;gap:8px"><span onclick="editCaisse(${c.id})" style="cursor:pointer">✏️</span><span onclick="delCaisse(${c.id})" style="cursor:pointer">🗑️</span></div></div>`).join('')}
-</div></div>`;
-}
 function openAddCaisse(){
 editCaisseId=null;
-document.getElementById('titleCaisse').innerText='+ Ajouter Caisse';
-document.getElementById('btnSaveCaisse').innerText='Créer';
-document.getElementById('cCode').value='';document.getElementById('cNomCaissier').value='';document.getElementById('cTel').value='';document.getElementById('cAdr').value='';document.getElementById('cOutil').value='';
-document.getElementById('modalAddCaisse').classList.add('on')
+document.getElementById('caisseCode').value='';
+document.getElementById('caisseNomCaissier').value='';
+document.getElementById('caisseTel').value='';
+document.getElementById('caisseAdr').value='';
+document.getElementById('caisseOutil').value='';
+document.getElementById('caisseNom').value='';
+document.getElementById('modalAddCaisse').classList.add('on');
 }
 function editCaisse(id){
-let c=(curMaison.caisses||[]).find(x=>x.id===id);if(!c)return;
+let c=(curMaison.caisses||[]).find(x=>x.id===id); if(!c)return;
 editCaisseId=id;
-document.getElementById('titleCaisse').innerText='Modifier la caisse';
-document.getElementById('btnSaveCaisse').innerText='Modifier';
-document.getElementById('cCode').value=c.code||'';document.getElementById('cNomCaissier').value=c.nomCaissier||'';document.getElementById('cTel').value=c.tel||'';document.getElementById('cAdr').value=c.adr||'';document.getElementById('cOutil').value=c.outil||'';
-document.getElementById('modalAddCaisse').classList.add('on')
-  }
+document.getElementById('caisseCode').value=c.code||'';
+document.getElementById('caisseNomCaissier').value=c.nomCaissier||'';
+document.getElementById('caisseTel').value=c.tel||'';
+document.getElementById('caisseAdr').value=c.adr||'';
+document.getElementById('caisseOutil').value=c.outil||'';
+document.getElementById('caisseNom').value=c.nom||'';
+document.getElementById('modalAddCaisse').classList.add('on');
+}
 function closeAddCaisse(){
 document.getElementById('modalAddCaisse').classList.remove('on');
 editCaisseId=null;
-  }
+}
 function saveCaisse(){
-let code=document.getElementById('cCode').value.trim();
-let nomCaissier=document.getElementById('cNomCaissier').value.trim();
-let tel=document.getElementById('cTel').value.trim();
-let adr=document.getElementById('cAdr').value.trim();
-let outil=document.getElementById('cOutil').value.trim();
-if(!code||!nomCaissier){alert('Code caisse et Nom du caissier obligatoires');return}
-curMaison.caisses=curMaison.caisses||[];
+let code=document.getElementById('caisseCode').value.trim();
+let nomCaissier=document.getElementById('caisseNomCaissier').value.trim();
+let tel=document.getElementById('caisseTel').value.trim();
+let adr=document.getElementById('caisseAdr').value.trim();
+let outil=document.getElementById('caisseOutil').value.trim();
+let nom=document.getElementById('caisseNom').value.trim();
+if(!code){alert('Code caisse obligatoire');return;}
 if(editCaisseId){
-let i=curMaison.caisses.findIndex(x=>x.id===editCaisseId);
-if(i>=0){curMaison.caisses[i]={...curMaison.caisses[i],code,nomCaissier,tel,adr,outil,nom:'Caisse de '+nomCaissier}}
+let c=(curMaison.caisses||[]).find(x=>x.id===editCaisseId);
+c.code=code; c.nomCaissier=nomCaissier; c.tel=tel; c.adr=adr; c.outil=outil; c.nom=nom;
 }else{
-curMaison.caisses.push({id:Date.now(),code,nomCaissier,tel,adr,outil,nom:'Caisse de '+nomCaissier, ventes:[]});
+let newId=Date.now();
+curMaison.caisses=curMaison.caisses||[];
+curMaison.caisses.push({id:newId,code:code,nomCaissier:nomCaissier,tel:tel,adr:adr,outil:outil,nom:nom,ventes:[]});
 }
-maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);
-save();closeAddCaisse();showGerant('Gérant');
-editCaisseId=null;
-  }
-function delCaisse(id){if(confirm('Supprimer cette caisse?')){curMaison.caisses=curMaison.caisses.filter(c=>c.id!==id);maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();showGerant('Gérant')}}
+localStorage.setItem('elrapha_data',JSON.stringify(maisons||[]));
+closeAddCaisse();
+renderEtabList();
+if(typeof showGerant==='function'){showGerant();}
+}
 
-function loginCaisse(){let c=document.getElementById('caisseCode').value;let ok=(curMaison.caisses||[]).some(x=>x.code===c);if(!ok){alert('Code caisse incorrect');return}document.getElementById('modalCaisse').classList.remove('on');document.getElementById('view-login').classList.add('hidden');showGerant('Caisse')}
-function closeCaisse(){document.getElementById('modalCaisse').classList.remove('on')}
-function askLogout(){document.getElementById('modalLogout').classList.add('on')} function closeLogout(){document.getElementById('modalLogout').classList.remove('on')}
-function doLogout(){closeLogout();document.getElementById('viewMaison').classList.add('hidden');document.getElementById('viewDG').classList.add('hidden');document.getElementById('view-login').classList.remove('hidden');document.getElementById('btnOutGlobal').classList.add('hidden');updateHint();switchTab('dg')}
-
-// EDIT DG
-function openEditDG(){document.getElementById('dgStep1').className='step on';document.getElementById('dgStep2').className='step';document.getElementById('modalEditDG').classList.add('on')}
-function closeEditDG(){document.getElementById('modalEditDG').classList.remove('on')}
-function nextEditDG(){let oe=document.getElementById('oldEmail').value.trim().toLowerCase();let op=document.getElementById('oldPass').value;if(oe!==dgCreds.email.toLowerCase()||op!==dgCreds.pass){alert('Ancien incorrect: '+dgCreds.email+' / '+dgCreds.pass);return}document.getElementById('dgStep1').className='step';document.getElementById('dgStep2').className='step on'}
-function backStepDG(){document.getElementById('dgStep2').className='step';document.getElementById('dgStep1').className='step on'}
-function saveEditDG(){let ne=document.getElementById('newEmail').value.trim().toLowerCase();let np=document.getElementById('newPass').value;if(!ne||!np){alert('Remplis');return}dgCreds={email:ne,pass:np};localStorage.setItem('elrapha_dg',JSON.stringify(dgCreds));closeEditDG();alert('Nouveau: '+ne+' / '+np);updateHint()}
-
-// EDIT GERANT avec même logique que DG
-function openEditGerant(){document.getElementById('gStep1').className='step on';document.getElementById('gStep2').className='step';document.getElementById('gOldEmail').value='';document.getElementById('gOldPass').value='';document.getElementById('gNewEmail').value='';document.getElementById('gNewPass').value='';document.getElementById('modalEditGerant').classList.add('on')}
-function closeEditGerant(){document.getElementById('modalEditGerant').classList.remove('on')}
-function nextEditGerant(){let oe=document.getElementById('gOldEmail').value.trim().toLowerCase();let op=document.getElementById('gOldPass').value;if(oe!==curMaison.gerEmail.toLowerCase()||op!==curMaison.gerPass){alert('Ancien email/mot de passe incorrect. Actuel: '+curMaison.gerEmail+' / '+curMaison.gerPass);return}document.getElementById('gStep1').className='step';document.getElementById('gStep2').className='step on'}
-function backStepGerant(){document.getElementById('gStep2').className='step';document.getElementById('gStep1').className='step on'}
-function saveEditGerant(){let ne=document.getElementById('gNewEmail').value.trim().toLowerCase();let np=document.getElementById('gNewPass').value;if(!ne||!np){alert('Remplis nouveau email et mot de passe');return}curMaison.gerEmail=ne;curMaison.gerPass=np;maisons=maisons.map(m=>m.id===curMaison.id?curMaison:m);save();closeEditGerant();alert('Compte gérant modifié ! Nouveau: '+ne+' / '+np+' - Vous devrez vous reconnecter avec ce nouveau login.');}
-
-function openListeCaisses(){
-let tri=(curMaison.caisses||[]).slice().sort((a,b)=>(a.code||'').localeCompare(b.code||''));
-let html='';
-if(tri.length===0){html='<small>Aucune caisse créée</small>';}
+// ==== CODE GENERAL BOUTON NOMBRE CAISSES - NE TOUCHE PAS DG ====
+function openListeCaissesGEN(){
+var tri=(curMaison.caisses||[]).slice().sort(function(a,b){return (a.code||'').localeCompare(b.code||'');});
+var html='';
+if(tri.length===0){html='<small>Aucune caisse</small>';}
 else{
-html=tri.map(c=>`<div class="etab-item" style="margin-top:8px;cursor:pointer" onclick="showDetailCaisse(${c.id})"><b>${c.code} - ${c.nomCaissier||''}</b><span>👁️</span></div>`).join('');
+for(var i=0;i<tri.length;i++){
+var c=tri[i];
+html+='<div class="etab-item" style="margin-top:8px;cursor:pointer" onclick="showDetailCaisseGEN('+c.id+')"><b>'+c.code+' - '+(c.nomCaissier||c.nom||'')+'</b><span>👁️</span></div>';
 }
-document.getElementById('listeCaissesTrie').innerHTML=html;
-document.getElementById('modalListeCaisses').classList.add('on');
 }
-function closeListeCaisses(){
-document.getElementById('modalListeCaisses').classList.remove('on');
+document.getElementById('listeCaissesTrieGEN').innerHTML=html;
+document.getElementById('modalListeCaissesGEN').classList.add('on');
 }
-function showDetailCaisse(id){
-let c=(curMaison.caisses||[]).find(x=>x.id===id); if(!c)return;
-closeListeCaisses();
-document.getElementById('detailCaisseTitle').innerText=c.code+' - '+(c.nomCaissier||'');
-let d=document.getElementById('detailCaisseBody');
-d.innerHTML='<div style="line-height:1.8"><b>Code caisse:</b> '+c.code+'<br><b>Nom du Caissier(ere):</b> '+(c.nomCaissier||'')+'<br><b>Telephone:</b> '+(c.tel||'')+'<br><b>Adresse:</b> '+(c.adr||'')+'<br><b>Outil:</b> '+(c.outil||'')+'<br><b>Nom complet:</b> '+(c.nom||'')+'<br><b>Ventes:</b> '+((c.ventes||[]).length)+'</div>';
-document.getElementById('modalDetailCaisse').classList.add('on');
-  }
-function closeDetailCaisse(){
-document.getElementById('modalDetailCaisse').classList.remove('on');
+function closeListeCaissesGEN(){document.getElementById('modalListeCaissesGEN').classList.remove('on');}
+function showDetailCaisseGEN(id){
+var c=(curMaison.caisses||[]).find(function(x){return x.id===id;}); if(!c)return;
+closeListeCaissesGEN();
+document.getElementById('detailCaisseTitleGEN').innerText=c.code+' - '+(c.nomCaissier||'');
+var d=document.getElementById('detailCaisseBodyGEN');
+d.innerHTML='<div style="line-height:1.8"><b>Code caisse:</b> '+c.code+'<br><b>Nom Caissier(e):</b> '+(c.nomCaissier||'')+'<br><b>Telephone:</b> '+(c.tel||'')+'<br><b>Adresse:</b> '+(c.adr||'')+'<br><b>Outil:</b> '+(c.outil||'')+'<br><b>Nom complet:</b> '+(c.nom||'')+'<br><b>Nombre ventes:</b> '+((c.ventes||[]).length)+'</div>';
+document.getElementById('modalDetailCaisseGEN').classList.add('on');
 }
-updateHint();renderEtabList();
+function closeDetailCaisseGEN(){document.getElementById('modalDetailCaisseGEN').classList.remove('on');}
+
+// FIX BOUTON ETABLISSEMENTS
+function fixTabsGEN(){
+var allBtns=document.querySelectorAll('button');
+var btnDG=null, btnEtab=null;
+for(var i=0;i<allBtns.length;i++){
+var t=allBtns[i].innerText||'';
+if(t.indexOf('DG - Direction')>-1) btnDG=allBtns[i];
+if(t.indexOf('Établissements')>-1) btnEtab=allBtns[i];
+}
+if(btnDG && btnEtab){
+btnDG.onclick=function(){document.querySelectorAll('.portal-tab').forEach(function(b){b.classList.remove('active');}); btnDG.classList.add('active'); var p1=document.getElementById('paneDG'); var p2=document.getElementById('paneEtab'); if(p1)p1.style.display='block'; if(p2)p2.style.display='none';};
+btnEtab.onclick=function(){document.querySelectorAll('.portal-tab').forEach(function(b){b.classList.remove('active');}); btnEtab.classList.add('active'); var p1=document.getElementById('paneDG'); var p2=document.getElementById('paneEtab'); if(p1)p1.style.display='none'; if(p2)p2.style.display='block';};
+}
+}
+setTimeout(fixTabsGEN,500);
+if(typeof updateHint==='function') updateHint();
+if(typeof renderEtabList==='function') renderEtabList();
 </script>
-<!-- LISTE DES CAISSES TRIEE PAR CODE -->
-<div id="modalListeCaisses" class="modal"><div class="modal-in">
+
+<div id="modalListeCaissesGEN" class="modal"><div class="modal-in">
 <h3>Liste des Caisses</h3><br>
-<div id="listeCaissesTrie"></div>
-<div class="grid2" style="margin-top:12px"><button class="btn btn-w" onclick="closeListeCaisses()">Fermer</button></div>
+<div id="listeCaissesTrieGEN"></div>
+<div class="grid2" style="margin-top:12px"><button class="btn btn-w" onclick="closeListeCaissesGEN()">Fermer</button></div>
 </div></div>
 
-<!-- DETAIL D'UNE CAISSE -->
-<div id="modalDetailCaisse" class="modal"><div class="modal-in">
-<h3 id="detailCaisseTitle">Détail Caisse</h3><br>
-<div id="detailCaisseBody"></div>
-<div class="grid2" style="margin-top:12px"><button class="btn btn-w" onclick="closeDetailCaisse()">Fermer</button></div>
+<div id="modalDetailCaisseGEN" class="modal"><div class="modal-in">
+<h3 id="detailCaisseTitleGEN">Detail Caisse</h3><br>
+<div id="detailCaisseBodyGEN"></div>
+<div class="grid2" style="margin-top:12px"><button class="btn btn-w" onclick="closeDetailCaisseGEN()">Fermer</button></div>
 </div></div>
+
 </body></html>
