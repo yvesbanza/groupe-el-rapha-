@@ -64,12 +64,35 @@ small{color:#666}
 <!-- DASHBOARD DG -->
 <div id="dashDG" style="display:none;padding:12px">
   <h2 style="margin:6px 0">Tableau de bord DG</h2>
-  <div id="countMaison" style="color:#666;font-size:14px;margin-bottom:10px">Aucune maison</div>
   
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
     <button id="btnAddMaison" class="btn btn-y" onclick="openMaisonForm()" style="background:#FFCC00;padding:10px 14px;border-radius:10px;font-weight:700;border:none">+ Ajouter Maison</button>
+    <button id="btnCountMaison" onclick="toggleListeMaisons()" style="padding:10px 14px;border-radius:10px;border:1px solid #111;background:#fff;font-weight:700">0 maison</button>
     <button class="btn btn-w" style="padding:10px 14px;border-radius:10px;border:1px solid #ddd;background:#fff" onclick="logout()">Déconnexion</button>
   </div>
+
+  <!-- FORMULAIRE -->
+  <div id="formMaison" style="display:none;margin-top:12px;background:#fff;border-radius:12px;padding:14px;border:1px solid #eee">
+    <h3 style="margin:0 0 10px 0;font-size:16px">Nouvelle Maison</h3>
+    <input id="mNom" placeholder="Nom de la Maison" style="width:100%;padding:12px;margin-bottom:8px;border-radius:10px;border:1px solid #ddd">
+    <input id="mAdresse" placeholder="Adresse de la Maison" style="width:100%;padding:12px;margin-bottom:8px;border-radius:10px;border:1px solid #ddd">
+    <input id="mGerant" placeholder="Noms du Gérant de la Maison" style="width:100%;padding:12px;margin-bottom:8px;border-radius:10px;border:1px solid #ddd">
+    <input id="mTel" placeholder="N° Téléphone du Gérant de la Maison" type="tel" style="width:100%;padding:12px;margin-bottom:12px;border-radius:10px;border:1px solid #ddd">
+    <div style="display:flex;gap:8px">
+      <button onclick="closeMaisonForm()" style="flex:1;padding:12px;border-radius:10px;border:1px solid #ddd;background:#fff;font-weight:600">Annuler</button>
+      <button onclick="ajouterMaison()" style="flex:1;padding:12px;border-radius:10px;border:none;background:#111;color:#fff;font-weight:700">Ajouter</button>
+    </div>
+  </div>
+
+  <!-- MESSAGE -->
+  <div id="msgMaison" style="display:none;margin-top:12px;background:#E8F5E9;border:1px solid #C8E6C9;border-radius:12px;padding:16px;text-align:center">
+    <div style="font-size:18px;font-weight:800;color:#2E7D32">Maison ajoutée ✅</div>
+    <button onclick="fermerMsgMaison()" style="margin-top:12px;width:100%;padding:12px;border-radius:10px;border:none;background:#2E7D32;color:#fff;font-weight:700">Fermer</button>
+  </div>
+
+  <!-- LISTE DES MAISONS -->
+  <div id="listeMaisons" style="display:none;margin-top:16px;background:#fff;border-radius:12px;padding:10px;border:1px solid #eee"></div>
+</div>
 
   <!-- FORMULAIRE +MAISON -->
   <div id="formMaison" style="display:none;margin-top:16px;background:#fff;border-radius:12px;padding:14px;border:1px solid #eee">
@@ -293,7 +316,8 @@ document.getElementById('detailCaisseBodyV2').innerHTML=body;
 document.getElementById('modalDetailCaisseV2').classList.add('on');
 }
 function closeDetailV2(){document.getElementById('modalDetailCaisseV2').classList.remove('on');}
-let nbMaisons = 0;
+let maisons = [];
+
 function openMaisonForm(){
   document.getElementById('formMaison').style.display='block';
   document.getElementById('msgMaison').style.display='none';
@@ -307,15 +331,47 @@ function closeMaisonForm(){
 }
 function ajouterMaison(){
   const nom = document.getElementById('mNom').value.trim();
+  const adresse = document.getElementById('mAdresse').value.trim();
+  const gerant = document.getElementById('mGerant').value.trim();
+  const tel = document.getElementById('mTel').value.trim();
   if(!nom){ alert('Entre le Nom de la Maison'); return; }
-  nbMaisons++;
+  maisons.push({nom, adresse, gerant, tel});
   document.getElementById('formMaison').style.display='none';
   document.getElementById('msgMaison').style.display='block';
+  updateCount();
 }
 function fermerMsgMaison(){
   document.getElementById('msgMaison').style.display='none';
   closeMaisonForm();
-  document.getElementById('countMaison').innerText = nbMaisons + ' maison' + (nbMaisons>1?'s':'');
+  renderListeMaisons();
+}
+function updateCount(){
+  const n = maisons.length;
+  document.getElementById('btnCountMaison').innerText = n + ' maison' + (n>1?'s':'');
+}
+function toggleListeMaisons(){
+  const div = document.getElementById('listeMaisons');
+  if(div.style.display==='none'){ renderListeMaisons(); div.style.display='block'; }
+  else{ div.style.display='none'; }
+}
+function renderListeMaisons(){
+  const div = document.getElementById('listeMaisons');
+  if(maisons.length===0){ div.innerHTML='<div style="color:#888;padding:8px">Aucune maison enregistrée</div>'; return; }
+  let html = '';
+  maisons.forEach((m,i)=>{
+    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee">
+      <span><b>${i+1}.</b> ${m.nom} - ${m.gerant}</span>
+      <button onclick="supprimerMaison(${i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px">Supprimer</button>
+    </div>`;
+  });
+  div.innerHTML = html;
+}
+function supprimerMaison(index){
+  if(confirm('Supprimer cette maison ?')){
+    maisons.splice(index,1);
+    updateCount();
+    renderListeMaisons();
+  }
   }
 </script>
 </body>
