@@ -493,3 +493,126 @@ function toggleActiverCaisse(i){
 }
 
 function voirDetailsVentes(i){
+  let d=document.getElementById('detailCaisse-'+i);
+  if(d.style.display==='none'){
+    let c=curMaison.caisses[i];
+    if(!c.ventes || c.ventes.length===0){
+      d.innerHTML='<i>Aucun mouvement de vente pour ce caissier.</i>';
+    }else{
+      d.innerHTML = c.ventes.map(v=>`<div style="padding:6px 0;border-bottom:1px dashed #ddd">📅 ${v.date||''} - ${v.produit||'Vente'} - ${v.montant||0} $ - ${v.client||''}</div>`).join('');
+    }
+    d.style.display='block';
+  }else{
+    d.style.display='none';
+  }
+}
+
+function editCaisse(i){
+  let c=curMaison.caisses[i];
+  let newNom=prompt('Modifier Nom Caissier:',c.nom);
+  if(newNom===null)return;
+  let newTel=prompt('Modifier Téléphone:',c.tel||'');
+  if(newTel===null)return;
+  c.nom=newNom.trim()||c.nom;
+  c.tel=newTel.trim();
+  sauvegarder();
+  renderCaissesGerant();
+}
+function supprimerCaisse(i){if(confirm('Supprimer cette caisse?')){curMaison.caisses.splice(i,1);sauvegarder();showGerant();updateStats();}}
+
+function voirRapportsGerant(){
+  let d=document.getElementById('rapportsGerant');
+  d.style.display = d.style.display==='none'?'block':'none';
+  let total=0; (curMaison.caisses||[]).forEach(c=>{total+=(c.solde||0);});
+  document.getElementById('gStatSolde').innerText=total+' $';
+  document.getElementById('rapportContent').innerHTML = curMaison.caisses.map(c=>`<div style="padding:6px 0;border-bottom:1px dashed #ddd">Caisse ${c.code} - ${c.nom}: Solde ${c.solde||0} $ | ${ (c.ventes||[]).length } ventes | ${c.enabled?'✅ activé':'❌ désactivé'} ${c.isOnline?'🟢 connecté':''}</div>`).join('') || 'Aucune vente';
+}
+
+// --- MODIF CONNEXION CAISSIER POUR ACTIVATION ---
+
+function showListeCaissesLogin(){
+  document.getElementById('etabChoixCaisse').style.display='block';
+  let div=document.getElementById('listeCaissesLogin');
+  let html='';
+  (curMaison.caisses||[]).forEach((c,i)=>{
+    let status = c.enabled? '<small style="color:green">✅ activé</small>' : '<small style="color:red">❌ désactivé</small>';
+    if(!c.enabled) status += ' - Bloqué par Gérant';
+    html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid #eee;border-radius:10px;margin-bottom:6px;background:#fff">
+      <div><b>${c.nom}</b><br><small>${c.code}</small> ${status} ${c.email?'':'<br><small style="color:orange">● 1ère connexion</small>'}</div>
+      <button class="btn btn-b" style="width:auto;padding:6px 12px;font-size:12px" onclick="selectCaisseLogin(${i})">Choisir</button>
+    </div>`;
+  });
+  div.innerHTML=html;
+}
+
+function selectCaisseLogin(i){
+  curCaisse = curMaison.caisses[i];
+  if(!curCaisse.enabled){
+    alert('❌ Cette caisse est désactivée par le Gérant. Demandez au Gérant de l\'activer.');
+    return;
+  }
+  document.getElementById('etabChoixCaisse').style.display='none';
+  if(!curCaisse.email){
+    document.getElementById('etabCreationEmail').style.display='block';
+    document.getElementById('caisseNomConfirm').value = curCaisse.nom + " (Nom enregistré par Gérant) - ✅ activé";
+  }else{
+    document.getElementById('etabLoginEmail').style.display='block';
+    document.getElementById('titreLoginEmail').innerText = "Connexion - " + curCaisse.nom + " - ✅ activé";
+  }
+}
+
+function creerAccesCaisse(){
+  let email=document.getElementById('caisseEmailCreation').value.trim();
+  let pass=document.getElementById('caissePassCreation').value.trim();
+  if(!email ||!pass){alert('Email et mot de passe obligatoires');return;}
+  curCaisse.email = email;
+  curCaisse.password = pass;
+  curCaisse.active = true;
+  curCaisse.isOnline = true;
+  sauvegarder();
+  document.getElementById('etabCreationEmail').style.display='none';
+  entrerCaisse();
+}
+
+function finalLoginEtab(){
+  let email=document.getElementById('etabEmail').value.trim();
+  let pass=document.getElementById('etabPass').value.trim();
+  if(!curCaisse.enabled){alert('❌ Caisse désactivée par le Gérant');return;}
+  if(curCaisse.email.toLowerCase()!== email.toLowerCase() || curCaisse.password!== pass){
+    alert('Email ou mot de passe incorrect');return;
+  }
+  curCaisse.isOnline = true;
+  sauvegarder();
+  entrerCaisse();
+}
+
+function entrerCaisse(){
+  document.getElementById('portal').style.display='none';
+  document.getElementById('headerPortal').style.display='none';
+  document.getElementById('btnTopLogout').style.display='block';
+  document.getElementById('dashCaisse').style.display='block';
+  document.getElementById('caisseTitre').innerText='Caisse - '+curCaisse.nom;
+  document.getElementById('caisseInfo').innerHTML='<small>Maison: '+curMaison.nom+'<br>Code Caisse: '+curCaisse.code+'<br>Email: '+curCaisse.email+'<br>Status: ✅ activé 🟢 connecté</small>';
+}
+
+function confirmerLogout(){
+  if(curCaisse){
+    curCaisse.isOnline = false;
+    sauvegarder();
+  }
+  document.getElementById('modalLogout').classList.remove('open');
+  enModeDG=false; curRole=null; curCaisse=null;
+  document.getElementById('portal').style.display='block';
+  document.getElementById('headerPortal').style.display='block';
+  document.getElementById('headerDG').style.display='none';
+  document.getElementById('dashDG').style.display='none';
+  document.getElementById('dashGerant').style.display='none';
+  document.getElementById('dashCaisse').style.display='none';
+  document.getElementById('btnTopLogout').style.display='none';
+  resetEtabLogin();
+  showPortal('DG');
+}
+</script>
+</body>
+</html>
+
