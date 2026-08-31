@@ -62,11 +62,34 @@ small{color:#666}
 </div>
 
 <!-- DASHBOARD DG -->
-<div id="dashDG" style="display:none">
-<h2>Tableau de bord DG</h2>
-<div id="listMaisons"></div>
-<button class="btn btn-y" style="margin-top:10px" onclick="openAddMaison()">+ Ajouter Maison</button>
-<button class="btn btn-w" style="margin-top:10px" onclick="logout()">Déconnexion</button>
+<div id="dashDG" style="display:none;padding:12px">
+  <h2 style="margin:6px 0">Tableau de bord DG</h2>
+  <div id="countMaison" style="color:#666;font-size:14px;margin-bottom:10px">Aucune maison</div>
+  
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button id="btnAddMaison" class="btn btn-y" onclick="openMaisonForm()" style="background:#FFCC00;padding:10px 14px;border-radius:10px;font-weight:700;border:none">+ Ajouter Maison</button>
+    <button class="btn btn-w" style="padding:10px 14px;border-radius:10px;border:1px solid #ddd;background:#fff" onclick="logout()">Déconnexion</button>
+  </div>
+
+  <!-- FORMULAIRE +MAISON -->
+  <div id="formMaison" style="display:none;margin-top:16px;background:#fff;border-radius:12px;padding:14px;border:1px solid #eee">
+    <h3 style="margin:0 0 10px 0;font-size:16px">Nouvelle Maison</h3>
+    <input id="mNom" placeholder="Nom de la Maison" style="width:100%;padding:12px;margin-bottom:8px;border-radius:10px;border:1px solid #ddd">
+    <input id="mAdresse" placeholder="Adresse de la Maison" style="width:100%;padding:12px;margin-bottom:8px;border-radius:10px;border:1px solid #ddd">
+    <input id="mGerant" placeholder="Noms du Gérant de la Maison" style="width:100%;padding:12px;margin-bottom:8px;border-radius:10px;border:1px solid #ddd">
+    <input id="mTel" placeholder="N° Téléphone du Gérant de la Maison" type="tel" style="width:100%;padding:12px;margin-bottom:12px;border-radius:10px;border:1px solid #ddd">
+    
+    <div style="display:flex;gap:8px">
+      <button onclick="closeMaisonForm()" style="flex:1;padding:12px;border-radius:10px;border:1px solid #ddd;background:#fff;font-weight:600">Annuler</button>
+      <button onclick="ajouterMaison()" style="flex:1;padding:12px;border-radius:10px;border:none;background:#111;color:#fff;font-weight:700">Ajouter</button>
+    </div>
+  </div>
+
+  <!-- MESSAGE CONFIRMATION -->
+  <div id="msgMaison" style="display:none;margin-top:16px;background:#E8F5E9;border:1px solid #C8E6C9;border-radius:12px;padding:16px;text-align:center">
+    <div style="font-size:18px;font-weight:800;color:#2E7D32">Maison ajoutée ✅</div>
+    <button onclick="fermerMsgMaison()" style="margin-top:12px;width:100%;padding:12px;border-radius:10px;border:none;background:#2E7D32;color:#fff;font-weight:700">Fermer</button>
+  </div>
 </div>
 
 <!-- DASHBOARD GERANT -->
