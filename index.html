@@ -263,19 +263,6 @@ function renderListeMaisons(){
   html+='</div>';
   div.innerHTML=html;
   }
-  let html='<div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee">';
-  maisons.forEach((m,i)=>{
-    html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #f0f0f0">
-      <div style="flex:1"><b>${i+1}. ${m.nom}</b><br><small style="color:#666">Code: ${m.codeEtab||m.code} - ${m.gerant||''}</small></div>
-      <div style="display:flex;gap:6px">
-        <button onclick="voirMaison(${i})" style="background:#111;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Voir</button>
-        <button onclick="supprimerMaison(${i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px">Supprimer</button>
-      </div>
-    </div>`;
-  });
-  html+='</div>';
-  if(div) div.innerHTML=html; if(div2) div2.innerHTML=html;
-}
 function supprimerMaison(i){if(confirm('Supprimer cette maison?')){maisons.splice(i,1);localStorage.setItem('maisons',JSON.stringify(maisons));updateCount();updateStats();renderListeMaisons();}}
 function voirMaison(i){curMaison=maisons[i];enModeDG=true;document.getElementById('dashDG').style.display='none';document.getElementById('headerDG').style.display='none';document.getElementById('dashGerant').style.display='block';document.getElementById('btnRetourGerant').style.display='block';showGerant();}
 function showGerant(){
