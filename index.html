@@ -169,19 +169,17 @@ let curMaison=null;
 let editCaisseId=null;
 
 function showPortal(t){
-  document.getElementById('paneDG').style.display = t==='DG' ? 'block' : 'none';
-  document.getElementById('paneEtab').style.display = t==='ETAB' ? 'block' : 'none';
-  document.getElementById('tabDG').className = t==='DG' ? 'btn btn-b portal-tab active' : 'btn btn-w portal-tab';
-  document.getElementById('tabEtab').className = t==='ETAB' ? 'btn btn-b portal-tab active' : 'btn btn-w portal-tab';
+  document.getElementById('paneDG').style.display = t==='DG'? 'block' : 'none';
+  document.getElementById('paneEtab').style.display = t==='ETAB'? 'block' : 'none';
+  document.getElementById('tabDG').className = t==='DG'? 'btn btn-b portal-tab active' : 'btn btn-w portal-tab';
+  document.getElementById('tabEtab').className = t==='ETAB'? 'btn btn-b portal-tab active' : 'btn btn-w portal-tab';
 }
-
 function loginDG(){
   document.getElementById('portal').style.display='none';
   document.getElementById('dashDG').style.display='block';
   updateCount();
   renderListeMaisons();
 }
-
 function loginEtab(){
   let code=document.getElementById('etabCode').value.trim();
   let m=maisons.find(x=>x.code===code);
@@ -191,230 +189,83 @@ function loginEtab(){
   document.getElementById('dashGerant').style.display='block';
   showGerant();
 }
-
 function logout(){
   document.getElementById('portal').style.display='block';
   document.getElementById('dashDG').style.display='none';
   document.getElementById('dashGerant').style.display='none';
   showPortal('DG');
 }
-
-// ----- MAISONS -----
 let maisons = JSON.parse(localStorage.getItem('maisons') || '[]');
 let curMaison = null;
-
-function openMaisonForm(){
-  document.getElementById('formMaison').style.display='block';
-  document.getElementById('msgMaison').style.display='none';
-}
-function closeMaisonForm(){
-  document.getElementById('formMaison').style.display='none';
-  document.getElementById('mNom').value='';
-  document.getElementById('mAdresse').value='';
-  document.getElementById('mGerant').value='';
-  document.getElementById('mTel').value='';
-}
+function openMaisonForm(){document.getElementById('formMaison').style.display='block';document.getElementById('msgMaison').style.display='none';}
+function closeMaisonForm(){document.getElementById('formMaison').style.display='none';document.getElementById('mNom').value='';document.getElementById('mAdresse').value='';document.getElementById('mGerant').value='';document.getElementById('mTel').value='';}
 function ajouterMaison(){
-  const nom = document.getElementById('mNom').value.trim();
-  const adresse = document.getElementById('mAdresse').value.trim();
-  const gerant = document.getElementById('mGerant').value.trim();
-  const tel = document.getElementById('mTel').value.trim();
-  if(!nom){ alert('Entre le Nom de la Maison'); return; }
-  maisons.push({nom, adresse, gerant, tel, code: nom.toLowerCase().replace(/\s/g,'')+Date.now()});
-  localStorage.setItem('maisons', JSON.stringify(maisons));
+  const nom=document.getElementById('mNom').value.trim();
+  const adresse=document.getElementById('mAdresse').value.trim();
+  const gerant=document.getElementById('mGerant').value.trim();
+  const tel=document.getElementById('mTel').value.trim();
+  if(!nom){alert('Entre le Nom de la Maison');return;}
+  maisons.push({nom,adresse,gerant,tel,code:nom.toLowerCase().replace(/\s/g,'')+Date.now(),caisses:[]});
+  localStorage.setItem('maisons',JSON.stringify(maisons));
   document.getElementById('formMaison').style.display='none';
   document.getElementById('msgMaison').style.display='block';
   updateCount();
 }
-function fermerMsgMaison(){
-  document.getElementById('msgMaison').style.display='none';
-  closeMaisonForm();
-  renderListeMaisons();
-}
-function updateCount(){
-  const n = maisons.length;
-  document.getElementById('btnCountMaison').innerText = n + ' maison' + (n>1?'s':'');
-}
-function toggleListeMaisons(){
-  const div = document.getElementById('listeMaisons');
-  if(div.style.display==='none'){ renderListeMaisons(); div.style.display='block'; }
-  else{ div.style.display='none'; }
-}
+function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';closeMaisonForm();renderListeMaisons();}
+function updateCount(){document.getElementById('btnCountMaison').innerText=maisons.length+' maison'+(maisons.length>1?'s':'');}
+function toggleListeMaisons(){const div=document.getElementById('listeMaisons');if(div.style.display==='none'){renderListeMaisons();div.style.display='block';}else{div.style.display='none';}}
 function renderListeMaisons(){
-  const div = document.getElementById('listeMaisons');
-  if(maisons.length===0){ div.innerHTML='<div style="color:#888;padding:8px">Aucune maison enregistrée</div>'; return; }
-  let html = '';
-  maisons.forEach((m,i)=>{
-    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee">
-      <span><b>${i+1}.</b> ${m.nom} - ${m.gerant}</span>
-      <button onclick="supprimerMaison(${i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px">Supprimer</button>
-    </div>`;
-  });
-  div.innerHTML = html;
+  const div=document.getElementById('listeMaisons');
+  if(maisons.length===0){div.innerHTML='<div style="color:#888;padding:8px">Aucune maison enregistrée</div>';return;}
+  let html='';maisons.forEach((m,i)=>{html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee"><span><b>${i+1}.</b> ${m.nom} - ${m.gerant}</span><button onclick="supprimerMaison(${i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px">Supprimer</button></div>`;});div.innerHTML=html;
 }
-function supprimerMaison(index){
-  if(confirm('Supprimer cette maison ?')){
-    maisons.splice(index,1);
-    localStorage.setItem('maisons', JSON.stringify(maisons));
-    updateCount();
-    renderListeMaisons();
-  }
+function supprimerMaison(index){if(confirm('Supprimer cette maison?')){maisons.splice(index,1);localStorage.setItem('maisons',JSON.stringify(maisons));updateCount();renderListeMaisons();}}
+function renderMaisons(){renderListeMaisons();}
+function openMaison(code){let m=maisons.find(x=>x.code===code);if(!m)return;curMaison=m;document.getElementById('dashDG').style.display='none';document.getElementById('dashGerant').style.display='block';showGerant();}
+function showGerant(){
+  if(!curMaison)return;
+  document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+curMaison.gerant;
+  let nb=(curMaison.caisses||[]).length;
+  document.getElementById('gerantActions').innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-y" style="width:auto" onclick="openAddCaisse()">+ Ajouter Caisse</button><button class="btn btn-y" style="width:auto" onclick="openListeV2()">'+nb+' caisse(s)</button></div>';
+  renderCaisses();
 }
-function showGerant(){ /* ton code gérant existant */ }
 function renderCaisses(){
-let html='';
-let list=curMaison.caisses||[];
-for(let i=0;i<list.length;i++){
-let c=list[i];
-html+='<div class="etab-item"><b>'+c.code+' - '+(c.nomCaissier||c.nom||'')+'</b><span style="display:flex;gap:8px"><button class="btn btn-w" style="padding:6px 10px" onclick="editCaisse('+c.id+')">✏️</button></span></div>';
+  let html='';let list=curMaison.caisses||[];for(let i=0;i<list.length;i++){let c=list[i];html+=`<div class="etab-item"><b>${c.code}</b> - ${c.nomCaissier||c.nom||''}</div>`;}
+  document.getElementById('gerantContent').innerHTML=html||'<small>Aucune caisse</small>';
 }
-document.getElementById('gerantContent').innerHTML=html||'<small style="display:block;margin-top:10px">Aucune caisse</small>';
-}
-
-function openAddMaison(){document.getElementById('modalAddMaison').classList.add('on');}
-function closeAddMaison(){document.getElementById('modalAddMaison').classList.remove('on');}
-function saveMaison(){
-let nom=document.getElementById('maisonNom').value.trim();
-let code=document.getElementById('maisonCode').value.trim();
-if(!nom||!code){alert('Remplis tout');return;}
-maisons.push({nom:nom,code:code,caisses:[]});
-localStorage.setItem('elrapha_data',JSON.stringify(maisons));
-closeAddMaison();
-renderMaisons();
-}
-
-function openAddCaisse(){
-editCaisseId=null;
-document.getElementById('caisseCode').value='';
-document.getElementById('caisseNomCaissier').value='';
-document.getElementById('caisseTel').value='';
-document.getElementById('caisseAdr').value='';
-document.getElementById('caisseOutil').value='';
-document.getElementById('caisseNom').value='';
-document.getElementById('modalAddCaisse').classList.add('on');
-}
-function editCaisse(id){
-let c=(curMaison.caisses||[]).find(x=>x.id===id); if(!c)return;
-editCaisseId=id;
-document.getElementById('caisseCode').value=c.code||'';
-document.getElementById('caisseNomCaissier').value=c.nomCaissier||'';
-document.getElementById('caisseTel').value=c.tel||'';
-document.getElementById('caisseAdr').value=c.adr||'';
-document.getElementById('caisseOutil').value=c.outil||'';
-document.getElementById('caisseNom').value=c.nom||'';
-document.getElementById('modalAddCaisse').classList.add('on');
-}
-function closeAddCaisse(){document.getElementById('modalAddCaisse').classList.remove('on'); editCaisseId=null;}
+function openAddMaison(){openMaisonForm();}
+function closeAddMaison(){closeMaisonForm();}
+function saveMaison(){ajouterMaison();}
+function openAddCaisse(){document.getElementById('caisseCode').value='';document.getElementById('caisseNomCaissier').value='';document.getElementById('caisseTel').value='';document.getElementById('caisseAdr').value='';document.getElementById('caisseOutil').value='';document.getElementById('caisseNom').value='';document.getElementById('modalAddCaisse').classList.add('open');}
+function closeAddCaisse(){document.getElementById('modalAddCaisse').classList.remove('open');}
 function saveCaisse(){
-let code=document.getElementById('caisseCode').value.trim();
-let nomCaissier=document.getElementById('caisseNomCaissier').value.trim();
-let tel=document.getElementById('caisseTel').value.trim();
-let adr=document.getElementById('caisseAdr').value.trim();
-let outil=document.getElementById('caisseOutil').value.trim();
-let nom=document.getElementById('caisseNom').value.trim();
-if(!code){alert('Code obligatoire');return;}
-if(editCaisseId){
-let c=curMaison.caisses.find(x=>x.id===editCaisseId);
-c.code=code; c.nomCaissier=nomCaissier; c.tel=tel; c.adr=adr; c.outil=outil; c.nom=nom;
-}else{
-curMaison.caisses=curMaison.caisses||[];
-curMaison.caisses.push({id:Date.now(),code:code,nomCaissier:nomCaissier,tel:tel,adr:adr,outil:outil,nom:nom,ventes:[]});
+  let code=document.getElementById('caisseCode').value.trim();
+  let nomCaissier=document.getElementById('caisseNomCaissier').value.trim();
+  let tel=document.getElementById('caisseTel').value.trim();
+  let adr=document.getElementById('caisseAdr').value.trim();
+  let outil=document.getElementById('caisseOutil').value.trim();
+  let nom=document.getElementById('caisseNom').value.trim();
+  if(!code){alert('Code obligatoire');return;}
+  curMaison.caisses=curMaison.caisses||[];
+  curMaison.caisses.push({id:Date.now(),code,nomCaissier,tel,adr,outil,nom,ventes:[]});
+  localStorage.setItem('maisons',JSON.stringify(maisons));
+  closeAddCaisse();showGerant();
 }
-localStorage.setItem('elrapha_data',JSON.stringify(maisons));
-closeAddCaisse();
-showGerant();
-}
-
-// LISTE TRIEE PAR CODE
 function openListeV2(){
-var tri=(curMaison.caisses||[]).slice().sort(function(a,b){return (a.code||'').localeCompare(b.code||'');});
-var html='';
-if(tri.length===0){html='<small>Aucune caisse</small>';}
-else{
-for(var i=0;i<tri.length;i++){
-var c=tri[i];
-var nom=c.nomCaissier||c.nom||'';
-html=html+'<div class="etab-item" style="margin-top:8px;cursor:pointer" onclick="showDetailV2('+c.id+')"><b>'+c.code+' - '+nom+'</b><span>👁️</span></div>';
+  var tri=(curMaison.caisses||[]).slice().sort(function(a,b){return (a.code||'').localeCompare(b.code||'');});
+  var html='';if(tri.length===0){html='<small>Aucune caisse</small>';}else{for(var i=0;i<tri.length;i++){var c=tri[i];var nom=c.nomCaissier||c.nom||'';html+='<div class="etab-item" style="margin-top:8px" onclick="showDetailV2('+c.id+')">'+c.code+' - '+nom+'</div>';}}
+  document.getElementById('listeCaissesTrieV2').innerHTML=html;
+  document.getElementById('modalListeCaissesV2').classList.add('open');
 }
-}
-document.getElementById('listeCaissesTrieV2').innerHTML=html;
-document.getElementById('modalListeCaissesV2').classList.add('on');
-}
-function closeListeV2(){document.getElementById('modalListeCaissesV2').classList.remove('on');}
+function closeListeV2(){document.getElementById('modalListeCaissesV2').classList.remove('open');}
 function showDetailV2(id){
-var c=(curMaison.caisses||[]).find(function(x){return x.id==id;}); if(!c)return;
-closeListeV2();
-document.getElementById('detailCaisseTitleV2').innerText=c.code+' - '+(c.nomCaissier||'');
-var body='<div style="line-height:1.9">'
-+'<b>Code caisse:</b> '+c.code+'<br>'
-+'<b>Nom Caissier(e):</b> '+(c.nomCaissier||'')+'<br>'
-+'<b>Telephone:</b> '+(c.tel||'')+'<br>'
-+'<b>Adresse:</b> '+(c.adr||'')+'<br>'
-+'<b>Outil utilise:</b> '+(c.outil||'')+'<br>'
-+'<b>Nom complet:</b> '+(c.nom||'')+'<br>'
-+'<b>Nombre ventes:</b> '+((c.ventes||[]).length)+'<br>'
-+'</div>';
-document.getElementById('detailCaisseBodyV2').innerHTML=body;
-document.getElementById('modalDetailCaisseV2').classList.add('on');
+  var c=(curMaison.caisses||[]).find(function(x){return x.id==id;});if(!c)return;closeListeV2();
+  document.getElementById('detailCaisseTitleV2').innerText=c.code;
+  var body='<div style="line-height:1.9"><b>Code caisse:</b> '+c.code+'<br><b>Nom Caissier(e):</b> '+(c.nomCaissier||'')+'<br><b>Telephone:</b> '+(c.tel||'')+'<br><b>Adresse:</b> '+(c.adr||'')+'<br><b>Outil utilise:</b> '+(c.outil||'')+'<br><b>Nom complet:</b> '+(c.nom||'')+'<br><b>Nombre ventes:</b> '+((c.ventes||[]).length)+'<br></div>';
+  document.getElementById('detailCaisseBodyV2').innerHTML=body;
+  document.getElementById('modalDetailCaisseV2').classList.add('open');
 }
-function closeDetailV2(){document.getElementById('modalDetailCaisseV2').classList.remove('on');}
-let maisons = [];
-
-function openMaisonForm(){
-  document.getElementById('formMaison').style.display='block';
-  document.getElementById('msgMaison').style.display='none';
-}
-function closeMaisonForm(){
-  document.getElementById('formMaison').style.display='none';
-  document.getElementById('mNom').value='';
-  document.getElementById('mAdresse').value='';
-  document.getElementById('mGerant').value='';
-  document.getElementById('mTel').value='';
-}
-function ajouterMaison(){
-  const nom = document.getElementById('mNom').value.trim();
-  const adresse = document.getElementById('mAdresse').value.trim();
-  const gerant = document.getElementById('mGerant').value.trim();
-  const tel = document.getElementById('mTel').value.trim();
-  if(!nom){ alert('Entre le Nom de la Maison'); return; }
-  maisons.push({nom, adresse, gerant, tel});
-  document.getElementById('formMaison').style.display='none';
-  document.getElementById('msgMaison').style.display='block';
-  updateCount();
-}
-function fermerMsgMaison(){
-  document.getElementById('msgMaison').style.display='none';
-  closeMaisonForm();
-  renderListeMaisons();
-}
-function updateCount(){
-  const n = maisons.length;
-  document.getElementById('btnCountMaison').innerText = n + ' maison' + (n>1?'s':'');
-}
-function toggleListeMaisons(){
-  const div = document.getElementById('listeMaisons');
-  if(div.style.display==='none'){ renderListeMaisons(); div.style.display='block'; }
-  else{ div.style.display='none'; }
-}
-function renderListeMaisons(){
-  const div = document.getElementById('listeMaisons');
-  if(maisons.length===0){ div.innerHTML='<div style="color:#888;padding:8px">Aucune maison enregistrée</div>'; return; }
-  let html = '';
-  maisons.forEach((m,i)=>{
-    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee">
-      <span><b>${i+1}.</b> ${m.nom} - ${m.gerant}</span>
-      <button onclick="supprimerMaison(${i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px">Supprimer</button>
-    </div>`;
-  });
-  div.innerHTML = html;
-}
-function supprimerMaison(index){
-  if(confirm('Supprimer cette maison ?')){
-    maisons.splice(index,1);
-    updateCount();
-    renderListeMaisons();
-  }
-  }
+function closeDetailV2(){document.getElementById('modalDetailCaisseV2').classList.remove('open');}
 </script>
 </body>
-  </html>
+</html>
