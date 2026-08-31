@@ -600,14 +600,3 @@ function confirmerLogout(){
 </script>
 </body>
 </html>
-function supprimerCaisse(i){if(confirm('Supprimer cette caisse?')){curMaison.caisses.splice(i,1);sauvegarder();showGerant();updateStats();}}
-function voirRapportsGerant(){
-  let d=document.getElementById('rapportsGerant');
-  d.style.display = d.style.display==='none'?'block':'none';
-  let total=0; (curMaison.caisses||[]).forEach(c=>{total+=(c.solde||0);});
-  document.getElementById('gStatSolde').innerText=total+' $';
-  document.getElementById('rapportContent').innerHTML = curMaison.caisses.map(c=>`<div style="padding:6px 0;border-bottom:1px dashed #ddd">Caisse ${c.code} - ${c.nom}: Solde ${c.solde||0} $ | ${ (c.ventes||[]).length } ventes</div>`).join('') || 'Aucune vente';
-}
-</script>
-</body>
-</html>
