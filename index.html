@@ -175,11 +175,13 @@ function showPortal(t){
   document.getElementById('tabEtab').className = t==='ETAB'? 'btn btn-b portal-tab active' : 'btn btn-w portal-tab';
 }
 function loginDG(){
-  document.getElementById('portal').style.display='none';
-  document.getElementById('dashDG').style.display='block';
-  updateCount();
-  renderListeMaisons();
-}
+  try{
+    document.getElementById('portal').style.display='none';
+    document.getElementById('dashDG').style.display='block';
+    if(typeof updateCount==='function') updateCount();
+    if(typeof renderListeMaisons==='function') renderListeMaisons();
+  }catch(e){ alert('Erreur login: '+e.message); }
+  }
 function loginEtab(){
   let code=document.getElementById('etabCode').value.trim();
   let m=maisons.find(x=>x.code===code);
@@ -212,13 +214,23 @@ function ajouterMaison(){
   updateCount();
 }
 function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';closeMaisonForm();renderListeMaisons();}
-function updateCount(){document.getElementById('btnCountMaison').innerText=maisons.length+' maison'+(maisons.length>1?'s':'');}
-function toggleListeMaisons(){const div=document.getElementById('listeMaisons');if(div.style.display==='none'){renderListeMaisons();div.style.display='block';}else{div.style.display='none';}}
+function updateCount(){
+  let el=document.getElementById('btnCountMaison');
+  if(!el) return;
+  el.innerText=maisons.length+' maison'+(maisons.length>1?'s':'');
+}
+function toggleListeMaisons(){
+  let div=document.getElementById('listeMaisons');
+  if(!div) return;
+  if(div.style.display==='none'){renderListeMaisons();div.style.display='block';}
+  else{div.style.display='none';}
+}
 function renderListeMaisons(){
-  const div=document.getElementById('listeMaisons');
+  let div=document.getElementById('listeMaisons');
+  if(!div) return;
   if(maisons.length===0){div.innerHTML='<div style="color:#888;padding:8px">Aucune maison enregistrée</div>';return;}
   let html='';maisons.forEach((m,i)=>{html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee"><span><b>${i+1}.</b> ${m.nom} - ${m.gerant}</span><button onclick="supprimerMaison(${i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px">Supprimer</button></div>`;});div.innerHTML=html;
-}
+  }
 function supprimerMaison(index){if(confirm('Supprimer cette maison?')){maisons.splice(index,1);localStorage.setItem('maisons',JSON.stringify(maisons));updateCount();renderListeMaisons();}}
 function renderMaisons(){renderListeMaisons();}
 function openMaison(code){let m=maisons.find(x=>x.code===code);if(!m)return;curMaison=m;document.getElementById('dashDG').style.display='none';document.getElementById('dashGerant').style.display='block';showGerant();}
