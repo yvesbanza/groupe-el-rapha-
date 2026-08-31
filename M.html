@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROUPE EL-RAPHA</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f5f7;margin:0;padding:0}
+.wrap{max-width:480px;margin:auto;padding:16px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:18px 0 10px}
+.top-bar h4{margin:0;color:#888;letter-spacing:2px;font-size:12px}
+.badge{display:inline-block;margin-top:8px;background:#fff;padding:6px 14px;border-radius:20px;font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.center-title{text-align:center}
+.center-title h1{margin:6px 0 0;font-size:22px;line-height:1.2;font-weight:800}
+.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.06);margin-bottom:16px}
+.btn{padding:12px;border-radius:12px;border:1px solid #ddd;font-weight:700;cursor:pointer}
+.btn-b{background:#111;color:#fff;border-color:#111;width:100%}
+.btn-w{background:#fff;color:#111;width:100%}
+.btn-y{background:#ffcc00;border-color:#ffcc00;color:#111}
+.portal-tabs{display:flex;gap:8px;margin:18px 0}
+.portal-tab.active{background:#111;color:#fff}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px;box-sizing:border-box}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:16px;z-index:99}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:20px;width:100%;max-width:380px;text-align:center}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+.stat{border-radius:12px;padding:10px;text-align:center}
+.stat b{font-size:18px;display:block}
+.stat span{font-size:11px;color:#666}
+.roleBox{background:#f9f9f9;border:1px dashed #ccc;border-radius:12px;padding:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top-bar">
+<h4>GROUPE EL-RAPHA</h4>
+<button id="btnTopLogout" class="btn btn-w" style="width:auto;display:none;padding:8px 14px;font-size:13px" onclick="demandeLogout()">Déconnexion</button>
+</div>
+
+<div id="headerPortal" class="center-title">
+<h1>BIENVENUE<br>SUR LE PORTAIL DE CONNEXION</h1>
+<div class="badge">🔒 Accès sécurisé</div>
+</div>
+
+<div id="headerDG" class="center-title" style="display:none">
+<h1 style="font-size:20px">Tableau de bord - Direction Générale</h1>
+</div>
+
+<div id="portal">
+<div class="portal-tabs">
+<button id="tabDG" class="btn btn-b portal-tab active" onclick="showPortal('DG')">DG - Direction</button>
+<button id="tabEtab" class="btn btn-w portal-tab" onclick="showPortal('ETAB')">Établissements</button>
+</div>
+<div id="paneDG" class="card">
+<h3>Connexion DG</h3>
+<input value="dg@elrapha.cd"><input type="password" value="12345678">
+<button class="btn btn-b" onclick="loginDG()">Entrer</button>
+</div>
+
+<div id="paneEtab" class="card" style="display:none">
+<h3>Connexion Établissement</h3>
+<input id="etabCode" placeholder="Code Établissement">
+<button class="btn btn-b" id="btnVerifierCode" onclick="verifierCodeEtab()">Vérifier le code</button>
+<div id="etabRoleChoice" class="roleBox" style="display:none">
+<small style="font-weight:800">Code valide : <span id="nomMaisonTrouvee"></span></small><br><br>
+<button class="btn btn-b" style="margin-bottom:8px" onclick="choisirRole('GERANT')">Gérant de la maison</button>
+<button class="btn btn-w" onclick="choisirRole('CAISSE')">Caisse de la maison</button>
+</div>
+
+<!-- GERANT LOGIN -->
+<div id="etabLoginGerant" style="display:none;margin-top:12px">
+<h4>Connexion Gérant</h4>
+<input id="gerantEmail" placeholder="Email Gérant">
+<input id="gerantPass" type="password" placeholder="Mot de passe">
+<button class="btn btn-b" onclick="finalLoginGerant()">Entrer</button>
+<button class="btn btn-w" style="margin-top:6px" onclick="retourChoixRole()">← Retour</button>
+</div>
+
+<!-- CAISSE : choix de la caisse enregistrée par gérant -->
+<div id="etabChoixCaisse" style="display:none;margin-top:12px">
+<h4>Choisissez votre caisse</h4>
+<div id="listeCaissesLogin"></div>
+<button class="btn btn-w" style="margin-top:8px" onclick="retourChoixRole()">← Retour</button>
+</div>
+
+<!-- CAISSE : création email 1ère fois -->
+<div id="etabCreationEmail" style="display:none;margin-top:12px">
+<h4>Création accès Caisse</h4>
+<input id="caisseNomConfirm" disabled style="background:#eee;font-weight:700">
+<input id="caisseEmailCreation" placeholder="Créez votre email de connexion">
+<input id="caissePassCreation" type="password" placeholder="Créez votre mot de passe">
+<button class="btn btn-b" onclick="creerAccesCaisse()">Créer et Entrer</button>
+</div>
+
+<!-- CAISSE : login email après création -->
+<div id="etabLoginEmail" style="display:none;margin-top:12px">
+<h4 id="titreLoginEmail">Connexion Caisse</h4>
+<input id="etabEmail" placeholder="Email">
+<input id="etabPass" type="password" placeholder="Mot de passe">
+<button class="btn btn-b" onclick="finalLoginEtab()">Entrer</button>
+<button class="btn btn-w" style="margin-top:6px" onclick="retourListeCaisses()">← Retour</button>
+</div>
+
+<div id="msgCodeInvalide" style="display:none;color:#ff4444;font-size:13px;margin-top:8px"></div>
+</div>
+</div>
+
+<div id="dashDG" style="display:none">
+<div id="statsDG" class="stats">
+<div class="stat" style="background:#fff;border:1px solid #eee"><b id="statMaisons">0</b><span>Maisons</span></div>
+<div class="stat" style="background:#fffae6;border:1px solid #ffe27a"><b id="statCaisses">0</b><span>Caisses</span></div>
+  
