@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROUPE EL-RAPHA</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f5f7;margin:0;padding:0}
+.wrap{max-width:480px;margin:auto;padding:16px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:18px 0 10px}
+.top-bar h4{margin:0;color:#888;letter-spacing:2px;font-size:12px}
+.badge{display:inline-block;margin-top:8px;background:#fff;padding:6px 14px;border-radius:20px;font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.center-title{text-align:center}
+.center-title h1{margin:6px 0 0;font-size:22px;line-height:1.2;font-weight:800}
+.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.06);margin-bottom:16px}
+.btn{padding:12px;border-radius:12px;border:1px solid #ddd;font-weight:700;cursor:pointer}
+.btn-b{background:#111;color:#fff;border-color:#111;width:100%}
+.btn-w{background:#fff;color:#111;width:100%}
+.btn-y{background:#ffcc00;border-color:#ffcc00;color:#111}
+.portal-tabs{display:flex;gap:8px;margin:18px 0}
+.portal-tab.active{background:#111;color:#fff}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px;box-sizing:border-box}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:16px;z-index:99}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:20px;width:100%;max-width:380px;text-align:center}
+/* STATS DG */
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+.stat{border-radius:12px;padding:10px;text-align:center}
+.stat b{font-size:18px;display:block}
+.stat span{font-size:11px;color:#666}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top-bar">
+<h4>GROUPE EL-RAPHA</h4>
+<button id="btnTopLogout" class="btn btn-w" style="width:auto;display:none;padding:8px 14px;font-size:13px" onclick="demandeLogout()">Déconnexion</button>
+</div>
+
+<div id="headerPortal" class="center-title">
+<h1>BIENVENUE<br>SUR LE PORTAIL DE CONNEXION</h1>
+<div class="badge">🔒 Accès sécurisé</div>
+</div>
+
+<div id="headerDG" class="center-title" style="display:none">
+<h1 style="font-size:20px">Tableau de bord - Direction Générale</h1>
+</div>
+
+<div id="portal">
+<div class="portal-tabs">
+<button id="tabDG" class="btn btn-b portal-tab active" onclick="showPortal('DG')">DG - Direction</button>
+<button id="tabEtab" class="btn btn-w portal-tab" onclick="showPortal('ETAB')">Établissements</button>
+</div>
+<div id="paneDG" class="card">
+<h3>Connexion DG</h3>
+<input value="dg@elrapha.cd"><input type="password" value="12345678">
+<button class="btn btn-b" onclick="loginDG()">Entrer</button>
+</div>
+<div id="paneEtab" class="card" style="display:none">
+<h3>Connexion Établissement</h3>
+<input id="etabCode" placeholder="Code maison">
+<button class="btn btn-b" onclick="loginEtab()">Entrer</button>
+</div>
+</div>
+
+<div id="dashDG" style="display:none">
+<!-- 2. STATS -->
+<div id="statsDG" class="stats">
+<div class="stat" style="background:#fff;border:1px solid #eee"><b id="statMaisons">0</b><span>Maisons</span></div>
+<div class="stat" style="background:#fffae6;border:1px solid #ffe27a"><b id="statCaisses">0</b><span>Caisses</span></div>
+<div class="stat" style="background:#eef2ff;border:1px solid #c5cfff"><b id="statGerants">0</b><span>Gérants</span></div>
+</div>
+
+<div class="card">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-y" onclick="openMaisonForm()">+ Ajouter Maison</button>
+<button id="btnCountMaison" class="btn btn-y" onclick="toggleListeMaisons()">0 maison</button>
+</div>
+
+<div id="formMaison" style="display:none;margin-top:16px;background:#fff;border:2px dashed #ffcc00;border-radius:14px;padding:14px">
+<div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#111;margin-bottom:10px">📍 NOUVELLE MAISON</div>
+<input id="mNom" placeholder="Nom Maison">
+<input id="mAdresse" placeholder="Adresse">
+<input id="mGerant" placeholder="Nom Gérant">
+<input id="mTel" placeholder="Téléphone">
+<div style="display:flex;gap:8px;margin-top:6px">
+<button class="btn btn-b" style="flex:1" onclick="ajouterMaison()">Enregistrer</button>
+<button class="btn btn-w" style="flex:1" onclick="closeMaisonForm()">Annuler</button>
+</div>
+</div>
+
+<div id="msgMaison" style="display:none;margin-top:12px;background:#e6ffed;border:1px solid #b2f2bb;border-radius:12px;padding:12px;text-align:center"><b>✅ Maison ajoutée!</b><br><br><button class="btn btn-b" style="width:100px" onclick="fermerMsgMaison()">OK</button></div>
+
+<!-- 1. LISTE -->
+<div id="listeMaisons" style="display:none;margin-top:14px"></div>
+<div id="listeMaison" style="display:none;margin-top:14px"></div>
+
+</div>
+</div>
+
+<div id="dashGerant" style="display:none"><div class="card"><div style="display:flex;justify-content:space-between"><h3 id="gerantTitre"></h3><button class="btn btn-w" style="width:auto;font-size:12px" onclick="retourDG()">← Retour DG</button></div><div id="gerantActions"></div><div id="gerantContent"></div></div></div>
+
+</div>
+
+<div id="modalLogout" class="modal"><div class="modal-box"><h3>Voulez-vous vous déconnecter ?</h3><br><div style="display:flex;gap:10px;justify-content:center"><button class="btn btn-b" style="width:90px" onclick="confirmerLogout()">Oui</button><button class="btn btn-w" style="width:90px" onclick="annulerLogout()">Non</button></div></div></div>
+<div id="modalAddCaisse" class="modal"><div class="modal-box"><h3>Ajouter Caisse</h3><input id="caisseCode" placeholder="Code caisse"><input id="caisseNomCaissier" placeholder="Nom Caissier"><input id="caisseTel" placeholder="Tel"><input id="caisseAdr" placeholder="Adresse"><input id="caisseOutil" placeholder="Outil"><input id="caisseNom" placeholder="Nom complet"><div style="display:flex;gap:8px"><button class="btn btn-b" onclick="saveCaisse()">Enregistrer</button><button class="btn btn-w" onclick="closeAddCaisse()">Fermer</button></div></div></div>
+<div id="modalListeCaissesV2" class="modal"><div class="modal-box"><h3>Liste Caisses</h3><div id="listeCaissesTrieV2"></div><br><button class="btn btn-w" onclick="closeListeV2()">Fermer</button></div></div>
+<div id="modalDetailCaisseV2" class="modal"><div class="modal-box"><h3 id="detailCaisseTitleV2"></h3><div id="detailCaisseBodyV2"></div><br><button class="btn btn-w" onclick="closeDetailV2()">Fermer</button></div></div>
+
+<script>
+let maisons = JSON.parse(localStorage.getItem('maisons') || '[]');
+let curMaison = null;
+let enModeDG = false;
+
+function showPortal(t){
+  document.getElementById('paneDG').style.display=t==='DG'?'block':'none';
+  document.getElementById('paneEtab').style.display=t==='ETAB'?'block':'none';
+  document.getElementById('tabDG').className=t==='DG'?'btn btn-b portal-tab active':'btn btn-w portal-tab';
+  document.getElementById('tabEtab').className=t==='ETAB'?'btn btn-b portal-tab active':'btn btn-w portal-tab';
+}
+function loginDG(){
+  enModeDG=true;
+  document.getElementById('portal').style.display='none';
+  document.getElementById('headerPortal').style.display='none';
+  document.getElementById('headerDG').style.display='block';
+  document.getElementById('dashDG').style.display='block';
+  document.getElementById('dashGerant').style.display='none';
+  document.getElementById('btnTopLogout').style.display='block';
+  updateCount(); renderListeMaisons(); updateStats();
+}
+function loginEtab(){
+  let code=document.getElementById('etabCode').value.trim();
+  let m=maisons.find(x=>x.code===code);
+  if(!m){alert('Code invalide');return;}
+  enModeDG=false;
+  curMaison=m;
+  document.getElementById('portal').style.display='none';
+  document.getElementById('headerPortal').style.display='none';
+  document.getElementById('headerDG').style.display='none';
+  document.getElementById('dashDG').style.display='none';
+  document.getElementById('dashGerant').style.display='block';
+  document.getElementById('btnTopLogout').style.display='block';
+  showGerant();
+}
+function retourDG(){
+  document.getElementById('dashGerant').style.display='none';
+  document.getElementById('dashDG').style.display='block';
+  document.getElementById('headerDG').style.display='block';
+  updateStats(); renderListeMaisons();
+}
+function demandeLogout(){document.getElementById('modalLogout').classList.add('open');}
+function annulerLogout(){document.getElementById('modalLogout').classList.remove('open');}
+function confirmerLogout(){
+  document.getElementById('modalLogout').classList.remove('open');
+  enModeDG=false;
+  document.getElementById('portal').style.display='block';
+  document.getElementById('headerPortal').style.display='block';
+  document.getElementById('headerDG').style.display='none';
+  document.getElementById('dashDG').style.display='none';
+  document.getElementById('dashGerant').style.display='none';
+  document.getElementById('btnTopLogout').style.display='none';
+  showPortal('DG');
+}
+function logout(){demandeLogout();}
+function openMaisonForm(){document.getElementById('formMaison').style.display='block';}
+function closeMaisonForm(){document.getElementById('formMaison').style.display='none';document.getElementById('mNom').value='';document.getElementById('mAdresse').value='';document.getElementById('mGerant').value='';document.getElementById('mTel').value='';}
+function ajouterMaison(){
+  const nom=document.getElementById('mNom').value.trim();
+  if(!nom){alert('Nom Maison obligatoire');return;}
+  maisons.push({nom,adresse:document.getElementById('mAdresse').value.trim(),gerant:document.getElementById('mGerant').value.trim(),tel:document.getElementById('mTel').value.trim(),code:nom.toLowerCase().replace(/\s/g,'')+Date.now(),caisses:[]});
+  localStorage.setItem('maisons',JSON.stringify(maisons));
+  document.getElementById('formMaison').style.display='none';
+  document.getElementById('msgMaison').style.display='block';
+  updateCount(); updateStats();
+}
+function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';closeMaisonForm();renderListeMaisons();}
+function updateCount(){let el=document.getElementById('btnCountMaison');if(el) el.innerText=maisons.length+' maison'+(maisons.length>1?'s':'');}
+function updateStats(){
+  let totalCaisses=0; maisons.forEach(m=>{totalCaisses+=(m.caisses||[]).length;});
+  document.getElementById('statMaisons').innerText=maisons.length;
+  document.getElementById('statCaisses').innerText=totalCaisses;
+  document.getElementById('statGerants').innerText=maisons.length;
+}
+function toggleListeMaisons(){
+  let d=document.getElementById('listeMaisons'); let d2=document.getElementById('listeMaison');
+  let show = d.style.display==='none';
+  if(show){renderListeMaisons(); d.style.display='block'; if(d2) d2.style.display='block';}
+  else{ d.style.display='none'; if(d2) d2.style.display='none';}
+}
+function renderListeMaisons(){
+  let div=document.getElementById('listeMaisons'); let div2=document.getElementById('listeMaison');
+  if(maisons.length===0){
+    let html='<div style="color:#888;padding:10px;text-align:center;background:#fff;border-radius:10px">Aucune maison</div>';
+    if(div) div.innerHTML=html; if(div2) div2.innerHTML=html; return;
+  }
+  let html='<div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee">';
+  maisons.forEach((m,i)=>{
+    html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #f0f0f0">
+      <div style="flex:1"><b style="color:#111">${i+1}. ${m.nom}</b><br><small style="color:#666">- ${m.gerant||'Gérant non défini'}</small></div>
+      <div style="display:flex;gap:6px">
+        <button onclick="voirMaison(${i})" style="background:#111;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Voir</button>
+        <button onclick="supprimerMaison(${i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px">Supprimer</button>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  if(div) div.innerHTML=html; if(div2) div2.innerHTML=html;
+}
+function supprimerMaison(i){if(confirm('Supprimer cette maison ?')){maisons.splice(i,1);localStorage.setItem('maisons',JSON.stringify(maisons));updateCount();updateStats();renderListeMaisons();}}
+function voirMaison(i){
+  curMaison=maisons[i];
+  document.getElementById('dashDG').style.display='none';
+  document.getElementById('headerDG').style.display='none';
+  document.getElementById('dashGerant').style.display='block';
+  showGerant();
+}
+function showGerant(){
+  if(!curMaison)return;
+  document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+curMaison.gerant;
+  let nb=(curMaison.caisses||[]).length;
+  document.getElementById('gerantActions').innerHTML='<div style="display:flex;gap:8px"><button class="btn btn-y" style="width:auto" onclick="openAddCaisse()">+ Caisse</button><button class="btn btn-y" style="width:auto" onclick="openListeV2()">'+nb+' caisse(s)</button></div>';
+  let h='';(curMaison.caisses||[]).forEach(c=>{h+=`<div style="padding:8px;border-bottom:1px solid #eee">${c.code}</div>`;});
+  document.getElementById('gerantContent').innerHTML=h||'<small style="color:#888">Aucune caisse</small>';
+}
+function openAddCaisse(){document.getElementById('modalAddCaisse').classList.add('open');}
+function closeAddCaisse(){document.getElementById('modalAddCaisse').classList.remove('open');}
+function saveCaisse(){let code=document.getElementById('caisseCode').value.trim();if(!code){alert('Code obligatoire');return;}curMaison.caisses=curMaison.caisses||[];curMaison.caisses.push({id:Date.now(),code,nomCaissier:document.getElementById('caisseNomCaissier').value});localStorage.setItem('maisons',JSON.stringify(maisons));closeAddCaisse();showGerant();updateStats();}
+function openListeV2(){let html='';(curMaison.caisses||[]).forEach(c=>{html+=`<div style="padding:8px;border:1px solid #eee;margin-top:4px" onclick="showDetailV2(${c.id})">${c.code}</div>`;});document.getElementById('listeCaissesTrieV2').innerHTML=html||'Aucune';document.getElementById('modalListeCaissesV2').classList.add('open');}
+function closeListeV2(){document.getElementById('modalListeCaissesV2').classList.remove('open');}
+function showDetailV2(id){let c=(curMaison.caisses||[]).find(x=>x.id==id);if(!c)return;document.getElementById('detailCaisseTitleV2').innerText=c.code;document.getElementById('detailCaisseBodyV2').innerHTML=c.nomCaissier||'';document.getElementById('modalDetailCaisseV2').classList.add('open');}
+function closeDetailV2(){document.getElementById('modalDetailCaisseV2').classList.remove('open');}
+</script>
+</body>
+</html>
