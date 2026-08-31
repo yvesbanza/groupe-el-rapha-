@@ -65,22 +65,25 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
 <button class="btn btn-y" onclick="openMaisonForm()">+ Ajouter Maison</button>
 <button id="btnCountMaison" class="btn btn-y" onclick="toggleListeMaisons()">0 maison</button>
 </div>
-<div id="formMaison" style="display:none;margin-top:16px;background:#fafafa;border-radius:12px;padding:12px;border:1px dashed #ddd">
-<small style="color:#888;font-weight:700">NOUVELLE MAISON</small>
-<input id="mNom" placeholder="Nom Maison" style="margin-top:8px">
+
+<div id="formMaison" style="display:none;margin-top:16px;background:#fff;border:2px dashed #ffcc00;border-radius:14px;padding:14px">
+<div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#111;margin-bottom:10px">📍 NOUVELLE MAISON</div>
+<input id="mNom" placeholder="Nom Maison">
 <input id="mAdresse" placeholder="Adresse">
 <input id="mGerant" placeholder="Nom Gérant">
 <input id="mTel" placeholder="Téléphone">
-<div style="display:flex;gap:8px;margin-top:4px">
+<div style="display:flex;gap:8px;margin-top:6px">
 <button class="btn btn-b" style="flex:1" onclick="ajouterMaison()">Enregistrer</button>
 <button class="btn btn-w" style="flex:1" onclick="closeMaisonForm()">Annuler</button>
 </div>
 </div>
 
-<div id="msgMaison" style="display:none;margin-top:12px;background:#e6ffed;border:1px solid #b2f2bb;border-radius:12px;padding:12px;text-align:center"><b>✅ Maison ajoutée!</b><br><small>Code d'accès généré</small><br><br><button class="btn btn-b" style="width:100px" onclick="fermerMsgMaison()">OK</button></div>
+<div id="msgMaison" style="display:none;margin-top:12px;background:#e6ffed;border:1px solid #b2f2bb;border-radius:12px;padding:12px;text-align:center"><b>✅ Maison ajoutée!</b><br><br><button class="btn btn-b" style="width:100px" onclick="fermerMsgMaison()">OK</button></div>
 
-<div id="listeMaisons" style="display:none;margin-top:14px"></div>
-<div id="listeMaison" style="display:none;margin-top:14px"></div>
+<div id="listeMaisons" style="display:block;margin-top:14px"></div>
+<div id="listeMaison" style="display:block;margin-top:14px"></div>
+
+</div>
 </div>
 
 <div id="dashGerant" style="display:none"><div class="card"><h3 id="gerantTitre"></h3><div id="gerantActions"></div><div id="gerantContent"></div></div></div>
