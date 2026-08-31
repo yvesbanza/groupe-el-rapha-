@@ -219,8 +219,9 @@ function loginDG(){
   document.getElementById('dashGerant').style.display='none';
   document.getElementById('dashCaisse').style.display='none';
   document.getElementById('btnTopLogout').style.display='block';
+  document.getElementById('btnTopRetour').style.display='none';
   updateCount(); renderListeMaisons(); updateStats();
-}
+    }
 function verifierCodeEtab(){
   let code=document.getElementById('etabCode').value.trim();
   if(maisons.length===0){
