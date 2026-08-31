@@ -293,6 +293,30 @@ document.getElementById('detailCaisseBodyV2').innerHTML=body;
 document.getElementById('modalDetailCaisseV2').classList.add('on');
 }
 function closeDetailV2(){document.getElementById('modalDetailCaisseV2').classList.remove('on');}
+let nbMaisons = 0;
+function openMaisonForm(){
+  document.getElementById('formMaison').style.display='block';
+  document.getElementById('msgMaison').style.display='none';
+}
+function closeMaisonForm(){
+  document.getElementById('formMaison').style.display='none';
+  document.getElementById('mNom').value='';
+  document.getElementById('mAdresse').value='';
+  document.getElementById('mGerant').value='';
+  document.getElementById('mTel').value='';
+}
+function ajouterMaison(){
+  const nom = document.getElementById('mNom').value.trim();
+  if(!nom){ alert('Entre le Nom de la Maison'); return; }
+  nbMaisons++;
+  document.getElementById('formMaison').style.display='none';
+  document.getElementById('msgMaison').style.display='block';
+}
+function fermerMsgMaison(){
+  document.getElementById('msgMaison').style.display='none';
+  closeMaisonForm();
+  document.getElementById('countMaison').innerText = nbMaisons + ' maison' + (nbMaisons>1?'s':'');
+  }
 </script>
 </body>
   </html>
