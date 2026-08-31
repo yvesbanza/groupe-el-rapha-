@@ -33,11 +33,15 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
 <body>
 <div class="wrap">
 
-<div class="top-bar">
-<h4>GROUPE EL-RAPHA</h4>
-<button id="btnTopLogout" class="btn btn-w" style="width:auto;display:none;padding:8px 14px;font-size:13px" onclick="demandeLogout()">Déconnexion</button>
+<div class="top-bar" style="flex-direction:column;gap:10px">
+<div style="width:100%;text-align:center;padding:10px 0 4px;border-bottom:1px solid #eee">
+<h4 style="margin:0;color:#888;letter-spacing:2px;font-size:13px;font-weight:800">GROUPE EL-RAPHA</h4>
 </div>
-
+<div style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:4px 0">
+<button id="btnTopRetour" class="btn btn-w" style="width:auto;display:none;padding:7px 14px;font-size:12px;border-radius:10px" onclick="retourDG()">← Retour</button>
+<button id="btnTopLogout" class="btn btn-w" style="width:auto;display:none;padding:7px 14px;font-size:12px;border-radius:10px" onclick="demandeLogout()">Déconnexion</button>
+</div>
+</div>
 <div id="headerPortal" class="center-title">
 <h1>BIENVENUE<br>SUR LE PORTAIL DE CONNEXION</h1>
 <div class="badge">🔒 Accès sécurisé</div>
@@ -216,8 +220,9 @@ function loginDG(){
   document.getElementById('dashGerant').style.display='none';
   document.getElementById('dashCaisse').style.display='none';
   document.getElementById('btnTopLogout').style.display='block';
+  document.getElementById('btnTopRetour').style.display='none';
   updateCount(); renderListeMaisons(); updateStats();
-}
+    }
 function verifierCodeEtab(){
   let code=document.getElementById('etabCode').value.trim();
   if(maisons.length===0){
@@ -345,6 +350,7 @@ function confirmerLogout(){
   document.getElementById('dashGerant').style.display='none';
   document.getElementById('dashCaisse').style.display='none';
   document.getElementById('btnTopLogout').style.display='none';
+    document.getElementById('btnTopRetour').style.display='none';
   resetEtabLogin();
   showPortal('DG');
 }
@@ -366,247 +372,4 @@ function ajouterMaison(){
   updateCount(); updateStats();
 }
 function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';renderListeMaisons();}
-function updateCount(){let el=document.getElementById('btnCountMaison');if(el) el.innerText=maisons.length+' maison'+(maisons.length>1?'s':'');}
-function updateStats(){
-  let totalCaisses=0; maisons.forEach(m=>{totalCaisses+=(m.caisses||[]).length;});
-  document.getElementById('statMaisons').innerText=maisons.length;
-  document.getElementById('statCaisses').innerText=totalCaisses;
-  document.getElementById('statGerants').innerText=maisons.length;
-}
-function toggleListeMaisons(){
-  let d=document.getElementById('listeMaisons');
-  if(d.style.display==='none'){renderListeMaisons(); d.style.display='block';}
-  else{d.style.display='none';}
-}
-function renderListeMaisons(){
-  let div=document.getElementById('listeMaisons');
-  if(maisons.length===0){
-    div.innerHTML='<div style="color:#888;padding:12px;text-align:center;background:#fff;border-radius:10px;border:1px solid #eee">Aucune maison</div>';return;
-  }
-  let html='<div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee">';
-  maisons.forEach((m,i)=>{
-    html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #f0f0f0">
-      <div style="flex:1"><b>${i+1}. ${m.nom}</b><br><small style="color:#666">Code: ${m.codeEtab||m.code} - ${m.gerant||''}</small></div>
-      <div style="display:flex;gap:6px">
-        <button onclick="voirMaison(${i})" style="background:#111;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Voir</button>
-        <button onclick="supprimerMaison(${i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:12px">Supprimer</button>
-      </div>
-    </div>`;
-  });
-  html+='</div>';div.innerHTML=html;
-}
-function supprimerMaison(i){if(confirm('Supprimer cette maison?')){maisons.splice(i,1);sauvegarder();updateCount();updateStats();renderListeMaisons();}}
-function voirMaison(i){curMaison=maisons[i];enModeDG=true;document.getElementById('dashDG').style.display='none';document.getElementById('headerDG').style.display='none';document.getElementById('dashGerant').style.display='block';document.getElementById('btnRetourGerant').style.display='block';showGerant();}
-function sauvegarder(){localStorage.setItem('maisons',JSON.stringify(maisons));}
-
-// GERANT LOGIC
-function showGerant(){
-  if(!curMaison)return;
-  let idx = maisons.findIndex(m=> (m.codeEtab||m.code) === (curMaison.codeEtab||curMaison.code));
-  if(idx>=0) curMaison = maisons[idx];
-  document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+curMaison.gerant;
-  document.getElementById('gerantInfo').innerText='Code: '+ (curMaison.codeEtab||curMaison.code) +' | Adresse: '+(curMaison.adresse||'');
-  document.getElementById('gStatCaisses').innerText=(curMaison.caisses||[]).length;
-  document.getElementById('btnCountCaisse').innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
-  renderCaissesGerant();
-}
-function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
-function closeFormCaisse(){
-  document.getElementById('formCaisse').style.display='none';
-  document.getElementById('cCode').value='';document.getElementById('cNom').value='';document.getElementById('cTel').value='';document.getElementById('cPass').value='';
-}
-function ajouterCaisse(){
-  let code=document.getElementById('cCode').value.trim();
-  let nom=document.getElementById('cNom').value.trim();
-  let tel=document.getElementById('cTel').value.trim();
-  let pass=document.getElementById('cPass').value.trim();
-  if(!code ||!nom){alert('Code Caisse et Nom Caissier obligatoires');return;}
-  if((curMaison.caisses||[]).some(c=>c.code.toLowerCase()===code.toLowerCase())){alert('Code Caisse existe déjà');return;}
-  let newCaisse={code:code,nom:nom,tel:tel,password:pass,email:null,active:false,solde:0,ventes:[]};
-  curMaison.caisses.push(newCaisse);
-  sauvegarder();
-  closeFormCaisse();
-  showGerant();
-  updateStats();
-}
-function toggleCaissesGerant(){
-  let d=document.getElementById('listeCaissesGerant');
-  if(d.style.display==='none'){renderCaissesGerant(); d.style.display='block';}
-  else{d.style.display='none';}
-}
-function renderCaissesGerant(){
-  let div=document.getElementById('listeCaissesGerant');
-  if(!curMaison.caisses || curMaison.caisses.length===0){
-    div.innerHTML='<div style="color:#888;padding:12px;text-align:center;background:#fff;border-radius:10px;border:1px solid #eee">Aucune caisse</div>';
-    return;
-  }
-  let html='<div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee">';
-  curMaison.caisses.forEach((c,i)=>{
-    let onlineDot = c.isOnline? '<span style="display:inline-block;width:10px;height:10px;background:#00c853;border-radius:50%;margin-right:6px;box-shadow:0 0 6px #00c853"></span>' : '<span style="display:inline-block;width:8px;height:8px;background:#ccc;border-radius:50%;margin-right:6px"></span>';
-    
-    // ICONE ACTIVER/DESACTIVER PRO - comme sur ta 2ème capture
-    let toggleBtn = c.enabled
-    ? `<div onclick="toggleActiverCaisse(${i})" style="cursor:pointer;width:48px;height:28px;background:#2a7bff;border-radius:20px;position:relative;display:flex;align-items:center;transition:0.3s"><div style="width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;right:4px;box-shadow:0 2px 4px rgba(0,0,0,.2)"></div></div>`
-    : `<div onclick="toggleActiverCaisse(${i})" style="cursor:pointer;width:48px;height:28px;background:#444;border-radius:20px;position:relative;display:flex;align-items:center;transition:0.3s"><div style="width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;left:4px;box-shadow:0 2px 4px rgba(0,0,0,.2)"></div></div>`;
-
-    html+=`<div style="padding:14px;border-bottom:1px solid #f0f0f0">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div><b>${onlineDot}${i+1}. ${c.nom}</b></div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:10px;font-weight:700;color:${c.enabled?'#2a7bff':'#888'}">${c.enabled?'ACTIF':'INACTIF'}</span>
-          ${toggleBtn}
-        </div>
-      </div>
-      <small style="color:#666;display:block;margin-top:4px">Code: ${c.code} | Tel: ${c.tel||'-'}<br>Email: ${c.email||'non créé'}</small>
-      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
-        <button onclick="voirDetailsVentes(${i})" style="background:#111;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:700">Détails</button>
-        <div style="display:flex;gap:0;align-items:center;border-radius:8px;overflow:hidden;border:1px solid #2a2a2a">
-          <div onclick="editCaisse(${i})" style="cursor:pointer;background:#2a2a2a;width:38px;height:32px;display:flex;align-items:center;justify-content:center;border-right:1px solid #3a3a3a">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-          </div>
-          <div onclick="supprimerCaisse(${i})" style="cursor:pointer;background:#2a2a2a;width:38px;height:32px;display:flex;align-items:center;justify-content:center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:4px;font-size:11px;color:#888">Solde: ${c.solde||0} $ | Ventes: ${(c.ventes||[]).length}</div>
-      <div id="detailCaisse-${i}" style="display:none;margin-top:10px;background:#f9f9f9;border-radius:10px;padding:10px;font-size:12px"></div>
-    </div>`;
-  });
-  html+='</div>';div.innerHTML=html;div.style.display='block';
-  }
-
-function toggleActiverCaisse(i){
-  curMaison.caisses[i].enabled =!curMaison.caisses[i].enabled;
-  if(!curMaison.caisses[i].enabled){
-    curMaison.caisses[i].isOnline = false;
-  }
-  sauvegarder();
-  renderCaissesGerant();
-  updateStats();
-}
-
-function voirDetailsVentes(i){
-  let d=document.getElementById('detailCaisse-'+i);
-  if(d.style.display==='none'){
-    let c=curMaison.caisses[i];
-    if(!c.ventes || c.ventes.length===0){
-      d.innerHTML='<i>Aucun mouvement de vente pour ce caissier.</i>';
-    }else{
-      d.innerHTML = c.ventes.map(v=>`<div style="padding:6px 0;border-bottom:1px dashed #ddd">📅 ${v.date||''} - ${v.produit||'Vente'} - ${v.montant||0} $ - ${v.client||''}</div>`).join('');
-    }
-    d.style.display='block';
-  }else{
-    d.style.display='none';
-  }
-}
-
-function editCaisse(i){
-  let c=curMaison.caisses[i];
-  let newNom=prompt('Modifier Nom Caissier:',c.nom);
-  if(newNom===null)return;
-  let newTel=prompt('Modifier Téléphone:',c.tel||'');
-  if(newTel===null)return;
-  c.nom=newNom.trim()||c.nom;
-  c.tel=newTel.trim();
-  sauvegarder();
-  renderCaissesGerant();
-}
-function supprimerCaisse(i){if(confirm('Supprimer cette caisse?')){curMaison.caisses.splice(i,1);sauvegarder();showGerant();updateStats();}}
-
-function voirRapportsGerant(){
-  let d=document.getElementById('rapportsGerant');
-  d.style.display = d.style.display==='none'?'block':'none';
-  let total=0; (curMaison.caisses||[]).forEach(c=>{total+=(c.solde||0);});
-  document.getElementById('gStatSolde').innerText=total+' $';
-  document.getElementById('rapportContent').innerHTML = curMaison.caisses.map(c=>`<div style="padding:6px 0;border-bottom:1px dashed #ddd">Caisse ${c.code} - ${c.nom}: Solde ${c.solde||0} $ | ${ (c.ventes||[]).length } ventes | ${c.enabled?'✅ activé':'❌ désactivé'} ${c.isOnline?'🟢 connecté':''}</div>`).join('') || 'Aucune vente';
-}
-
-// --- MODIF CONNEXION CAISSIER POUR ACTIVATION ---
-
-function showListeCaissesLogin(){
-  document.getElementById('etabChoixCaisse').style.display='block';
-  let div=document.getElementById('listeCaissesLogin');
-  let html='';
-  (curMaison.caisses||[]).forEach((c,i)=>{
-    let status = c.enabled? '<small style="color:green">✅ activé</small>' : '<small style="color:red">❌ désactivé</small>';
-    if(!c.enabled) status += ' - Bloqué par Gérant';
-    html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid #eee;border-radius:10px;margin-bottom:6px;background:#fff">
-      <div><b>${c.nom}</b><br><small>${c.code}</small> ${status} ${c.email?'':'<br><small style="color:orange">● 1ère connexion</small>'}</div>
-      <button class="btn btn-b" style="width:auto;padding:6px 12px;font-size:12px" onclick="selectCaisseLogin(${i})">Choisir</button>
-    </div>`;
-  });
-  div.innerHTML=html;
-}
-
-function selectCaisseLogin(i){
-  curCaisse = curMaison.caisses[i];
-  if(!curCaisse.enabled){
-    alert('❌ Cette caisse est désactivée par le Gérant. Demandez au Gérant de l\'activer.');
-    return;
-  }
-  document.getElementById('etabChoixCaisse').style.display='none';
-  if(!curCaisse.email){
-    document.getElementById('etabCreationEmail').style.display='block';
-    document.getElementById('caisseNomConfirm').value = curCaisse.nom + " (Nom enregistré par Gérant) - ✅ activé";
-  }else{
-    document.getElementById('etabLoginEmail').style.display='block';
-    document.getElementById('titreLoginEmail').innerText = "Connexion - " + curCaisse.nom + " - ✅ activé";
-  }
-}
-
-function creerAccesCaisse(){
-  let email=document.getElementById('caisseEmailCreation').value.trim();
-  let pass=document.getElementById('caissePassCreation').value.trim();
-  if(!email ||!pass){alert('Email et mot de passe obligatoires');return;}
-  curCaisse.email = email;
-  curCaisse.password = pass;
-  curCaisse.active = true;
-  curCaisse.isOnline = true;
-  sauvegarder();
-  document.getElementById('etabCreationEmail').style.display='none';
-  entrerCaisse();
-}
-
-function finalLoginEtab(){
-  let email=document.getElementById('etabEmail').value.trim();
-  let pass=document.getElementById('etabPass').value.trim();
-  if(!curCaisse.enabled){alert('❌ Caisse désactivée par le Gérant');return;}
-  if(curCaisse.email.toLowerCase()!== email.toLowerCase() || curCaisse.password!== pass){
-    alert('Email ou mot de passe incorrect');return;
-  }
-  curCaisse.isOnline = true;
-  sauvegarder();
-  entrerCaisse();
-}
-
-function entrerCaisse(){
-  document.getElementById('portal').style.display='none';
-  document.getElementById('headerPortal').style.display='none';
-  document.getElementById('btnTopLogout').style.display='block';
-  document.getElementById('dashCaisse').style.display='block';
-  document.getElementById('caisseTitre').innerText='Caisse - '+curCaisse.nom;
-  document.getElementById('caisseInfo').innerHTML='<small>Maison: '+curMaison.nom+'<br>Code Caisse: '+curCaisse.code+'<br>Email: '+curCaisse.email+'<br>Status: ✅ activé 🟢 connecté</small>';
-}
-
-function confirmerLogout(){
-  if(curCaisse){
-    curCaisse.isOnline = false;
-    sauvegarder();
-  }
-  document.getElementById('modalLogout').classList.remove('open');
-  enModeDG=false; curRole=null; curCaisse=null;
-  document.getElementById('portal').style.display='block';
-  document.getElementById('headerPortal').style.display='block';
-  document.getElementById('headerDG').style.display='none';
-  document.getElementById('dashDG').style.display='none';
-  document.getElementById('dashGerant').style.display='none';
-  document.getElementById('dashCaisse').style.display='none';
-  document.getElementById('btnTopLogout').style.display='none';
-  resetEtabLogin();
-  showPortal('DG');
-}
-</script>
-</body>
-</html>
-
+function updateCount(){let el=document.getElementById('btnCountMaison');if(el) el.inne
