@@ -349,6 +349,7 @@ function confirmerLogout(){
   document.getElementById('dashGerant').style.display='none';
   document.getElementById('dashCaisse').style.display='none';
   document.getElementById('btnTopLogout').style.display='none';
+    document.getElementById('btnTopRetour').style.display='none';
   resetEtabLogin();
   showPortal('DG');
 }
@@ -412,6 +413,8 @@ function showGerant(){
   document.getElementById('gerantInfo').innerText='Code: '+ (curMaison.codeEtab||curMaison.code) +' | Adresse: '+(curMaison.adresse||'');
   document.getElementById('gStatCaisses').innerText=(curMaison.caisses||[]).length;
   document.getElementById('btnCountCaisse').innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
+    document.getElementById('btnTopLogout').style.display='block';
+  document.getElementById('btnTopRetour').style.display='block';
   renderCaissesGerant();
 }
 function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
