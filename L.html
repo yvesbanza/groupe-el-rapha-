@@ -132,8 +132,8 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
 
 <input type="text" id="gerantMaison" placeholder="Nom du gérant" required style="width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
 <div style="display:flex;gap:8px;margin-top:6px">
-<button class="btn btn-b" style="flex:1" onclick="ajouterMaison()">Enregistrer</button>
-<button class="btn btn-w" style="flex:1" onclick="closeMaisonForm()">Annuler</button>
+<button onclick="ajouterMaison()" style="background:#111;color:#fff;padding:12px 18px;border-radius:12px;font-weight:800;flex:1">Enregistrer</button>
+<button onclick="closeFormMaison()" style="background:#fff;border:1px solid #ddd;padding:12px 18px;border-radius:12px;font-weight:700;flex:1">Annuler</button>
 </div>
 </div>
 <div id="msgMaison" style="display:none;margin-top:12px;background:#e6ffed;border:1px solid #b2f2bb;border-radius:12px;padding:12px;text-align:center"><b>✅ Maison ajoutée!</b><br><br><button class="btn btn-b" style="width:100px" onclick="fermerMsgMaison()">OK</button></div>
