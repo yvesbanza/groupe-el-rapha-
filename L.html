@@ -378,26 +378,38 @@ function closeMaisonForm(){
   document.getElementById('mCodeEtab').value='';document.getElementById('mNom').value='';document.getElementById('mAdresse').value='';document.getElementById('mGerant').value='';document.getElementById('mTel').value='';
 }
 function ajouterMaison(){
+  let nom = document.getElementById('nomMaison').value.trim();
+  let tel = document.getElementById('telMaison').value.trim();
+  let adresse = document.getElementById('adresseMaison').value.trim();
+  let gerant = document.getElementById('gerantMaison').value.trim();
+  let codeEtab = document.getElementById('mCodeEtab').value.trim();
+
+  if(!nom){ alert('Nom Maison obligatoire'); return; }
+  if(!codeEtab){ alert('Code Maison obligatoire'); return; }
+  if(!tel){ alert('Téléphone Maison obligatoire'); return; }
+  if(maisons.some(x=>(x.codeEtab||'').toLowerCase()==codeEtab.toLowerCase())){ alert('Ce code existe déjà'); return; }
+
   let nouvelleMaison = {
-  nom: document.getElementById('nomMaison').value,
-  telMaison: document.getElementById('telMaison').value, // NOUVEAU
-  adresse: document.getElementById('adresseMaison').value,
-  gerant: document.getElementById('gerantMaison').value,
-  code: 'ELR-' + document.getElementById('nomMaison').value.substring(0,3).toUpperCase() + '-' + new Date().getFullYear(),
-  // ... le reste de tes champs secrets (tu ne les affiches pas côté gérant)
-  caisses: []
-};
-  const nom=document.getElementById('mNom').value.trim();
-  const codeEtab=document.getElementById('mCodeEtab').value.trim();
-  if(!nom){alert('Nom Maison obligatoire');return;}
-  if(!codeEtab){alert('Code Maison obligatoire');return;}
-  if(maisons.some(x=>(x.codeEtab||'').toLowerCase()===codeEtab.toLowerCase())){alert('Ce Code existe déjà');return;}
-  maisons.push({nom,adresse:document.getElementById('mAdresse').value.trim(),gerant:document.getElementById('mGerant').value.trim(),tel:document.getElementById('mTel').value.trim(),codeEtab:codeEtab,code:codeEtab,caisses:[]});
+    nom: nom,
+    telMaison: tel,
+    adresse: adresse,
+    gerant: gerant,
+    code: codeEtab,
+    codeEtab: codeEtab,
+    mNom: nom,
+    mAdresse: adresse,
+    date: new Date().toLocaleDateString(),
+    caisses: []
+  };
+
+  maisons.push(nouvelleMaison);
   sauvegarder();
   closeMaisonForm();
   document.getElementById('msgMaison').style.display='block';
-  updateCount(); updateStats();
-}
+  document.getElementById('msgMaison').innerText='Maison '+nom+' ajoutée avec succès';
+  setTimeout(()=>{document.getElementById('msgMaison').style.display='none'},3000);
+  updateCount(); updateStats(); renderListeMaisons();
+  }
 function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';renderListeMaisons();}
 function updateCount(){let el=document.getElementById('btnCountMaison');if(el) el.innerText=maisons.length+' maison'+(maisons.length>1?'s':'');}
 function updateStats(){
