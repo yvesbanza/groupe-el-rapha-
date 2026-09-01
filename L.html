@@ -357,15 +357,19 @@ function confirmerLogout(){
   resetEtabLogin();
   showPortal('DG');
 }
-function closeFormMaison(){
-  document.getElementById('formMaison').style.display='none';
-  document.getElementById('listeMaisonsDG').style.display='block';
-  document.querySelectorAll('#formMaison input').forEach(i=>i.value='');
-}
 function openFormMaison(){
-  document.getElementById('formMaison').style.display='block';
-  document.getElementById('listeMaisonsDG').style.display='none';
+  let f = document.getElementById('formMaison');
+  let l = document.getElementById('listeMaisonsDG');
+  if(f){ f.style.display='block'; f.style.visibility='visible'; f.scrollIntoView({behavior:'smooth'}); }
+  if(l){ l.style.display='none'; }
 }
+function closeFormMaison(){
+  let f = document.getElementById('formMaison');
+  let l = document.getElementById('listeMaisonsDG');
+  if(f) f.style.display='none';
+  if(l) l.style.display='block';
+  document.querySelectorAll('#formMaison input').forEach(i=>i.value='');
+  }
 
 function ajouterMaison(){
   let inputs = document.querySelectorAll('#formMaison input');
@@ -401,9 +405,9 @@ function ajouterMaison(){
   let btn = document.getElementById('btnCountMaison');
   if(btn) btn.innerText = maisons.length + ' maison';
   }
-function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';renderListeMaisons();}
-function updateCount(){let el=document.getElementById('btnCountMaison');if(el) el.innerText=maisons.length+' maison'+(maisons.length>1?'s':'');}
-function updateStats(){
+function fermerMsgMaison(){let m=document.getElementById('msgMaison'); if(m) m.style.display='none';}
+function updateCount(){let el=document.getElementById('btnCountMaison'); if(el) el.innerText = maisons.length + ' maison';}
+function updateStats(){}
   let totalCaisses=0; maisons.forEach(m=>{totalCaisses+=(m.caisses||[]).length;});
   document.getElementById('statMaisons').innerText=maisons.length;
   document.getElementById('statCaisses').innerText=totalCaisses;
