@@ -140,10 +140,25 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
 
 <!-- DASH GERANT -->
 <div id="dashGerant" style="display:none">
-<div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<h3 id="gerantTitre"></h3>
-<button class="btn btn-w" id="btnRetourGerant" style="width:auto;font-size:12px" onclick="retourDG()">← Retour DG</button>
+  <div id="titreTableauBord" style="background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:10px;border:1px solid #eee;text-align:center;font-weight:900;font-size:11px;letter-spacing:0.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">TABLEAU DE BORD</div>
+  
+  <div style="background:#fff;border-radius:16px;padding:16px;border:1px solid #eee;margin-bottom:12px">
+    <div style="font-size:10px;color:#888;font-weight:700;margin-bottom:6px">INFORMATIONS MAISON</div>
+    <div id="infoMaisonGerant" style="font-size:13px;line-height:1.5">
+      <!-- Rempli par JS -->
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <div style="flex:1;background:#fff7d1;border-radius:10px;padding:10px;text-align:center;border:1px solid #ffeaa7"><b id="countCaissesGerant" style="display:block;font-size:18px">1</b><span style="font-size:10px;color:#888">Caisses</span></div>
+      <div style="flex:1;background:#d1fae5;border-radius:10px;padding:10px;text-align:center;border:1px solid #a7f3d0"><b id="soldeTotalGerant" style="display:block;font-size:18px">0 $</b><span style="font-size:10px;color:#888">Solde Total</span></div>
+      <div style="flex:1;background:#e0e7ff;border-radius:10px;padding:10px;text-align:center;border:1px solid #c7d2fe"><b id="opsJourGerant" style="display:block;font-size:18px">0</b><span style="font-size:10px;color:#888">Ops Jour</span></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button onclick="openAddCaisse()" style="background:#facc15;border:2px solid #111;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12px">+ Ajouter Caisse</button>
+      <button style="background:#facc15;border:2px solid #111;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12px"><span id="btnCountCaisse">1 caisse</span></button>
+      <button onclick="openRapports()" style="background:#fff;border:1px solid #ddd;padding:10px 14px;border-radius:12px;font-weight:700;font-size:12px">📊 Rapports</button>
+    </div>
+  </div>
+  <div id="listeCaissesGerant"></div>
 </div>
 <div id="gerantInfo" style="font-size:13px;color:#666;margin-bottom:10px"></div>
 
@@ -406,8 +421,22 @@ function voirMaison(i){curMaison=maisons[i];enModeDG=true;document.getElementByI
 function sauvegarder(){localStorage.setItem('maisons',JSON.stringify(maisons));}
 
 // GERANT LOGIC
-function showGerant(){
-  if(!curMaison)return;
+function showGerant(idx){
+  curMaison = maisons[idx];
+  curIdxMaison = idx;
+  enModeDG = false;
+  // TITRE UNE SEULE LIGNE
+  document.getElementById('titreTableauBord').innerText = 'TABLEAU DE BORD - ' + curMaison.nom.toUpperCase();
+  
+  // INFOS MAISON VENANT DU FORMULAIRE DG
+  document.getElementById('infoMaisonGerant').innerHTML = `
+    <div><b>🏠 Maison:</b> ${curMaison.nom}</div>
+    <div><b>📍 Adresse:</b> ${curMaison.adresse || curMaison.address || 'Non renseignée'}</div>
+    <div><b>📞 Tel Maison:</b> ${curMaison.telMaison || curMaison.tel || '-'}</div>
+    <div><b>👤 Gérant:</b> ${curMaison.gerant || curMaison.nomGerant || '-'}</div>
+    <div style="margin-top:4px;font-size:10px;color:#888">Code: ${curMaison.code} | Enregistré le: ${curMaison.date || ''}</div>
+  `;
+  // ... le reste de ta fonction continue
   let idx = maisons.findIndex(m=> (m.codeEtab||m.code) === (curMaison.codeEtab||curMaison.code));
   if(idx>=0) curMaison = maisons[idx];
   document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+curMaison.gerant;
