@@ -357,43 +357,43 @@ function confirmerLogout(){
   resetEtabLogin();
   showPortal('DG');
 }
-function openMaisonForm(){document.getElementById('formMaison').style.display='block';}
-function closeMaisonForm(){
+function closeFormMaison(){
   document.getElementById('formMaison').style.display='none';
-  document.getElementById('mCodeEtab').value='';document.getElementById('mNom').value='';document.getElementById('mAdresse').value='';document.getElementById('mGerant').value='';document.getElementById('mTel').value='';
+  document.getElementById('listeMaisonsDG').style.display='block';
+  document.querySelectorAll('#formMaison input').forEach(i=>i.value='');
 }
+function openFormMaison(){
+  document.getElementById('formMaison').style.display='block';
+  document.getElementById('listeMaisonsDG').style.display='none';
+}
+
 function ajouterMaison(){
-  let nom = document.getElementById('nomMaison').value.trim();
-  let tel = document.getElementById('telMaison').value.trim();
-  let adresse = document.getElementById('adresseMaison').value.trim();
-  let gerant = document.getElementById('gerantMaison').value.trim();
-  let codeEtab = document.getElementById('mCodeEtab').value.trim();
+  // on récupère tous les inputs dans l'ordre de ta capture
+  let inputs = document.querySelectorAll('#formMaison input');
+  let code = inputs[0]? inputs[0].value.trim() : '';
+  let nom = inputs[1]? inputs[1].value.trim() : '';
+  let tel = inputs[2]? inputs[2].value.trim() : '';
+  let adresse = inputs[3]? inputs[3].value.trim() : '';
+  let gerant = inputs[4]? inputs[4].value.trim() : '';
 
-  if(!nom){ alert('Nom Maison obligatoire'); return; }
-  if(!codeEtab){ alert('Code Maison obligatoire'); return; }
-  if(!tel){ alert('Téléphone Maison obligatoire'); return; }
-  if(maisons.some(x=>(x.codeEtab||'').toLowerCase()==codeEtab.toLowerCase())){ alert('Ce code existe déjà'); return; }
+  if(!nom){ alert('Nom de maison obligatoire'); return; }
 
-  let nouvelleMaison = {
+  maisons.push({
+    code: code || 'ELR-KIN-0'+(maisons.length+1),
     nom: nom,
+    mNom: nom,
     telMaison: tel,
     adresse: adresse,
-    gerant: gerant,
-    code: codeEtab,
-    codeEtab: codeEtab,
-    mNom: nom,
     mAdresse: adresse,
-    date: new Date().toLocaleDateString(),
+    gerant: gerant,
+    pass: '1234',
     caisses: []
-  };
+  });
 
-  maisons.push(nouvelleMaison);
-  sauvegarder();
-  closeMaisonForm();
-  document.getElementById('msgMaison').style.display='block';
-  document.getElementById('msgMaison').innerText='Maison '+nom+' ajoutée avec succès';
-  setTimeout(()=>{document.getElementById('msgMaison').style.display='none'},3000);
-  updateCount(); updateStats(); renderListeMaisons();
+  localStorage.setItem('maisons', JSON.stringify(maisons));
+  closeFormMaison();
+  renderMaisonsDG();
+  document.getElementById('btnCountMaison').innerText = maisons.length + ' maison';
   }
 function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';renderListeMaisons();}
 function updateCount(){let el=document.getElementById('btnCountMaison');if(el) el.innerText=maisons.length+' maison'+(maisons.length>1?'s':'');}
