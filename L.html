@@ -155,12 +155,11 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
       <div style="flex:1;background:#d1fae5;border-radius:10px;padding:10px;text-align:center;border:1px solid #a7f3d0"><b id="soldeTotalGerant" style="display:block;font-size:18px">0 $</b><span style="font-size:10px;color:#888">Solde Total</span></div>
       <div style="flex:1;background:#e0e7ff;border-radius:10px;padding:10px;text-align:center;border:1px solid #c7d2fe"><b id="opsJourGerant" style="display:block;font-size:18px">0</b><span style="font-size:10px;color:#888">Ops Jour</span></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-      <button onclick="openAddCaisse()" style="background:#facc15;border:2px solid #111;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12px">+ Ajouter Caisse</button>
-      <button style="background:#facc15;border:2px solid #111;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12px"><span id="btnCountCaisse">1 caisse</span></button>
-      <button onclick="openRapports()" style="background:#fff;border:1px solid #ddd;padding:10px 14px;border-radius:12px;font-weight:700;font-size:12px">📊 Rapports</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+  <button onclick="openFormCaisse()" style="background:#facc15;border:2px solid #111;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12px">+ Ajouter Caisse</button>
+  <button onclick="toggleCaissesGerant()" style="background:#facc15;border:2px solid #111;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12px"><span id="btnCountCaisse">1 caisse</span></button>
+  <button onclick="voirRapportsGerant()" style="background:#fff;border:1px solid #ddd;padding:10px 14px;border-radius:12px;font-weight:700;font-size:12px">📊 Rapports</button>
     </div>
-  </div>
   <div id="listeCaissesGerant"></div>
 </div>
 
