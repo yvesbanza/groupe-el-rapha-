@@ -163,13 +163,6 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
   </div>
   <div id="listeCaissesGerant"></div>
 </div>
-<div id="gerantInfo" style="font-size:13px;color:#666;margin-bottom:10px"></div>
-
-<div class="stats">
-<div class="stat" style="background:#fffae6;border:1px solid #ffe27a"><b id="gStatCaisses">0</b><span>Caisses</span></div>
-<div class="stat" style="background:#e6ffed;border:1px solid #b2f2bb"><b id="gStatSolde">0 $</b><span>Solde Total</span></div>
-<div class="stat" style="background:#eef2ff;border:1px solid #c5cfff"><b id="gStatOps">0</b><span>Ops Jour</span></div>
-</div>
 
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
 <button class="btn btn-y" onclick="openFormCaisse()">+ Ajouter Caisse</button>
@@ -449,28 +442,35 @@ function showGerant(idx){
   curMaison = maisons[idx];
   curIdxMaison = idx;
   enModeDG = false;
+
   // TITRE UNE SEULE LIGNE
   document.getElementById('titreTableauBord').innerText = 'TABLEAU DE BORD - ' + curMaison.nom.toUpperCase();
-  
+
   // INFOS MAISON VENANT DU FORMULAIRE DG
   document.getElementById('infoMaisonGerant').innerHTML = `
     <div><b>🏠 Maison:</b> ${curMaison.nom}</div>
-    <div><b>📍 Adresse:</b> ${curMaison.adresse || curMaison.address || 'Non renseignée'}</div>
+    <div><b>📍 Adresse:</b> ${curMaison.adresse || '-'}</div>
     <div><b>📞 Tel Maison:</b> ${curMaison.telMaison || curMaison.tel || '-'}</div>
-    <div><b>👤 Gérant:</b> ${curMaison.gerant || curMaison.nomGerant || '-'}</div>
-    <div style="margin-top:4px;font-size:10px;color:#888">Code: ${curMaison.code} | Enregistré le: ${curMaison.date || ''}</div>
+    <div><b>👤 Gérant:</b> ${curMaison.gerant || '-'}</div>
+    <div style="margin-top:4px;font-size:10px;color:#888">Code: ${curMaison.code}</div>
   `;
-  // ... le reste de ta fonction continue
-  let idx = maisons.findIndex(m=> (m.codeEtab||m.code) === (curMaison.codeEtab||curMaison.code));
-  if(idx>=0) curMaison = maisons[idx];
-  document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+curMaison.gerant;
-  document.getElementById('gerantInfo').innerText='Code: '+ (curMaison.codeEtab||curMaison.code) +' | Adresse: '+(curMaison.adresse||'');
-  document.getElementById('gStatCaisses').innerText=(curMaison.caisses||[]).length;
-  document.getElementById('btnCountCaisse').innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
-    document.getElementById('btnTopLogout').style.display='block';
+
+  document.getElementById('portal').style.display='none';
+  document.getElementById('headerPortal').style.display='none';
+  document.getElementById('dashDG').style.display='none';
+  document.getElementById('dashGerant').style.display='block';
+  document.getElementById('dashCaisse').style.display='none';
+
+  document.getElementById('countCaissesGerant').innerText = curMaison.caisses.length;
+  let totalSolde = curMaison.caisses.reduce((s,c)=>s+(parseFloat(c.solde)||0),0);
+  document.getElementById('soldeTotalGerant').innerText = totalSolde + ' $';
+  document.getElementById('btnCountCaisse').innerText = curMaison.caisses.length + ' caisse' + (curMaison.caisses.length>1?'s':'');
+
+  document.getElementById('btnTopLogout').style.display='block';
   document.getElementById('btnTopRetour').style.display='block';
+
   renderCaissesGerant();
-}
+  }
 function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
 function closeFormCaisse(){
   document.getElementById('formCaisse').style.display='none';
