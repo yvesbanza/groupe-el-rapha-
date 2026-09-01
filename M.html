@@ -430,7 +430,7 @@ function showGerant(){
   let idx = maisons.findIndex(m=> (m.codeEtab||m.code) === (curMaison.codeEtab||curMaison.code));
   if(idx>=0) curMaison = maisons[idx];
   document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+curMaison.gerant;
-  document.getElementById('gerantInfo').innerText='Code: '+ (curMaison.codeEtab||curMaison.code) +' | Adresse: '+(curMaison.adresse||'');
+  document.getElementById('gerantInfo').innerHTML=`Adresse: ${curMaison.adresse || ''}<br>Tél: ${curMaison.tel || curMaison.telephone || ''}<br>Gérant: ${curMaison.gerant || curMaison.gerantNom || ''}`;
   document.getElementById('gStatCaisses').innerText=(curMaison.caisses||[]).length;
   document.getElementById('btnCountCaisse').innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
     document.getElementById('btnTopLogout').style.display='block';
