@@ -435,16 +435,14 @@ function showGerant(idx){
   curIdxMaison = idx;
   enModeDG = false;
 
-  // TITRE UNE SEULE LIGNE
-  document.getElementById('titreTableauBord').innerText = 'TABLEAU DE BORD - ' + curMaison.nom.toUpperCase();
+  let nomMaison = curMaison.nom || curMaison.mNom || 'MAISON';
+  document.getElementById('titreTableauBord').innerText = 'TABLEAU DE BORD - ' + nomMaison.toUpperCase();
 
-  // INFOS MAISON VENANT DU FORMULAIRE DG
   document.getElementById('infoMaisonGerant').innerHTML = `
-    <div><b>🏠 Maison:</b> ${curMaison.nom}</div>
-    <div><b>📍 Adresse:</b> ${curMaison.adresse || '-'}</div>
+    <div><b>🏠 Maison:</b> ${nomMaison}</div>
+    <div><b>📍 Adresse:</b> ${curMaison.adresse || curMaison.mAdresse || '-'}</div>
     <div><b>📞 Tel Maison:</b> ${curMaison.telMaison || curMaison.tel || '-'}</div>
-    <div><b>👤 Gérant:</b> ${curMaison.gerant || '-'}</div>
-    <div style="margin-top:4px;font-size:10px;color:#888">Code: ${curMaison.code}</div>
+    <div><b>👤 Gérant:</b> ${curMaison.gerant || curMaison.mNom || '-'}</div>
   `;
 
   document.getElementById('portal').style.display='none';
@@ -453,21 +451,32 @@ function showGerant(idx){
   document.getElementById('dashGerant').style.display='block';
   document.getElementById('dashCaisse').style.display='none';
 
-  document.getElementById('countCaissesGerant').innerText = curMaison.caisses.length;
-  let totalSolde = curMaison.caisses.reduce((s,c)=>s+(parseFloat(c.solde)||0),0);
-  document.getElementById('soldeTotalGerant').innerText = totalSolde + ' $';
-  document.getElementById('btnCountCaisse').innerText = curMaison.caisses.length + ' caisse' + (curMaison.caisses.length>1?'s':'');
+  document.getElementById('countCaissesGerant').innerText = curMaison.caisses? curMaison.caisses.length : 0;
+  let total = curMaison.caisses? curMaison.caisses.reduce((s,c)=>s+(parseFloat(c.solde)||0),0) : 0;
+  document.getElementById('soldeTotalGerant').innerText = total + ' $';
+  document.getElementById('btnCountCaisse').innerText = (curMaison.caisses? curMaison.caisses.length : 0) + ' caisse(s)';
 
-  document.getElementById('btnTopLogout').style.display='block';
-  document.getElementById('btnTopRetour').style.display='block';
-
+  document.getElementById('listeCaissesGerant').style.display='block';
   renderCaissesGerant();
-  }
-function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
+}
+
+function voirRapportsGerant(){
+  document.getElementById('rapportsGerant').style.display='block';
+  let totalOps = 0;
+  curMaison.caisses.forEach(c=>{ totalOps += c.ops? c.ops.length : 0; });
+  document.getElementById('rapportContent').innerHTML = `Total Caisses: ${curMaison.caisses.length}<br>Total Ops du jour: ${totalOps}`;
+}
+
+function openFormCaisse(){
+  document.getElementById('formCaisse').style.display='block';
+  document.getElementById('listeCaissesGerant').style.display='none';
+  document.getElementById('rapportsGerant').style.display='none';
+}
 function closeFormCaisse(){
   document.getElementById('formCaisse').style.display='none';
-  document.getElementById('cCode').value='';document.getElementById('cNom').value='';document.getElementById('cTel').value='';document.getElementById('cPass').value='';
-}
+  document.getElementById('listeCaissesGerant').style.display='block';
+  }
+
 function ajouterCaisse(){
   let code=document.getElementById('cCode').value.trim();
   let nom=document.getElementById('cNom').value.trim();
