@@ -368,7 +368,6 @@ function openFormMaison(){
 }
 
 function ajouterMaison(){
-  // on récupère tous les inputs dans l'ordre de ta capture
   let inputs = document.querySelectorAll('#formMaison input');
   let code = inputs[0]? inputs[0].value.trim() : '';
   let nom = inputs[1]? inputs[1].value.trim() : '';
@@ -377,6 +376,8 @@ function ajouterMaison(){
   let gerant = inputs[4]? inputs[4].value.trim() : '';
 
   if(!nom){ alert('Nom de maison obligatoire'); return; }
+
+  if(typeof maisons === 'undefined' ||!maisons) maisons = JSON.parse(localStorage.getItem('maisons') || '[]');
 
   maisons.push({
     code: code || 'ELR-KIN-0'+(maisons.length+1),
@@ -392,8 +393,13 @@ function ajouterMaison(){
 
   localStorage.setItem('maisons', JSON.stringify(maisons));
   closeFormMaison();
-  renderMaisonsDG();
-  document.getElementById('btnCountMaison').innerText = maisons.length + ' maison';
+
+  if(typeof renderMaisonsDG === 'function') renderMaisonsDG();
+  if(typeof updateStats === 'function') updateStats();
+  if(typeof updateCount === 'function') updateCount();
+
+  let btn = document.getElementById('btnCountMaison');
+  if(btn) btn.innerText = maisons.length + ' maison';
   }
 function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';renderListeMaisons();}
 function updateCount(){let el=document.getElementById('btnCountMaison');if(el) el.innerText=maisons.length+' maison'+(maisons.length>1?'s':'');}
