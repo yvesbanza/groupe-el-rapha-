@@ -189,10 +189,13 @@ function loginDG(){
   document.getElementById('dashDG').style.display='block';
   document.getElementById('dashGerant').style.display='none';
   document.getElementById('dashCaisse').style.display='none';
+  document.getElementById('btnTopRetour').style.display='block';
+  document.getElementById('btnTopRetour').innerText='← Retour';
+  document.getElementById('btnTopRetour').setAttribute('onclick','retourPortailSansLogout()');
   document.getElementById('btnTopLogout').style.display='block';
-  document.getElementById('btnTopRetour').style.display='none';
+  document.getElementById('btnTopLogout').innerText='Déconnexion';
   updateCount(); updateStats(); renderListeMaisons();
-}
+  }
 function verifierCodeEtab(){
   let code=document.getElementById('etabCode').value.trim();
   if(maisons.length===0){
@@ -234,6 +237,17 @@ function finalLoginGerant(){
   document.getElementById('btnRetourGerant').style.display='block';
   enModeDG=false; showGerant();
 }
+function retourPortailSansLogout(){
+  document.getElementById('dashDG').style.display='none';
+  document.getElementById('headerDG').style.display='none';
+  document.getElementById('dashGerant').style.display='none';
+  document.getElementById('dashCaisse').style.display='none';
+  document.getElementById('portal').style.display='block';
+  document.getElementById('headerPortal').style.display='block';
+  document.getElementById('btnTopRetour').style.display='none';
+  document.getElementById('btnTopLogout').style.display='block';
+  showPortal('DG');
+}
 function retourChoixRole(){
   document.getElementById('etabLoginGerant').style.display='none';
   document.getElementById('etabChoixCaisse').style.display='none';
@@ -248,7 +262,10 @@ function retourDG(){
   document.getElementById('dashDG').style.display='block';
   document.getElementById('headerDG').style.display='block';
   document.getElementById('btnRetourGerant').style.display='none';
-  if(enModeDG){document.getElementById('btnTopRetour').style.display='none';}
+  document.getElementById('btnTopRetour').style.display='block';
+  document.getElementById('btnTopRetour').innerText='← Retour';
+  document.getElementById('btnTopRetour').setAttribute('onclick','retourPortailSansLogout()');
+  document.getElementById('btnTopLogout').style.display='block';
   updateStats(); renderListeMaisons();
 }
 function demandeLogout(){document.getElementById('modalLogout').classList.add('open');}
