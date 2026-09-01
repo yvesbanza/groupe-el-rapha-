@@ -124,10 +124,13 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
 <div id="formMaison" style="display:none;margin-top:16px;background:#fff;border:2px dashed #ffcc00;border-radius:14px;padding:14px">
 <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#111;margin-bottom:10px">📍 NOUVELLE MAISON</div>
 <input id="mCodeEtab" placeholder="Code Maison (ex: ELR-KIN-01)" style="background:#fffae6;border-color:#ffcc00;font-weight:700">
-<input id="mNom" placeholder="Nom Maison">
-<input id="mAdresse" placeholder="Adresse">
-<input id="mGerant" placeholder="Nom Gérant">
-<input id="mTel" placeholder="Téléphone">
+<input type="text" id="nomMaison" placeholder="Nom de la maison (ex: ETS. MATUMONA)" required style="width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+
+<input type="tel" id="telMaison" placeholder="Numéro de téléphone de la maison" required style="width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+
+<input type="text" id="adresseMaison" placeholder="Adresse de la maison" required style="width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+
+<input type="text" id="gerantMaison" placeholder="Nom du gérant" required style="width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
 <div style="display:flex;gap:8px;margin-top:6px">
 <button class="btn btn-b" style="flex:1" onclick="ajouterMaison()">Enregistrer</button>
 <button class="btn btn-w" style="flex:1" onclick="closeMaisonForm()">Annuler</button>
@@ -375,6 +378,15 @@ function closeMaisonForm(){
   document.getElementById('mCodeEtab').value='';document.getElementById('mNom').value='';document.getElementById('mAdresse').value='';document.getElementById('mGerant').value='';document.getElementById('mTel').value='';
 }
 function ajouterMaison(){
+  let nouvelleMaison = {
+  nom: document.getElementById('nomMaison').value,
+  telMaison: document.getElementById('telMaison').value, // NOUVEAU
+  adresse: document.getElementById('adresseMaison').value,
+  gerant: document.getElementById('gerantMaison').value,
+  code: 'ELR-' + document.getElementById('nomMaison').value.substring(0,3).toUpperCase() + '-' + new Date().getFullYear(),
+  // ... le reste de tes champs secrets (tu ne les affiches pas côté gérant)
+  caisses: []
+};
   const nom=document.getElementById('mNom').value.trim();
   const codeEtab=document.getElementById('mCodeEtab').value.trim();
   if(!nom){alert('Nom Maison obligatoire');return;}
