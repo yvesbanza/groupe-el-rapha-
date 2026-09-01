@@ -2,60 +2,70 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GROUPE EL-RAPHA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>EL-RAPHA | Direction Générale</title>
 <style>
-*{box-sizing:border-box;font-family:system-ui,Arial}
-body{margin:0;background:#f6f6f7;padding:12px}
-#headerPortal{text-align:center;margin:10px 0 6px;color:#888;font-weight:900;letter-spacing:2px;font-size:12px}
-.card{background:#fff;border-radius:18px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-top:12px}
-.btn{border:0;padding:10px 14px;border-radius:12px;font-weight:800;cursor:pointer}
-.btn-b{background:#111;color:#fff}.btn-y{background:#ffcc00;color:#111}.btn-r{background:#ff3b3b;color:#fff}
-.btn-w{background:#fff;border:1px solid #ddd}
-.top3{display:flex;gap:8px}
-.top3 div{flex:1;background:#fff;border-radius:14px;padding:12px;text-align:center;border:1px solid #eee}
-.top3 div:nth-child(2){background:#fff8cc}.top3 div:nth-child(3){background:#e9e9ff}
-b.big{font-size:20px;display:block}
-input{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ddd}
-#formMaison,#formCaisse,#listeCaissesGerant,#rapportsGerant{display:none}
-.item{border:1px solid #eee;border-radius:12px;padding:10px;margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial}
+body{margin:0;background:#f5f5f7;padding:10px 10px 40px}
+#headerPortal{text-align:center;font-size:11px;letter-spacing:2.5px;font-weight:900;color:#9a9aa3;margin:12px 0 4px}
+.card-dg{background:#fff;border-radius:22px;padding:16px;box-shadow:0 4px 18px rgba(0,0,0,.06)}
+.stat-row{display:flex;gap:10px;margin:12px 0}
+.stat{flex:1;border-radius:18px;padding:14px 8px;text-align:center;border:1px solid #eee}
+.stat b{display:block;font-size:24px;line-height:1}
+.stat small{font-size:11px;color:#666;font-weight:700}
+.s1{background:#fff}.s2{background:#ffef9a;border-color:#ffe55a}.s3{background:#e8e9ff;border-color:#d7d8ff}
+.btn{border:0;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;font-size:13px}
+.btn-y{background:#ffcc00;color:#111}
+.btn-b{background:#101010;color:#fff}
+.btn-r{background:#ff3a3a;color:#fff}
+.btn-w{background:#fff;border:1px solid #ddd;color:#111}
+input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid #e5e5e5;margin:7px 0;font-size:14px;outline:none;background:#fafafa}
+input:focus{background:#fff;border-color:#111}
+.maison-item{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid #eee;border-radius:16px;padding:12px;margin-top:10px}
+.maison-item b{font-size:13px}
+#formMaison{display:none;margin-top:12px;background:#fff;border:1px dashed #ddd;border-radius:18px;padding:12px}
+#listeMaisonsDG{display:block}
+#dashGerant,#dashCaisse{display:none}
+.topLogout{display:flex;justify-content:flex-start;margin:8px 0 10px}
 </style>
 </head>
 <body>
 
 <div id="headerPortal">GROUPE EL-RAPHA</div>
 
-<div id="portal" class="card" style="text-align:center">
-  <h3>Portail</h3>
-  <button class="btn btn-b" onclick="showPortal('DG')">Direction Générale</button>
+<!-- PORTAIL -->
+<div id="portal" class="card-dg" style="text-align:center">
+  <h3 style="margin:4px 0">Portail d'accès</h3>
+  <button class="btn btn-b" onclick="showDG()">Direction Générale</button>
 </div>
 
-<!-- DG DASH -->
+<!-- DASH DG -->
 <div id="dashDG" style="display:none">
-  <button class="btn btn-w" onclick="confirmLogout()" style="border-radius:20px">Déconnexion</button>
-  <h2 style="text-align:center">Tableau de bord - Direction<br>Générale</h2>
-  <div class="top3">
-    <div><b class="big" id="statMaisons">0</b><small>Maisons</small></div>
-    <div><b class="big" id="statCaisses">0</b><small>Caisses</small></div>
-    <div><b class="big" id="statGerants">0</b><small>Gérants</small></div>
+  <div class="topLogout"><button class="btn btn-w" style="border-radius:22px;padding:8px 14px" onclick="confirmLogout()">Déconnexion</button></div>
+  <h2 style="text-align:center;line-height:1.2;margin:4px 0 14px">Tableau de bord - Direction<br>Générale</h2>
+
+  <div class="stat-row">
+    <div class="stat s1"><b id="statMaisons">0</b><small>Maisons</small></div>
+    <div class="stat s2"><b id="statCaisses">0</b><small>Caisses</small></div>
+    <div class="stat s3"><b id="statGerants">0</b><small>Gérants</small></div>
   </div>
 
-  <div class="card">
+  <div class="card-dg">
     <div style="display:flex;gap:8px">
       <button class="btn btn-y" onclick="openFormMaison()">+ Ajouter Maison</button>
-      <button class="btn btn-y" id="btnCountMaison" onclick="toggleListeMaisons()">1 maison</button>
+      <button class="btn btn-y" id="btnCountMaison">0 maison</button>
     </div>
 
-    <div id="listeMaisonsDG" style="margin-top:10px"></div>
+    <div id="listeMaisonsDG"></div>
 
     <div id="formMaison">
-      <div style="font-size:11px;font-weight:900;margin:10px 0">+ AJOUTER MAISON</div>
+      <div style="font-size:11px;font-weight:900;letter-spacing:.5px;margin-bottom:6px">+ AJOUTER MAISON</div>
       <input id="f_code" placeholder="Code Maison (Ex: ELR-MAT-2026)">
       <input id="f_nom" placeholder="Nom (Ex: ETS. MATUMONA)">
       <input id="f_tel" placeholder="Téléphone Maison">
       <input id="f_adresse" placeholder="Adresse (Ex: Route de Matadi)">
       <input id="f_gerant" placeholder="Nom du gérant">
-      <div style="display:flex;gap:8px;margin-top:8px">
+      <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn btn-b" style="flex:1" onclick="ajouterMaison()">Enregistrer</button>
         <button class="btn btn-w" style="flex:1" onclick="closeFormMaison()">Annuler</button>
       </div>
@@ -63,63 +73,56 @@ input{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #
   </div>
 </div>
 
-<!-- GERANT DASH -->
-<div id="dashGerant" style="display:none">
-  <button class="btn btn-w" onclick="confirmLogout()" style="border-radius:20px">Déconnexion</button>
+<!-- DASH GERANT - DESIGN INTACT -->
+<div id="dashGerant">
+  <div class="topLogout"><button class="btn btn-w" style="border-radius:22px;padding:8px 14px" onclick="confirmLogout()">Déconnexion</button></div>
   <h2 id="titreTableauBord" style="text-align:center">TABLEAU DE BORD</h2>
-  <div class="card" id="infoMaisonGerant"></div>
-  <div class="card">
+  <div class="card-dg" id="infoMaisonGerant" style="font-size:13px;line-height:1.6"></div>
+  <div class="card-dg" style="margin-top:10px">
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-y" onclick="openFormCaisse()">+ Ajouter Caisse</button>
-      <button class="btn btn-y" onclick="toggleCaissesGerant()"><span id="btnCountCaisse">0 caisse</span></button>
+      <button class="btn btn-y" onclick="toggleCaissesGerant()"><span id="btnCountCaisse">0 caisse(s)</span></button>
       <button class="btn btn-y" onclick="voirRapportsGerant()">📊 Rapports</button>
     </div>
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <div style="flex:1" class="item"><span id="countCaissesGerant">0</span> Caisses</div>
-      <div style="flex:1" class="item">Solde: <b id="soldeTotalGerant">0 $</b></div>
+    <div class="stat-row">
+      <div class="stat s1"><b id="countCaissesGerant">0</b><small>Caisses</small></div>
+      <div class="stat s2"><b id="soldeTotalGerant">0 $</b><small>Solde Total</small></div>
     </div>
-    <div id="listeCaissesGerant" style="margin-top:10px"></div>
-    <div id="rapportsGerant" class="card"><div id="rapportContent"></div><button class="btn btn-w" onclick="document.getElementById('rapportsGerant').style.display='none'">Fermer</button></div>
-    <div id="formCaisse" class="card">
-      <input id="c_nom" placeholder="Nom Caisse">
-      <input id="c_tel" placeholder="Tel Caisse">
-      <div style="display:flex;gap:8px"><button class="btn btn-b" style="flex:1" onclick="ajouterCaisse()">Enregistrer</button><button class="btn btn-w" style="flex:1" onclick="closeFormCaisse()">Annuler</button></div>
-    </div>
+    <div id="listeCaissesGerant" style="display:none;margin-top:8px"></div>
+    <div id="rapportsGerant" style="display:none;margin-top:8px;background:#fff;border:1px solid #eee;border-radius:14px;padding:10px"><div id="rapportContent"></div><button class="btn btn-w" style="margin-top:8px" onclick="document.getElementById('rapportsGerant').style.display='none'">Fermer</button></div>
+    <div id="formCaisse" style="display:none;margin-top:8px"><input id="c_nom" placeholder="Nom Caisse"><input id="c_tel" placeholder="Tel Caisse"><div style="display:flex;gap:8px;margin-top:6px"><button class="btn btn-b" style="flex:1" onclick="ajouterCaisse()">Enregistrer</button><button class="btn btn-w" style="flex:1" onclick="closeFormCaisse()">Annuler</button></div></div>
   </div>
 </div>
 
-<div id="dashCaisse" style="display:none"></div>
-<div id="modalLogout" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4)"></div>
-<button id="btnTopRetour" style="display:none"></button>
-<button id="btnTopLogout" style="display:none"></button>
+<div id="dashCaisse"></div>
 
 <script>
+// ----- DATA -----
 let maisons = JSON.parse(localStorage.getItem('maisons') || '[]');
 let curMaison = null;
-let curIdxMaison = 0;
+let curIdxMaison = -1;
 
-function showPortal(type){
+// ----- PORTAL -----
+function showDG(){
   document.getElementById('portal').style.display='none';
   document.getElementById('headerPortal').style.display='none';
   document.getElementById('dashDG').style.display='block';
+  document.getElementById('dashGerant').style.display='none';
   renderMaisonsDG();
 }
 function confirmLogout(){
+  if(!confirm('Se déconnecter?')) return;
   document.getElementById('dashDG').style.display='none';
   document.getElementById('dashGerant').style.display='none';
-  document.getElementById('dashCaisse').style.display='none';
   document.getElementById('portal').style.display='block';
   document.getElementById('headerPortal').style.display='block';
 }
-function toggleListeMaisons(){
-  let el=document.getElementById('listeMaisonsDG');
-  el.style.display = (el.style.display==='none')?'block':'block';
-}
 
-// DG FUNCTIONS
+// ----- DG : MAISON -----
 function openFormMaison(){
   document.getElementById('formMaison').style.display='block';
   document.getElementById('listeMaisonsDG').style.display='none';
+  window.scrollTo({top:document.getElementById('formMaison').offsetTop,behavior:'smooth'});
 }
 function closeFormMaison(){
   document.getElementById('formMaison').style.display='none';
@@ -133,41 +136,52 @@ function ajouterMaison(){
   let adresse=document.getElementById('f_adresse').value.trim();
   let gerant=document.getElementById('f_gerant').value.trim();
   if(!nom){alert('Nom obligatoire');return;}
-  maisons.push({code:code||'ELR-KIN-0'+(maisons.length+1),nom:nom,mNom:nom,adresse:adresse,mAdresse:adresse,telMaison:tel,gerant:gerant,pass:'1234',caisses:[]});
+  maisons.push({
+    code:code || 'ELR-KIN-0'+(maisons.length+1),
+    nom:nom, mNom:nom,
+    adresse:adresse, mAdresse:adresse,
+    telMaison:tel,
+    gerant:gerant,
+    pass:'1234',
+    caisses:[]
+  });
   localStorage.setItem('maisons',JSON.stringify(maisons));
   closeFormMaison();
   renderMaisonsDG();
 }
 function renderMaisonsDG(){
   let cont=document.getElementById('listeMaisonsDG');
-  cont.style.display='block';
   cont.innerHTML='';
   let totalCaisses=0;
   maisons.forEach((m,i)=>{
     totalCaisses+=m.caisses?m.caisses.length:0;
-    cont.innerHTML+=`<div class="item"><div><b>${i+1}. ${m.nom.toUpperCase()}</b><br><small>Code: ${m.code} -<br>${m.gerant||''}</small></div><div style="display:flex;gap:6px"><button class="btn btn-b" onclick="showGerant(${i})">Voir</button><button class="btn btn-r" onclick="supprimerMaison(${i})">Supprimer</button></div></div>`;
+    cont.innerHTML+=`
+    <div class="maison-item">
+      <div><b>${i+1}. ${m.nom.toUpperCase()}</b><br><small style="color:#666">Code: ${m.code} -<br>${m.gerant||''}</small></div>
+      <div style="display:flex;gap:6px"><button class="btn btn-b" style="padding:10px 14px;border-radius:12px" onclick="showGerant(${i})">Voir</button><button class="btn btn-r" style="padding:10px 14px;border-radius:12px" onclick="supprimerMaison(${i})">Supprimer</button></div>
+    </div>`;
   });
   document.getElementById('statMaisons').innerText=maisons.length;
   document.getElementById('statCaisses').innerText=totalCaisses;
   document.getElementById('statGerants').innerText=maisons.length;
-  let btn=document.getElementById('btnCountMaison'); if(btn) btn.innerText=maisons.length+' maison';
+  document.getElementById('btnCountMaison').innerText=maisons.length+' maison';
 }
 function supprimerMaison(i){
-  if(!confirm('Supprimer cette maison?')) return;
+  if(!confirm('Supprimer '+maisons[i].nom+'?')) return;
   maisons.splice(i,1);
   localStorage.setItem('maisons',JSON.stringify(maisons));
   renderMaisonsDG();
 }
 
-// GERANT FUNCTIONS
+// ----- GERANT -----
 function showGerant(idx){
   curMaison=maisons[idx]; curIdxMaison=idx;
   document.getElementById('dashDG').style.display='none';
   document.getElementById('dashGerant').style.display='block';
   document.getElementById('titreTableauBord').innerText='TABLEAU DE BORD - '+(curMaison.nom||'').toUpperCase();
-  document.getElementById('infoMaisonGerant').innerHTML=`<div><b>🏠 Maison:</b> ${curMaison.nom}</div><div><b>📍 Adresse:</b> ${curMaison.adresse||'-'}</div><div><b>📞 Tel:</b> ${curMaison.telMaison||'-'}</div><div><b>👤 Gérant:</b> ${curMaison.gerant||'-'}</div>`;
-  document.getElementById('countCaissesGerant').innerText=curMaison.caisses?curMaison.caisses.length:0;
+  document.getElementById('infoMaisonGerant').innerHTML=`<div><b>🏠 Maison:</b> ${curMaison.nom}</div><div><b>📍 Adresse:</b> ${curMaison.adresse||'-'}</div><div><b>📞 Tel Maison:</b> ${curMaison.telMaison||'-'}</div><div><b>👤 Gérant:</b> ${curMaison.gerant||'-'}</div>`;
   let total=curMaison.caisses?curMaison.caisses.reduce((s,c)=>s+(parseFloat(c.solde)||0),0):0;
+  document.getElementById('countCaissesGerant').innerText=curMaison.caisses?curMaison.caisses.length:0;
   document.getElementById('soldeTotalGerant').innerText=total+' $';
   document.getElementById('btnCountCaisse').innerText=(curMaison.caisses?curMaison.caisses.length:0)+' caisse(s)';
   document.getElementById('listeCaissesGerant').style.display='block';
@@ -175,22 +189,19 @@ function showGerant(idx){
 }
 function renderCaissesGerant(){
   let cont=document.getElementById('listeCaissesGerant');
-  if(!curMaison||!curMaison.caisses){cont.innerHTML='Aucune caisse';return;}
+  if(!curMaison.caisses||curMaison.caisses.length===0){cont.innerHTML='<small>Aucune caisse</small>';return;}
   cont.innerHTML='';
-  curMaison.caisses.forEach((c,i)=>{
-    cont.innerHTML+=`<div class="item"><div><b>${c.nom}</b><br><small>${c.tel||''}</small></div><div>${c.solde||0} $</div></div>`;
+  curMaison.caisses.forEach(c=>{
+    cont.innerHTML+=`<div class="maison-item"><div><b>${c.nom}</b><br><small>${c.tel||''}</small></div><div>${c.solde||0} $</div></div>`;
   });
 }
 function toggleCaissesGerant(){
   let el=document.getElementById('listeCaissesGerant');
   el.style.display=(el.style.display==='none'||el.style.display==='')?'block':'none';
-  if(el.style.display==='block') renderCaissesGerant();
 }
 function voirRapportsGerant(){
-  let r=document.getElementById('rapportsGerant');
-  r.style.display='block';
-  let totalOps=0; curMaison.caisses.forEach(c=>{totalOps+=c.ops?c.ops.length:0;});
-  document.getElementById('rapportContent').innerHTML=`Total Caisses: ${curMaison.caisses.length}<br>Total Ops: ${totalOps}`;
+  document.getElementById('rapportsGerant').style.display='block';
+  document.getElementById('rapportContent').innerHTML=`Maisons: ${maisons.length}<br>Caisses de cette maison: ${curMaison.caisses.length}`;
 }
 function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
 function closeFormCaisse(){document.getElementById('formCaisse').style.display='none';}
@@ -198,14 +209,15 @@ function ajouterCaisse(){
   let nom=document.getElementById('c_nom').value.trim();
   let tel=document.getElementById('c_tel').value.trim();
   if(!nom){alert('Nom caisse obligatoire');return;}
-  curMaison.caisses.push({nom:nom,tel:tel,solde:0,ops:[]});
+  curMaison.caisses.push({nom:nom,tel:tel,solde:0});
   maisons[curIdxMaison]=curMaison;
   localStorage.setItem('maisons',JSON.stringify(maisons));
-  closeFormCaisse(); renderCaissesGerant(); showGerant(curIdxMaison);
+  closeFormCaisse(); showGerant(curIdxMaison); renderMaisonsDG();
 }
-function resetEtabLogin(){}
-function showPortalDG(){showPortal('DG');}
-renderMaisonsDG();
+
+// init
+if(maisons.length>0) renderMaisonsDG();
+document.getElementById('dashGerant').style.display='none';
 </script>
 </body>
         </html>
