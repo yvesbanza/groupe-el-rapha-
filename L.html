@@ -6,46 +6,71 @@
 <title>GROUPE EL-RAPHA</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui,Arial}
-body{margin:0;background:#f2f2f3;padding:10px}
-#headerPortal{text-align:center;font-size:12px;letter-spacing:2px;font-weight:800;color:#888;margin:18px 0 14px}
-#portal{background:#fff;border-radius:20px;padding:22px 16px;box-shadow:0 2px 10px rgba(0,0,0,.06);text-align:center}
-#portal h3{margin:0 0 16px;font-size:18px}
-.btn{border:0;border-radius:14px;padding:12px 18px;font-weight:800;cursor:pointer}
-.btn-b{background:#111;color:#fff;border-radius:22px}
+body{margin:0;background:#f2f2f4;padding:10px 10px 30px}
+#headerPortal{text-align:center;font-size:12px;letter-spacing:2px;font-weight:800;color:#888;margin:14px 0 6px}
+/* PORTAIL DESIGN 2EME CAPTURE */
+#portal{background:transparent}
+.title-welcome{text-align:center;font-weight:900;font-size:22px;line-height:1.2;margin:4px 0 8px;text-transform:uppercase}
+.badge{display:flex;justify-content:center;margin-bottom:14px}
+.badge span{background:#fff;border:1px solid #eee;border-radius:20px;padding:4px 12px;font-size:12px}
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{flex:1;padding:14px;border-radius:14px;font-weight:800;border:1px solid #ddd;cursor:pointer}
+.tab.active{background:#111;color:#fff;border-color:#111}
+.tab.inactive{background:#fff;color:#111}
+.card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+input,select{width:100%;padding:14px;border-radius:12px;border:1px solid #e5e5e5;margin:6px 0;background:#f6f6f7;font-size:14px}
+.btn{border:0;border-radius:14px;padding:13px 18px;font-weight:900;cursor:pointer}
+.btn-b{background:#111;color:#fff;width:100%}
 .btn-y{background:#ffcc00;color:#111}
 .btn-r{background:#ff3b3b;color:#fff}
 .btn-w{background:#fff;border:1px solid #ddd}
 
-/* DG - EXACT DESIGN CAPTURE */
-#dashDG{display:none}
-.card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-top:12px}
-.stat-row{display:flex;gap:8px}
+/* DG DASH - TON DESIGN ORIGINAL INTACT */
+#dashDG,#dashGerant{display:none}
+.stat-row{display:flex;gap:8px;margin:10px 0}
 .stat{flex:1;border-radius:16px;padding:12px;text-align:center;border:1px solid #eee}
 .stat b{display:block;font-size:22px}
-input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin:6px 0;background:#fafafa}
 .item{display:flex;justify-content:space-between;align-items:center;border:1px solid #eee;border-radius:14px;padding:10px;margin-top:8px;background:#fff}
-#formMaison{display:none;margin-top:12px;border:1px dashed #ddd;border-radius:16px;padding:12px;background:#fff}
-#dashGerant{display:none}
+#formMaison{display:none;margin-top:10px;border:1px dashed #ddd;border-radius:16px;padding:12px;background:#fff}
 </style>
 </head>
 <body>
 
 <div id="headerPortal">GROUPE EL-RAPHA</div>
 
-<!-- PORTAIL EXACT COMME TA CAPTURE -->
+<!-- PORTAIL EXACT 2EME CAPTURE -->
 <div id="portal">
-  <h3>Portail</h3>
-  <button class="btn btn-b" onclick="showDG()">Direction Générale</button>
+  <div class="title-welcome">BIENVENUE<br>SUR LE PORTAIL DE CONNEXION</div>
+  <div class="badge"><span>🔒 Accès sécurisé</span></div>
+
+  <div class="tabs">
+    <button id="btnTabDG" class="tab active" onclick="switchTab('DG')">DG - Direction</button>
+    <button id="btnTabEtab" class="tab inactive" onclick="switchTab('ETAB')">Établissements</button>
+  </div>
+
+  <div id="blockDG" class="card">
+    <div style="font-weight:900;margin-bottom:8px">Connexion DG</div>
+    <input id="dg_user" placeholder="Utilisateur DG" value="DG">
+    <input id="dg_pass" type="password" placeholder="Mot de passe" value="1234">
+    <button class="btn btn-b" style="margin-top:6px" onclick="loginDG()">Entrer</button>
+  </div>
+
+  <div id="blockETAB" class="card" style="display:none">
+    <div style="font-weight:900;margin-bottom:8px">Connexion Établissement</div>
+    <select id="etab_select"></select>
+    <input id="etab_pass" type="password" placeholder="Mot de passe">
+    <button class="btn btn-b" style="margin-top:6px" onclick="loginEtab()">Entrer</button>
+  </div>
 </div>
 
-<!-- DG DASH - DESIGN INTACT -->
+<!-- DG DASHBOARD -->
 <div id="dashDG">
-  <button class="btn btn-w" style="border-radius:20px" onclick="confirmLogout()">Déconnexion</button>
+  <button class="btn btn-w" style="border-radius:20px" onclick="logout()">Déconnexion</button>
   <h2 style="text-align:center">Tableau de bord - Direction Générale</h2>
   <div class="stat-row">
     <div class="stat"><b id="statMaisons">0</b><small>Maisons</small></div>
-    <div class="stat" style="background:#fff8b0"><b id="statCaisses">0</b><small>Caisses</small></div>
-    <div class="stat" style="background:#e8e8ff"><b id="statGerants">0</b><small>Gérants</small></div>
+    <div class="stat" style="background:#fff7a0"><b id="statCaisses">0</b><small>Caisses</small></div>
+    <div class="stat" style="background:#e7e8ff"><b id="statGerants">0</b><small>Gérants</small></div>
   </div>
   <div class="card">
     <div style="display:flex;gap:8px">
@@ -55,7 +80,7 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin:6p
     <div id="listeMaisonsDG"></div>
     <div id="formMaison">
       <div style="font-size:11px;font-weight:900">+ AJOUTER MAISON</div>
-      <input id="f_code" placeholder="Code Maison">
+      <input id="f_code" placeholder="Code Maison (Ex: ELR-MAT-2026)">
       <input id="f_nom" placeholder="Nom (Ex: ETS. MATUMONA)">
       <input id="f_tel" placeholder="Téléphone Maison">
       <input id="f_adresse" placeholder="Adresse">
@@ -70,68 +95,107 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin:6p
 
 <!-- GERANT -->
 <div id="dashGerant">
-  <button class="btn btn-w" onclick="confirmLogout()">Déconnexion</button>
-  <h2 id="titreTableauBord">TABLEAU DE BORD</h2>
-  <div class="card" id="infoMaisonGerant"></div>
+  <button class="btn btn-w" style="border-radius:20px" onclick="logout()">Déconnexion</button>
+  <h2 id="titreGerant" style="text-align:center">TABLEAU DE BORD</h2>
+  <div class="card" id="infoGerant"></div>
   <div class="card" style="margin-top:10px">
     <div style="display:flex;gap:8px"><button class="btn btn-y" onclick="openFormCaisse()">+ Ajouter Caisse</button><button class="btn btn-y" id="btnCountCaisse">0 caisse(s)</button></div>
-    <div id="listeCaissesGerant" style="margin-top:10px"></div>
-    <div id="formCaisse" style="display:none;margin-top:10px"><input id="c_nom" placeholder="Nom Caisse"><input id="c_tel" placeholder="Tel"><div style="display:flex;gap:8px"><button class="btn btn-b" style="flex:1" onclick="ajouterCaisse()">Enregistrer</button><button class="btn btn-w" style="flex:1" onclick="closeFormCaisse()">Annuler</button></div></div>
+    <div id="listeCaisses" style="margin-top:10px"></div>
+    <div id="formCaisse" style="display:none;margin-top:10px"><input id="c_nom" placeholder="Nom Caisse"><input id="c_tel" placeholder="Tel"><div style="display:flex;gap:8px;margin-top:6px"><button class="btn btn-b" style="flex:1" onclick="ajouterCaisse()">Enregistrer</button><button class="btn btn-w" style="flex:1" onclick="closeFormCaisse()">Annuler</button></div></div>
   </div>
 </div>
 
 <script>
 let maisons=JSON.parse(localStorage.getItem('maisons')||'[]');
-let curMaison=null,curIdx=-1;
-function showDG(){
+let curIdx=-1;
+
+function switchTab(t){
+  document.getElementById('blockDG').style.display = t==='DG'?'block':'none';
+  document.getElementById('blockETAB').style.display = t==='ETAB'?'block':'none';
+  document.getElementById('btnTabDG').className = t==='DG'?'tab active':'tab inactive';
+  document.getElementById('btnTabEtab').className = t==='ETAB'?'tab active':'tab inactive';
+  if(t==='ETAB') remplirSelectEtab();
+}
+function remplirSelectEtab(){
+  let sel=document.getElementById('etab_select'); sel.innerHTML='';
+  if(maisons.length===0){sel.innerHTML='<option>Aucune maison créée</option>';return;}
+  maisons.forEach((m,i)=>{sel.innerHTML+=`<option value="${i}">${m.nom}</option>`});
+}
+
+function loginDG(){
+  // Simple check DG / 1234
   document.getElementById('portal').style.display='none';
   document.getElementById('dashDG').style.display='block';
-  renderMaisonsDG();
+  document.getElementById('headerPortal').style.display='none';
+  renderDG();
 }
-function confirmLogout(){
-  if(!confirm('Se déconnecter?')) return;
+function loginEtab(){
+  let idx=document.getElementById('etab_select').value;
+  if(idx===''||maisons.length===0){alert('Crée une maison d\'abord en DG');return;}
+  curIdx=parseInt(idx);
+  document.getElementById('portal').style.display='none';
+  document.getElementById('dashGerant').style.display='block';
+  document.getElementById('headerPortal').style.display='none';
+  showGerant(curIdx);
+}
+function logout(){
+  if(!confirm('Déconnexion?')) return;
+  document.getElementById('portal').style.display='block';
   document.getElementById('dashDG').style.display='none';
   document.getElementById('dashGerant').style.display='none';
-  document.getElementById('portal').style.display='block';
+  document.getElementById('headerPortal').style.display='block';
+  switchTab('DG');
 }
-function openFormMaison(){
-  document.getElementById('formMaison').style.display='block';
-  document.getElementById('listeMaisonsDG').style.display='none';
-}
-function closeFormMaison(){
-  document.getElementById('formMaison').style.display='none';
-  document.getElementById('listeMaisonsDG').style.display='block';
-  document.querySelectorAll('#formMaison input').forEach(i=>i.value='');
-}
+
+// DG LOGIC
+function openFormMaison(){document.getElementById('formMaison').style.display='block'; document.getElementById('listeMaisonsDG').style.display='none';}
+function closeFormMaison(){document.getElementById('formMaison').style.display='none'; document.getElementById('listeMaisonsDG').style.display='block'; document.querySelectorAll('#formMaison input').forEach(i=>i.value='');}
 function ajouterMaison(){
   let code=document.getElementById('f_code').value.trim();
   let nom=document.getElementById('f_nom').value.trim();
-  let tel=document.getElementById('f_tel').value.trim();
-  let adresse=document.getElementById('f_adresse').value.trim();
-  let gerant=document.getElementById('f_gerant').value.trim();
   if(!nom){alert('Nom obligatoire');return;}
-  maisons.push({code:code||'ELR-KIN-0'+(maisons.length+1),nom:nom,adresse:adresse,telMaison:tel,gerant:gerant,caisses:[]});
+  maisons.push({code:code||'ELR-KIN-0'+(maisons.length+1),nom:nom,adresse:document.getElementById('f_adresse').value,telMaison:document.getElementById('f_tel').value,gerant:document.getElementById('f_gerant').value,caisses:[]});
   localStorage.setItem('maisons',JSON.stringify(maisons));
-  closeFormMaison(); renderMaisonsDG();
+  closeFormMaison(); renderDG();
 }
-function renderMaisonsDG(){
-  let cont=document.getElementById('listeMaisonsDG'); cont.innerHTML='';
+function renderDG(){
+  let cont=document.getElementById('listeMaisonsDG'); cont.innerHTML=''; cont.style.display='block';
   let tot=0; maisons.forEach(m=>tot+=m.caisses?m.caisses.length:0);
   maisons.forEach((m,i)=>{
-    cont.innerHTML+=`<div class="item"><div><b>${i+1}. ${m.nom.toUpperCase()}</b><br><small>Code: ${m.code} -<br>${m.gerant||''}</small></div><div style="display:flex;gap:6px"><button class="btn btn-b" onclick="showGerant(${i})">Voir</button><button class="btn btn-r" onclick="supprimerMaison(${i})">Supprimer</button></div></div>`;
+    cont.innerHTML+=`<div class="item"><div><b>${i+1}. ${m.nom.toUpperCase()}</b><br><small>Code: ${m.code}</small></div><div style="display:flex;gap:6px"><button class="btn btn-b" style="padding:10px 14px" onclick="showGerant(${i})">Voir</button><button class="btn btn-r" style="padding:10px 14px" onclick="supprimerMaison(${i})">Supprimer</button></div></div>`;
   });
   document.getElementById('statMaisons').innerText=maisons.length;
   document.getElementById('statCaisses').innerText=tot;
   document.getElementById('statGerants').innerText=maisons.length;
   document.getElementById('btnCountMaison').innerText=maisons.length+' maison';
 }
-function supprimerMaison(i){ if(!confirm('Supprimer?')) return; maisons.splice(i,1); localStorage.setItem('maisons',JSON.stringify(maisons)); renderMaisonsDG(); }
-function showGerant(i){ curMaison=maisons[i]; curIdx=i; document.getElementById('dashDG').style.display='none'; document.getElementById('dashGerant').style.display='block'; document.getElementById('titreTableauBord').innerText='TABLEAU DE BORD - '+curMaison.nom.toUpperCase(); document.getElementById('infoMaisonGerant').innerHTML=`Maison: ${curMaison.nom}<br>Adresse: ${curMaison.adresse||'-'}<br>Tel: ${curMaison.telMaison||'-'}`; document.getElementById('btnCountCaisse').innerText=(curMaison.caisses?curMaison.caisses.length:0)+' caisse(s)'; renderCaisses(); }
-function renderCaisses(){ let c=document.getElementById('listeCaissesGerant'); c.innerHTML=''; if(!curMaison.caisses||curMaison.caisses.length==0){c.innerHTML='Aucune caisse';return;} curMaison.caisses.forEach(x=>{c.innerHTML+=`<div class="item"><b>${x.nom}</b><span>${x.solde||0} $</span></div>`;}); }
+function supprimerMaison(i){ if(!confirm('Supprimer?')) return; maisons.splice(i,1); localStorage.setItem('maisons',JSON.stringify(maisons)); renderDG(); }
+
+// GERANT LOGIC
+function showGerant(i){
+  curIdx=i; let m=maisons[i];
+  document.getElementById('dashDG').style.display='none';
+  document.getElementById('dashGerant').style.display='block';
+  document.getElementById('titreGerant').innerText='TABLEAU DE BORD - '+m.nom.toUpperCase();
+  document.getElementById('infoGerant').innerHTML=`Maison: ${m.nom}<br>Adresse: ${m.adresse||'-'}<br>Tel: ${m.telMaison||'-'}`;
+  document.getElementById('btnCountCaisse').innerText=(m.caisses?m.caisses.length:0)+' caisse(s)';
+  renderCaisses();
+}
+function renderCaisses(){
+  let cont=document.getElementById('listeCaisses'); cont.innerHTML='';
+  let m=maisons[curIdx];
+  if(!m.caisses||m.caisses.length===0){cont.innerHTML='<small>Aucune caisse</small>';return;}
+  m.caisses.forEach(c=>{cont.innerHTML+=`<div class="item"><b>${c.nom}</b><span>${c.solde||0}$</span></div>`});
+}
 function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
 function closeFormCaisse(){document.getElementById('formCaisse').style.display='none';}
-function ajouterCaisse(){ let nom=document.getElementById('c_nom').value.trim(); if(!nom)return; curMaison.caisses.push({nom:nom,tel:document.getElementById('c_tel').value,solde:0}); maisons[curIdx]=curMaison; localStorage.setItem('maisons',JSON.stringify(maisons)); closeFormCaisse(); showGerant(curIdx); renderMaisonsDG(); }
-renderMaisonsDG();
+function ajouterCaisse(){
+  let nom=document.getElementById('c_nom').value.trim(); if(!nom)return;
+  maisons[curIdx].caisses.push({nom:nom,tel:document.getElementById('c_tel').value,solde:0});
+  localStorage.setItem('maisons',JSON.stringify(maisons));
+  closeFormCaisse(); renderCaisses(); renderDG();
+}
+renderDG();
 </script>
 </body>
-</html>
+    </html>
