@@ -357,4 +357,147 @@ function toggleCaissesGerant(){
 let d=document.getElementById('listeCaissesGerant');
 if(d.style.display==='none'){renderCaissesGerant(); d.style.display='block';}
 else{d.style.display='none';}
-let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=(curMais
+let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
+}
+
+function renderCaissesGerant(){
+let div=document.getElementById('listeCaissesGerant');
+if(!curMaison.caisses || curMaison.caisses.length===0){
+div.innerHTML='<div style="color:#888;padding:12px;text-align:center;background:#ffff;border-radius:12px">Aucune caisse</div>';
+div.style.display='block';
+return;
+}
+let html='<div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee">';
+curMaison.caisses.forEach((c,i)=>{
+let online=c.isOnline?'<span style="display:inline-block;width:7px;height:7px;background:#0a0;border-radius:50%"></span>':'';
+let toggleOn = c.enabled?'<div onclick="toggleActiveCaisse('+i+')" style="cursor:pointer;width:32px;height:18px;background:#111;border-radius:10px;padding:2px"><div style="width:14px;height:14px;background:#fff;border-radius:50%;margin-left:14px"></div></div>':'<div onclick="toggleActiveCaisse('+i+')" style="cursor:pointer;width:32px;height:18px;background:#ccc;border-radius:10px;padding:2px"><div style="width:14px;height:14px;background:#fff;border-radius:50%"></div></div>';
+html+='<div style="padding:12px;border-bottom:1px solid #f0f0f0"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px">'+online+' '+c.nom+'</div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:800;color:'+(c.enabled?'#27ae60':'#888')+'">'+(c.enabled?'Active':'Desactive')+'</span>'+toggleOn+'</div></div><small style="color:#666;display:block;margin-top:3px;font-size:10px">Code: '+c.code+' | Tel: '+(c.tel||'')+'</small><div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center"><div><button onclick="voirDetailsVentes('+i+')" style="background:#111;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px">Details</button></div><div onclick="supprimerCaisse('+i+')" style="cursor:pointer;background:#2a2a2a;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div></div><div style="margin-top:8px;font-size:9px;color:#888">Solde: '+(c.solde||0)+' $ | Ventes: '+((c.ventes||[]).length)+'</div><div id="detailCaisse-'+i+'" style="display:none;margin-top:8px;background:#f9f9ff;border-radius:8px;padding:8px"></div></div>';
+});
+html+='</div>'; div.innerHTML=html; div.style.display='block';
+let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
+}
+
+function toggleActiveCaisse(i){
+curMaison.caisses[i].enabled=!curMaison.caisses[i].enabled;
+if(curMaison.caisses[i].enabled){curMaison.caisses[i].isOnline = false;}
+sauvegarder();
+renderCaissesGerant();
+updateStats();
+}
+
+function voirDetailsVentes(i){
+let d=document.getElementById('detailCaisse-'+i);
+if(d.style.display==='none'){
+let c=curMaison.caisses[i];
+if(!c.ventes || c.ventes.length===0){d.innerHTML='<i>Aucun mouvement de vente pour ce caissier</i>';}
+else{d.innerHTML= c.ventes.map(v=>'<div style="padding:6px 0;border-bottom:1px dashed #ddd">'+v.date+' - '+v.montant+'</div>').join('');}
+d.style.display='block';
+}else{
+d.style.display='none';
+}
+}
+
+function editCaisse(i){
+let c=curMaison.caisses[i];
+let newNom=prompt('Modifier Nom Caissier:',c.nom);
+if(newNom===null)return;
+let newTel=prompt('Modifier Telephone:',c.tel||'');
+if(newTel===null)return;
+c.nom=newNom.trim();
+c.tel=newTel.trim();
+sauvegarder();
+renderCaissesGerant();
+}
+
+function supprimerCaisse(i){if(confirm('Supprimer cette caisse?')){curMaison.caisses.splice(i,1); sauvegarder(); renderCaissesGerant(); updateStats();}}
+function voirRapportsGerant(){
+let d=document.getElementById('rapportGerant');
+d.style.display=d.style.display==='none'?'block':'none';
+let total=0;(curMaison.caisses||[]).forEach(c=>total+=(c.solde||0));
+let elSolde=document.getElementById('gStatSolde'); if(elSolde) elSolde.innerText=total+' $';
+document.getElementById('rapportContent').innerHTML= curMaison.caisses.map(c=>'<div style="padding:6px 0;border-bottom:1px solid #eee">'+c.nom+': '+(c.solde||0)+' $</div>').join('');
+}
+
+function showListeCaissesLogin(){
+document.getElementById('etabChoixCaisse').style.display='block';
+let div=document.getElementById('listeCaissesLogin');
+let html='';
+(curMaison.caisses||[]).forEach((c,i)=>{
+let status=c.enabled?'<small style="color:green">Active</small>':'<small style="color:red">Bloque par Gerant</small>';
+html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee"><div><b>'+c.nom+'</b><br><small>'+c.code+'</small> '+status+'</div><button class="btn btn-b" style="width:auto;padding:6px 12px;font-size:12px" onclick="selectCaisseLogin('+i+')">Entrer</button></div>';
+});
+div.innerHTML=html;
+}
+
+function selectCaisseLogin(i){
+curCaisse=curMaison.caisses[i];
+if(!curCaisse.enabled){
+alert('X Cette caisse est desactivee par le Gerant. Demandez au Gerant de l\'activer.');
+return;
+}
+document.getElementById('etabChoixCaisse').style.display='none';
+if(!curCaisse.email){
+document.getElementById('etabCreationEmail').style.display='block';
+document.getElementById('caisseNonConfirme').value= curCaisse.nom + ' - (Non enregistre par Gerant)';
+}else{
+document.getElementById('etabLoginEmail').style.display='block';
+document.getElementById('titreLoginEmail').innerText = "Connexion - "+curCaisse.nom+" - "+curMaison.nom;
+}
+}
+
+function creerAccesCaisse(){
+let email=document.getElementById('caisseEmailCreation').value.trim();
+let pass=document.getElementById('caissePassCreation').value.trim();
+if(!email||!pass){alert('Email et mot de passe obligatoires');return;}
+curCaisse.email = email;
+curCaisse.password = pass;
+curCaisse.active = true;
+curCaisse.isOnline = true;
+sauvegarder();
+document.getElementById('etabCreationEmail').style.display='none';
+entrerCaisse();
+}
+
+function finalLoginEtab(){
+let email=document.getElementById('etabEmail').value.trim();
+let pass=document.getElementById('etabPass').value.trim();
+if(!curCaisse.enabled){alert('X Caisse desactivee par le Gerant');return;}
+if(curCaisse.email.toLowerCase()!==email.toLowerCase() || curCaisse.password!== pass){
+alert('Email ou mot de passe incorrect');return;
+}
+curCaisse.isOnline = true;
+sauvegarder();
+entrerCaisse();
+}
+
+function entrerCaisse(){
+document.getElementById('portal').style.display='none';
+document.getElementById('headerPortal').style.display='none';
+document.getElementById('btnTopLogout').style.display='block';
+document.getElementById('dashCaisse').style.display='block';
+document.getElementById('caisseTitre').innerText='Caisse - '+curCaisse.nom;
+document.getElementById('caisseInfo').innerHTML='<small>Maison: '+curMaison.nom+'<br>Code Caisse: '+curCaisse.code+'</small>';
+}
+
+function confirmerLogout(){
+if(curCaisse){
+curCaisse.isOnline = false;
+sauvegarder();
+}
+document.getElementById('modalLogout').classList.remove('open');
+enModeDG=false; curRole=null; curCaisse=null;
+document.getElementById('portal').style.display='block';
+document.getElementById('headerPortal').style.display='block';
+document.getElementById('headerDG').style.display='none';
+document.getElementById('dashDG').style.display='none';
+document.getElementById('dashGerant').style.display='none';
+document.getElementById('dashCaisse').style.display='none';
+document.getElementById('btnTopLogout').style.display='none';
+resetEtabLogin();
+showPortal('DG');
+}
+
+function closeModalLogout(){document.getElementById('modalLogout').classList.remove('open');}
+</script>
+</body>
+</html>
