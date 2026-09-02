@@ -320,17 +320,19 @@ function supprimerMaison(i){if(confirm('Supprimer cette maison?')){maisons.splic
 function voirMaison(i){curMaison=maisons[i];enModeDG=true;document.getElementById('dashDG').style.display='none';document.getElementById('headerDG').style.display='none';document.getElementById('dashGerant').style.display='block';document.getElementById('btnRetourGerant').style.display='block';showGerant();}
 function sauvegarder(){localStorage.setItem('maisons',JSON.stringify(maisons));}
 function showGerant(){
-  if(!curMaison)return;
-  let idx = maisons.findIndex(m=> (m.codeEtab||m.code) === (curMaison.codeEtab||curMaison.code));
-  if(idx>=0) curMaison = maisons[idx];
-  document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+curMaison.gerant;
-  document.getElementById('gerantInfo').innerHTML=`Adresse: ${curMaison.adresse || ''}<br>Tél: ${curMaison.tel || curMaison.telephone || ''}<br>Gérant: ${curMaison.gerant || curMaison.gerantNom || ''}`;
-  let elCaisseStat=document.getElementById('gStatCaisses'); if(elCaisseStat) elCaisseStat.innerText=(curMaison.caisses||[]).length;
-let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse';
-    document.getElementById('btnTopLogout').style.display='block';
-  document.getElementById('btnTopRetour').style.display='block';
-  renderCaissesGerant();
-}
+if(!curMaison) return;
+let idx=maisons.findIndex(m=>(m.codeEtab||m.code)===(curMaison.codeEtab||curMaison.code));
+if(idx>=0) curMaison=maisons[idx];
+document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+(curMaison.gerant||curMaison.gerantNom||'');
+document.getElementById('gerantInfo').innerHTML='Adresse: '+(curMaison.adresse||'')+'<br>Tel: '+(curMaison.tel||'')+'<br>Gérant: '+(curMaison.gerant||'');
+let elC=document.getElementById('gStatCaisses'); if(elC) elC.innerText=(curMaison.caisses||[]).length;
+let total=(curMaison.caisses||[]).reduce((s,c)=>s+parseFloat(c.solde||0),0);
+let elS=document.getElementById('gStatSolde'); if(elS) elS.innerText=total+' $';
+let elO=document.getElementById('gStatOps'); if(elO) elO.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+(c.ventes?c.ventes.length:0),0);
+let btnC=document.getElementById('btnCountCaisse')||document.getElementById('btnCountCaisses')||document.getElementById('btnListeCaisses');
+if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
+renderCaissesGerant();
+    }
 function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
 function closeFormCaisse(){
   document.getElementById('formCaisse').style.display='none';
