@@ -329,7 +329,9 @@ let elC=document.getElementById('gStatCaisses'); if(elC) elC.innerText=(curMaiso
 let total=(curMaison.caisses||[]).reduce((s,c)=>s+parseFloat(c.solde||0),0);
 let elS=document.getElementById('gStatSolde'); if(elS) elS.innerText=total+' $';
 let elO=document.getElementById('gStatOps'); if(elO) elO.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+(c.ventes?c.ventes.length:0),0);
-let btnC=document.getElementById('btnCountCaisse')||document.getElementById('btnCountCaisses')||document.getElementById('btnListeCaisses');
+let idxCount=maisons.findIndex(m=>(m.codeEtab||m.code)===(curMaison.codeEtab||curMaison.code));
+let vraiNombre= (idxCount>=0 && maisons[idxCount].caisses)? maisons[idxCount].caisses.length : (curMaison.caisses||[]).length;
+let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=vraiNombre+' caisse'+(vraiNombre>1?'s':'');
 if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
 renderCaissesGerant();
     }
