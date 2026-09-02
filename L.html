@@ -355,10 +355,11 @@ function ajouterCaisse(){
   updateStats();
 }
 function toggleCaissesGerant(){
-  let d=document.getElementById('listeCaissesGerant');
-  if(d.style.display==='none'){renderCaissesGerant(); d.style.display='block';}
-  else{d.style.display='none';}
-}
+ let d=document.getElementById('listeCaissesGerant');
+ if(d.style.display==='none'){renderCaissesGerant(); d.style.display='block';}
+ else{d.style.display='none';}
+ let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
+  }
 function renderCaissesGerant(){
   let div=document.getElementById('listeCaissesGerant');
   if(!curMaison.caisses || curMaison.caisses.length===0){
@@ -397,6 +398,7 @@ function renderCaissesGerant(){
     </div>`;
   });
   html+='</div>';div.innerHTML=html;div.style.display='block';
+let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
 }
 function toggleActiverCaisse(i){
   curMaison.caisses[i].enabled =!curMaison.caisses[i].enabled;
