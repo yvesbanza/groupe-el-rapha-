@@ -323,18 +323,15 @@ function showGerant(){
 if(!curMaison) return;
 let idx=maisons.findIndex(m=>(m.codeEtab||m.code)===(curMaison.codeEtab||curMaison.code));
 if(idx>=0) curMaison=maisons[idx];
-document.getElementById('gerantTitre').innerText=curMaison.nom+' - '+(curMaison.gerant||curMaison.gerantNom||'');
-document.getElementById('gerantInfo').innerHTML='Adresse: '+(curMaison.adresse||'')+'<br>Tel: '+(curMaison.tel||'')+'<br>Gérant: '+(curMaison.gerant||'');
-let elC=document.getElementById('gStatCaisses'); if(elC) elC.innerText=(curMaison.caisses||[]).length;
-let total=(curMaison.caisses||[]).reduce((s,c)=>s+parseFloat(c.solde||0),0);
-let elS=document.getElementById('gStatSolde'); if(elS) elS.innerText=total+' $';
-let elO=document.getElementById('gStatOps'); if(elO) elO.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+(c.ventes?c.ventes.length:0),0);
-let idxCount=maisons.findIndex(m=>(m.codeEtab||m.code)===(curMaison.codeEtab||curMaison.code));
-let vraiNombre= (idxCount>=0 && maisons[idxCount].caisses)? maisons[idxCount].caisses.length : (curMaison.caisses||[]).length;
-let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=vraiNombre+' caisse'+(vraiNombre>1?'s':'');
-if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
+let vraiNombre=(curMaison.caisses||[]).length;
+document.getElementById('gerantTitre').innerText=curMaison.nom||'GROUPE EL-RAPHA';
+document.getElementById('gerantInfo').innerHTML='Adresse: '+(curMaison.adresse||'')+'<br>Gérant: '+(curMaison.gerant||'');
+let e2=document.getElementById('gStatSolde'); if(e2) e2.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+parseFloat(c.solde||0),0)+' $';
+let e3=document.getElementById('gStatOps'); if(e3) e3.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+(c.ventes?c.ventes.length:0),0);
+let btnC=document.getElementById('btnCountCaisse');
+if(btnC) btnC.innerText=vraiNombre+' caisse'+(vraiNombre>1?'s':'');
 renderCaissesGerant();
-    }
+  }
 function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
 function closeFormCaisse(){
   document.getElementById('formCaisse').style.display='none';
