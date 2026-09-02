@@ -179,8 +179,7 @@ document.getElementById('etabLoginEmail').style.display='none';
 document.getElementById('msgCodeInvalide').style.display='none';
 document.getElementById('btnVerifierCode').style.display='block';
 document.getElementById('etabCode').value='';
-}
-
+  }
 function loginDG(){
 enModeDG=true;
 document.getElementById('portal').style.display='none';
@@ -238,7 +237,7 @@ document.getElementById('btnTopLogout').style.display='block';
 document.getElementById('btnTopRetour').style.display='block';
 document.getElementById('dashGerant').style.display='block';
 enModeDG=false; showGerant();
-}
+  }
 
 function retourPortailSansLogout(){
 document.getElementById('dashDG').style.display='none';
@@ -325,11 +324,9 @@ if(idx>=0) curMaison=maisons[idx];
 let vraiNombre=(curMaison.caisses||[]).length;
 let btnC=document.getElementById('btnCountCaisse');
 if(btnC) btnC.innerText=vraiNombre+' caisse'+(vraiNombre>1?'s':'');
-let t=document.getElementById('gerantTitre'); if(t) t.innerText=curMaison.nom||'GROUPE';
-let info=document.getElementById('gerantInfo'); if(info) info.innerHTML='Adresse: '+(curMaison.adresse||'')+'<br>Gérant: '+(curMaison.gerant||'');
-let e2=document.getElementById('gStatSolde'); if(e2) e2.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+parseFloat(c.solde||0),0)+' $';
-let e3=document.getElementById('gStatOps'); if(e3) e3.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+(c.ventes?c.ventes.length:0),0);
-renderCaissesGerant();
+let t=document.getElementById('gerantTitre');
+if(t) t.innerText=curMaison.nom||'GROUPE';
+try{renderCaissesGerant();}catch(e){}
 }
 
 function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
