@@ -320,17 +320,24 @@ function supprimerMaison(i){if(confirm('Supprimer cette maison?')){maisons.splic
 function voirMaison(i){curMaison=maisons[i];enModeDG=true;document.getElementById('dashDG').style.display='none';document.getElementById('headerDG').style.display='none';document.getElementById('dashGerant').style.display='block';document.getElementById('btnRetourGerant').style.display='block';showGerant();}
 function sauvegarder(){localStorage.setItem('maisons',JSON.stringify(maisons));}
 function showGerant(){
+try{
 if(!curMaison) return;
 let idx=maisons.findIndex(m=>(m.codeEtab||m.code)===(curMaison.codeEtab||curMaison.code));
 if(idx>=0) curMaison=maisons[idx];
-let vraiNombre=(curMaison.caisses||[]).length;
-document.getElementById('gerantTitre').innerText=curMaison.nom||'GROUPE EL-RAPHA';
-document.getElementById('gerantInfo').innerHTML='Adresse: '+(curMaison.adresse||'')+'<br>Gérant: '+(curMaison.gerant||'');
+let vraiNombre=(curMaison.caisses&&curMaison.caisses.length)?curMaison.caisses.length:0;
+// si vraiNombre est 0, on va chercher dans maisons directement au cas où curMaison est détaché
+if(vraiNombre===0 && idx>=0 && maisons[idx].caisses) vraiNombre=maisons[idx].caisses.length;
+
+let t=document.getElementById('gerantTitre'); if(t) t.innerText=curMaison.nom||curMaison.codeEtab||'GROUPE EL-RAPHA';
+let inf=document.getElementById('gerantInfo'); if(inf) inf.innerHTML='Adresse: '+(curMaison.adresse||'')+'<br>Gérant: '+(curMaison.gerant||'');
 let e2=document.getElementById('gStatSolde'); if(e2) e2.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+parseFloat(c.solde||0),0)+' $';
 let e3=document.getElementById('gStatOps'); if(e3) e3.innerText=(curMaison.caisses||[]).reduce((s,c)=>s+(c.ventes?c.ventes.length:0),0);
-let btnC=document.getElementById('btnCountCaisse');
-if(btnC) btnC.innerText=vraiNombre+' caisse'+(vraiNombre>1?'s':'');
+let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=vraiNombre+' caisse'+(vraiNombre>1?'s':'');
+
 renderCaissesGerant();
+// re-force après render au cas où render a écrasé
+if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse'+((curMaison.caisses||[]).length>1?'s':'');
+}catch(err){console.log('Erreur showGerant',err); renderCaissesGerant(); let btnC=document.getElementById('btnCountCaisse'); if(btnC) btnC.innerText=(curMaison.caisses||[]).length+' caisse';}
   }
 function openFormCaisse(){document.getElementById('formCaisse').style.display='block';}
 function closeFormCaisse(){
