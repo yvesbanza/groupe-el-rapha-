@@ -79,17 +79,35 @@ document.getElementById('btnVerifierCode').style.display='block';
 document.getElementById('etabCode').value='';
 }
 function loginDG(){
-enModeDG=true;
-document.getElementById('portal').style.display='none';
-document.getElementById('headerPortal').style.display='none';
-document.getElementById('headerDG').style.display='block';
-document.getElementById('dashDG').style.display='block';
-document.getElementById('dashGerant').style.display='none';
-document.getElementById('dashCaisse').style.display='none';
-let r=document.getElementById('btnTopRetour'); if(r){r.style.display='block'; r.innerText='← Retour'; r.setAttribute('onclick','retourPortailSansLogout()');}
-let l=document.getElementById('btnTopLogout'); if(l){l.style.display='block'; l.innerText='Déconnexion'; l.setAttribute('onclick','demanderLogout()');}
-updateCount(); updateStats(); renderListeMaisons();
-}
+  document.getElementById('paneDG').style.display='none';
+  document.getElementById('dashDG').style.display='block';
+  document.getElementById('dashDG').style.visibility='visible';
+  renderListeMaisons();
+  updateStats();
+  }
+  function updateStats(){
+  let totalG = maisons.length;
+  let totalC = 0;
+  maisons.forEach(m=>{ if(m.caisses) totalC += m.caisses.length; });
+  
+  let sg = document.getElementById('statGerants');
+  if(sg) sg.innerText = totalG;
+  
+  let sc = document.getElementById('statCaisses');
+  if(sc) sc.innerText = totalC;
+  
+  let bm = document.getElementById('btnCountMaison');
+  if(bm){
+    bm.innerText = totalG + ' maison' + (totalG>1?'s':'');
+    bm.onclick = toggleListeMaisons;
+  }
+  }
+  function toggleListeMaisons(){
+  let div = document.getElementById('listeMaisons');
+  div.style.display = 'block';
+  renderListeMaisons();
+  div.scrollIntoView({behavior:'smooth'});
+  }
 function verifierCodeEtab(){
 let code=document.getElementById('etabCode').value.trim();
 if(maisons.length===0){document.getElementById('msgCodeInvalide').innerHTML="⚠️ Aucune maison n'a encore été ajoutée par la DG."; document.getElementById('msgCodeInvalide').style.display='block';return;}
@@ -193,21 +211,6 @@ function updateCount(){
   let c = document.getElementById('totalCaisse');
   if(c) c.innerText = totalC;
 }
-function updateStats(){
-  let totalG = maisons.length;
-  let totalC = 0;
-  maisons.forEach(mm=>{ if(mm.caisses) totalC += mm.caisses.length; });
-  
-  // maisons
-  let bm = document.getElementById('btnCountMaison');
-  if(bm) bm.innerText = maisons.length + ' maison' + (maisons.length>1?'s':'');
-  
-  // gerant / caisse
-  let g = document.getElementById('totalGerant');
-  if(g) g.innerText = totalG;
-  let c = document.getElementById('totalCaisse');
-  if(c) c.innerText = totalC;
-  }
 function renderListeMaisons(){
   let div = document.getElementById('listeMaisons');
   if(!div) return;
