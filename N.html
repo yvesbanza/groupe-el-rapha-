@@ -174,9 +174,9 @@ function renderListeMaisons(){
 let div=document.getElementById('listeMaisons');
 if(maisons.length===0){div.innerHTML='<div style="color:#888;padding:12px;text-align:center;background:#fff;border-radius:12px">Aucune maison</div>'; div.style.display='block'; return;}
 let html='<div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee">';
-maisons.forEach((m,i)=>{html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee"><div><b>'+m.nom+'</b><br><small>Code: '+m.codeEtab+'</small></div><div style="display:flex;gap:6px"><div style="background:#111;color:#fff;border-radius:11px;padding:6px 10px;font-size:11px">'+(m.caisses||[]).length+'</div><button onclick="supprimerMaison('+i+')" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px">X</button></div></div>';});
+maisons.forEach((m,i)=>{html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee"><div><b>'+m.nom+'</b><br><small>Code: '+m.codeEtab+'</small></div><div style="display:flex;gap:6px;align-items:center"><button onclick="toggleListeMaisons()" style="background:#111;color:#fff;border:none;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700">Voir</button><button onclick="supprimerMaison('+i+')" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px">🗑️</button></div></div>';});
 html+='</div>'; div.innerHTML=html; div.style.display='block';
-}
+  }
 function supprimerMaison(i){if(confirm('Supprimer cette maison?')){maisons.splice(i,1); sauvegarder(); updateCount(); updateStats(); renderListeMaisons();}}
 function sauvegarder(){localStorage.setItem('maisons',JSON.stringify(maisons));}
 function showGerant(){
