@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EL RAPHA - Groupe</title>
+<title>groupe EL-RAPHA</title>
 <style>
 body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
 .center-title{text-align:center}
@@ -13,7 +13,6 @@ body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
 .btn-w{background:#fff;color:#111;border:1px solid #ddd}
 .portal-tabs{display:flex;gap:8px;margin:10px 0}
 .portal-tab{flex:1}
-.portal-tab.active{background:#111;color:#fff}
 .stats{display:flex;gap:12px}
 .stat{flex:1;border-radius:16px;padding:14px;text-align:center}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:999}
@@ -23,13 +22,13 @@ body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
 </head>
 <body>
 
-<div id="headerPortal" class="center-title"><h2>EL RAPHA GROUP</h2></div>
-<div id="headerDG" class="center-title" style="display:none"><h2>Direction Generale</h2></div>
+<div id="headerPortal" class="center-title"><h2>groupe EL-RAPHA</h2></div>
+<div id="headerDG" class="center-title" style="display:none"><h2>groupe EL-RAPHA - Direction</h2></div>
 
 <div id="portal">
   <div class="portal-tabs">
     <button id="btnTabDG" class="btn btn-b portal-tab active" onclick="showPortal('DG')">DG - Direction</button>
-    <button id="btnTabEtab" class="btn btn-w portal-tab" onclick="showPortal('ETAB')">Etablissements</button>
+    <button id="btnTabEtab" class="btn btn-w portal-tab" onclick="showPortal('ETAB')">Établissements</button>
   </div>
 
   <div id="paneDG" class="card">
@@ -40,21 +39,20 @@ body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
   </div>
 
   <div id="paneEtab" class="card" style="display:none">
-    <h3>Connexion Etablissement</h3>
+    <h3>Connexion Établissement</h3>
     <div id="etabCodeSection">
-      <input id="etabCode" placeholder="Code Etablissement ex: ELR-MAT-2026" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc">
+      <input id="etabCode" placeholder="Code Établissement ex: ELR-MAT-2026" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc">
       <div id="msgCodeInvalide" style="display:none;color:red;margin-top:8px">Code invalide</div>
-      <button class="btn btn-b" style="width:100%;margin-top:12px" onclick="verifierCodeEtab()">Verifier</button>
-      <div id="etabVerificationCode" style="display:none;margin-top:12px"></div>
+      <button class="btn btn-b" style="width:100%;margin-top:12px" onclick="verifierCodeEtab()">Vérifier</button>
       <div id="nomMaisonTrouvee" style="font-weight:700;margin-top:8px"></div>
     </div>
     <div id="etabRoleChoice" style="display:none;margin-top:16px">
-      <button class="btn btn-b" style="width:100%;margin-bottom:8px" onclick="choisirRole('GERANT')">Gerant de la maison</button>
+      <button class="btn btn-b" style="width:100%;margin-bottom:8px" onclick="choisirRole('GERANT')">Gérant de la maison</button>
       <button class="btn btn-b" style="width:100%" onclick="choisirRole('CAISSE')">Caisse de la maison</button>
     </div>
     <div id="etabLoginGerant" style="display:none">
-      <input id="gerantEmail" placeholder="Email gerant" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc">
-      <button class="btn btn-b" style="width:100%;margin-top:10px" onclick="finalLoginGerant()">Entrer Gerant</button>
+      <input id="gerantEmail" placeholder="Email gérant" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc">
+      <button class="btn btn-b" style="width:100%;margin-top:10px" onclick="finalLoginGerant()">Entrer Gérant</button>
     </div>
     <div id="etabChoixCaisse" style="display:none"><div id="listeCaissesLogin"></div></div>
     <div id="etabLoginEmail" style="display:none">
@@ -62,8 +60,8 @@ body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
       <button class="btn btn-b" style="width:100%;margin-top:10px" onclick="entrerCaisse()">Entrer Caisse</button>
     </div>
     <div id="etabCreationEmail" style="display:none">
-      <input id="caissierCreationEmail" placeholder="Creer email acces caisse" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc">
-      <button class="btn btn-b" style="width:100%;margin-top:10px" onclick="creerAccesCaisse()">Creer acces</button>
+      <input id="caissierCreationEmail" placeholder="Créer email accès caisse" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc">
+      <button class="btn btn-b" style="width:100%;margin-top:10px" onclick="creerAccesCaisse()">Créer accès</button>
     </div>
   </div>
 </div>
@@ -84,7 +82,7 @@ body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
     <input id="nCodeEtab" placeholder="Code ex: ELR-MAT-2026" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc"><br><br>
     <input id="nTel" placeholder="Tel" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc"><br><br>
     <input id="nAdresse" placeholder="Adresse" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc"><br><br>
-    <input id="nGerant" placeholder="Nom Gerant" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc"><br><br>
+    <input id="nGerant" placeholder="Nom Gérant" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc"><br><br>
     <button class="btn btn-b" onclick="ajouterMaison()">Enregistrer</button>
     <button class="btn btn-w" onclick="closeMaisonForm()">Fermer</button>
   </div>
@@ -103,7 +101,7 @@ body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
     <div style="margin-top:12px;display:flex;gap:8px">
       <button class="btn btn-b" onclick="openFormCaisse()">+ Nouvelle Caisse</button>
       <button id="btnTopRetour" class="btn btn-w" onclick="retourDG()">Retour DG</button>
-      <button id="btnTopLogout" class="btn btn-w" onclick="demanderLogout()">Deconnexion</button>
+      <button id="btnTopLogout" class="btn btn-w" onclick="demanderLogout()">Déconnexion</button>
     </div>
     <div id="formCaisse" style="display:none;margin-top:12px">
       <input id="cCode" placeholder="Code Caisse" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc"><br><br>
@@ -117,17 +115,17 @@ body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
 
 <div id="dashCaisse" style="display:none" class="card"><h3>Caisse</h3><div id="caisseInfo"></div><button class="btn btn-w" onclick="retourChoixRole()">Retour</button></div>
 
-<div id="modalLogout" class="modal"><div class="modal-box"><h3>Voulez-vous vous deconnecter?</h3><button class="btn btn-b" onclick="confirmerLogout()">Oui</button> <button class="btn btn-w" onclick="closeModalLogout()">Non</button></div></div>
+<div id="modalLogout" class="modal"><div class="modal-box"><h3>Voulez-vous vous déconnecter?</h3><button class="btn btn-b" onclick="confirmerLogout()">Oui</button> <button class="btn btn-w" onclick="closeModalLogout()">Non</button></div></div>
 
 <div id="modalEditMaison" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);align-items:center;justify-content:center;z-index:1000">
   <div style="background:#fff;border-radius:20px;padding:20px;width:90%;max-width:420px">
     <h4>Modifier la maison</h4>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
-      <input id="editCodeMaison" style="padding:12px;border-radius:8px;border:1px solid #ccc" placeholder="Code">
-      <input id="editNomMaison" style="padding:12px;border-radius:8px;border:1px solid #ccc" placeholder="Nom">
-      <input id="editTelMaison" style="padding:12px;border-radius:8px;border:1px solid #ccc" placeholder="Tel">
-      <input id="editAdresseMaison" style="padding:12px;border-radius:8px;border:1px solid #ccc" placeholder="Adresse">
-      <input id="editNomGerant" style="padding:12px;border-radius:8px;border:1px solid #ccc" placeholder="Gerant">
+      <input id="editCodeMaison" style="padding:12px;border-radius:8px;border:1px solid #ccc">
+      <input id="editNomMaison" style="padding:12px;border-radius:8px;border:1px solid #ccc">
+      <input id="editTelMaison" style="padding:12px;border-radius:8px;border:1px solid #ccc">
+      <input id="editAdresseMaison" style="padding:12px;border-radius:8px;border:1px solid #ccc">
+      <input id="editNomGerant" style="padding:12px;border-radius:8px;border:1px solid #ccc">
     </div>
     <div style="display:flex;gap:10px;margin-top:16px">
       <button class="btn btn-w" style="flex:1" onclick="closeModalEditMaison()">Fermer</button>
@@ -138,89 +136,44 @@ body{font-family:system-ui;background:#f6f6f6;margin:0;padding:12px}
 
 <script>
 let maisons = JSON.parse(localStorage.getItem('maisons') || localStorage.getItem('elrapha_maisons') || '[]');
-let curMaison = null; let curCaisse = null; let curRole = null; let enModeDG = false;
-let editIndexMaison = -1;
-
-function saveData(){
-  localStorage.setItem('maisons', JSON.stringify(maisons));
-  localStorage.setItem('elrapha_maisons', JSON.stringify(maisons));
-}
+let curMaison = null; let curCaisse = null; let curRole = null; let enModeDG = false; let editIndexMaison = -1;
+function saveData(){ localStorage.setItem('maisons', JSON.stringify(maisons)); localStorage.setItem('elrapha_maisons', JSON.stringify(maisons)); }
 
 function showPortal(t){
-  let paneDG = document.getElementById('paneDG');
-  let paneEtab = document.getElementById('paneEtab');
-  let dashDG = document.getElementById('dashDG');
-  let dashGerant = document.getElementById('dashGerant');
-  let dashCaisse = document.getElementById('dashCaisse');
-  let btnDG = document.getElementById('btnTabDG');
-  let btnEtab = document.getElementById('btnTabEtab');
-  if(t === 'DG'){
-    if(paneDG) paneDG.style.display='block';
-    if(paneEtab) paneEtab.style.display='none';
-    if(dashGerant) dashGerant.style.display='none';
-    if(dashCaisse) dashCaisse.style.display='none';
-    if(enModeDG && dashDG) dashDG.style.display='block';
-  } else {
-    if(paneDG) paneDG.style.display='none';
-    if(paneEtab) paneEtab.style.display='block';
-    if(dashDG) dashDG.style.display='none';
-    if(dashGerant) dashGerant.style.display='none';
-    if(dashCaisse) dashCaisse.style.display='none';
-  }
-  if(btnDG && btnEtab){
-    if(t==='DG'){btnDG.style.background='#111';btnDG.style.color='#fff';btnEtab.style.background='#fff';btnEtab.style.color='#111';}
-    else {btnEtab.style.background='#111';btnEtab.style.color='#fff';btnDG.style.background='#fff';btnDG.style.color='#111';}
-  }
+  let paneDG=document.getElementById('paneDG'); let paneEtab=document.getElementById('paneEtab');
+  let dashDG=document.getElementById('dashDG'); let dashGerant=document.getElementById('dashGerant'); let dashCaisse=document.getElementById('dashCaisse');
+  let btnDG=document.getElementById('btnTabDG'); let btnEtab=document.getElementById('btnTabEtab');
+  if(t==='DG'){ if(paneDG) paneDG.style.display='block'; if(paneEtab) paneEtab.style.display='none'; if(dashGerant) dashGerant.style.display='none'; if(dashCaisse) dashCaisse.style.display='none'; if(enModeDG&&dashDG) dashDG.style.display='block'; }
+  else { if(paneDG) paneDG.style.display='none'; if(paneEtab) paneEtab.style.display='block'; if(dashDG) dashDG.style.display='none'; if(dashGerant) dashGerant.style.display='none'; if(dashCaisse) dashCaisse.style.display='none'; }
+  if(btnDG&&btnEtab){ if(t==='DG'){btnDG.style.background='#111';btnDG.style.color='#fff';btnEtab.style.background='#fff';btnEtab.style.color='#111';} else {btnEtab.style.background='#111';btnEtab.style.color='#fff';btnDG.style.background='#fff';btnDG.style.color='#111';} }
 }
 
 function resetEtabLogin(){
-  ['etabRoleChoice','etabLoginGerant','etabChoixCaisse','etabCreationEmail','etabLoginEmail','msgCodeInvalide'].forEach(id=>{
-    let el=document.getElementById(id); if(el) el.style.display='none';
-  });
-  let code=document.getElementById('etabCode'); if(code) code.value='';
-  let sec=document.getElementById('etabCodeSection'); if(sec) sec.style.display='block';
-  let nom=document.getElementById('nomMaisonTrouvee'); if(nom) nom.innerText='';
+  ['etabRoleChoice','etabLoginGerant','etabChoixCaisse','etabCreationEmail','etabLoginEmail','msgCodeInvalide'].forEach(id=>{let el=document.getElementById(id); if(el) el.style.display='none';});
+  let code=document.getElementById('etabCode'); if(code) code.value=''; let sec=document.getElementById('etabCodeSection'); if(sec) sec.style.display='block'; let nom=document.getElementById('nomMaisonTrouvee'); if(nom) nom.innerText='';
 }
 
 function loginDG(){
-  let email=document.getElementById('dgEmail').value.trim();
-  let pass=document.getElementById('dgPass').value.trim();
-  if(email.toLowerCase()!=='dg@elrapha.cd' || pass!=='12345678'){ alert('Identifiants DG invalides'); return; }
-  enModeDG=true;
-  document.getElementById('paneDG').style.display='none';
-  document.getElementById('portal').style.display='none';
-  document.getElementById('headerPortal').style.display='none';
-  document.getElementById('headerDG').style.display='block';
-  let d=document.getElementById('dashDG'); d.style.display='block'; d.style.visibility='visible';
-  renderListeMaisons(); updateStats(); updateCount();
+  let email=document.getElementById('dgEmail').value.trim(); let pass=document.getElementById('dgPass').value.trim();
+  if(email.toLowerCase()!=='dg@elrapha.cd'||pass!=='12345678'){alert('Identifiants DG invalides');return;}
+  enModeDG=true; document.getElementById('paneDG').style.display='none'; document.getElementById('portal').style.display='none'; document.getElementById('headerPortal').style.display='none'; document.getElementById('headerDG').style.display='block';
+  let d=document.getElementById('dashDG'); d.style.display='block'; d.style.visibility='visible'; renderListeMaisons(); updateStats(); updateCount();
 }
 
 function updateStats(){
-  let totalG = maisons.length;
-  let totalC = 0;
-  maisons.forEach(m=>{ if(m.caisses) totalC += m.caisses.length; });
+  let totalG=maisons.length; let totalC=0; maisons.forEach(m=>{if(m.caisses) totalC+=m.caisses.length;});
   let sg=document.getElementById('statGerants'); if(sg) sg.innerText=totalG;
   let sc=document.getElementById('statCaisses'); if(sc) sc.innerText=totalC;
-  let bm=document.getElementById('btnCountMaison'); if(bm) bm.innerText= totalG + ' maison' + (totalG>1?'s':'');
-  let bc=document.getElementById('btnCountCaisse'); if(bc) bc.innerText= totalC + ' caisse' + (totalC>1?'s':'');
+  let bm=document.getElementById('btnCountMaison'); if(bm) bm.innerText=totalG+' maison'+(totalG>1?'s':'');
+  let bc=document.getElementById('btnCountCaisse'); if(bc) bc.innerText=totalC+' caisse'+(totalC>1?'s':'');
 }
 function updateCount(){ updateStats(); }
-
-function toggleListeMaisons(){
-  let div=document.getElementById('listeMaisons');
-  if(!div) return;
-  div.style.display='block';
-  renderListeMaisons();
-  div.scrollIntoView({behavior:'smooth'});
-}
+function toggleListeMaisons(){ let div=document.getElementById('listeMaisons'); if(!div) return; div.style.display='block'; renderListeMaisons(); div.scrollIntoView({behavior:'smooth'}); }
 
 function verifierCodeEtab(){
   let code=document.getElementById('etabCode').value.trim().toLowerCase();
-  if(maisons.length===0){ let m=document.getElementById('msgCodeInvalide'); m.style.display='block'; m.innerText='Aucune maison enregistree'; return; }
+  if(maisons.length===0){ let m=document.getElementById('msgCodeInvalide'); m.style.display='block'; m.innerText='Aucune maison enregistrée'; return; }
   let m=maisons.find(x=> (x.codeEtab||'').toLowerCase()===code || (x.code||'').toLowerCase()===code );
   if(!m){ let mm=document.getElementById('msgCodeInvalide'); mm.style.display='block'; mm.innerText='Code invalide'; return; }
-  curMaison=m;
-  document.getElementById('msgCodeInvalide').style.display='none';
-  document.getElementById('nomMaisonTrouvee').innerText='Code valide: '+m.nom + ' ('+ (m.codeEtab||m.code) +')';
-  document.getElementById('etabRoleChoice').style.display='block';
+  curMaison=m; document.getElementById('msgCodeInvalide').style.display='none'; document.getElementById('nomMaisonTrouvee').innerText='Code valide: '+m.nom+' ('+(m.codeEtab||m.code)+')'; document.getElementById('etabRoleChoice').style.display='block';
 }
