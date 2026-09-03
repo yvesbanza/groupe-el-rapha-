@@ -179,19 +179,31 @@ html+='<div style="display:flex;justify-content:space-between;align-items:center
 });
 html+='</div>'; div.innerHTML=html; div.style.display='block';
 }
+let editIndexMaison = -1;
 function editMaison(idx){
-let m=maisons[idx];
-let newNom=prompt("Nom de la maison:", m.nom); if(newNom===null) return;
-let newTel=prompt("Téléphone de la maison:", m.tel||""); if(newTel===null) return;
-let newAdresse=prompt("Adresse de la maison:", m.adresse||""); if(newAdresse===null) return;
-let newGerant=prompt("Nom du Gérant:", m.gerant||""); if(newGerant===null) return;
-maisons[idx].nom=newNom.trim()||m.nom;
-maisons[idx].tel=newTel.trim();
-maisons[idx].adresse=newAdresse.trim();
-maisons[idx].gerant=newGerant.trim();
-saveData(); renderStatsDG(); renderListeMaisons();
-alert("Maison modifiée!");
+  editIndexMaison = idx;
+  let m = maisons[idx];
+  document.getElementById('editCodeMaison').value = m.codeEtab || "";
+  document.getElementById('editNomMaison').value = m.nom || "";
+  document.getElementById('editTelMaison').value = m.tel || "";
+  document.getElementById('editAdresseMaison').value = m.adresse || "";
+  document.getElementById('editNomGerant').value = m.gerant || "";
+  document.getElementById('modalEditMaison').style.display = 'flex';
 }
+function closeModalEditMaison(){
+  document.getElementById('modalEditMaison').style.display = 'none';
+  editIndexMaison = -1;
+}
+function saveEditMaison(){
+  if(editIndexMaison < 0) return;
+  maisons[editIndexMaison].codeEtab = document.getElementById('editCodeMaison').value.trim();
+  maisons[editIndexMaison].nom = document.getElementById('editNomMaison').value.trim();
+  maisons[editIndexMaison].tel = document.getElementById('editTelMaison').value.trim();
+  maisons[editIndexMaison].adresse = document.getElementById('editAdresseMaison').value.trim();
+  maisons[editIndexMaison].gerant = document.getElementById('editNomGerant').value.trim();
+  saveData(); renderStatsDG(); renderListeMaisons();
+  closeModalEditMaison();
+    }
 function supprimerMaison(idx){
 if(!confirm("Supprimer la maison "+maisons[idx].nom+" et toutes ses caisses? Cette action est irréversible.")) return;
 maisons.splice(idx,1);
@@ -292,5 +304,21 @@ document.getElementById('btnTopRetour').style.display='none';
 resetEtabLogin(); showPortal('DG');
 }
 </script>
+<div id="modalEditMaison" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:16px">
+ <div style="background:#fff;border-radius:20px;padding:20px;width:100%;max-width:380px;box-shadow:0 10px 30px rgba(0,0,0,0.3)">
+  <b style="font-size:18px">Modifier la maison</b>
+  <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+    <input id="editCodeMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Code Maison">
+    <input id="editNomMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Nom Maison">
+    <input id="editTelMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Téléphone de la maison">
+    <input id="editAdresseMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Adresse de la maison">
+    <input id="editNomGerant" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Nom Gerant">
+  </div>
+  <div style="display:flex;gap:10px;margin-top:16px">
+    <button onclick="closeModalEditMaison()" style="flex:1;padding:12px;border-radius:12px;border:1px solid #ccc;background:#fff;font-weight:700">Annuler</button>
+    <button onclick="saveEditMaison()" style="flex:1;padding:12px;border-radius:12px;border:2px solid #111;background:#ffcc00;font-weight:800">Modifier</button>
+  </div>
+ </div>
+</div>
 </body>
 </html>
