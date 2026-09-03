@@ -168,8 +168,30 @@ sauvegarder(); closeMaisonForm();
 updateCount(); updateStats(); renderListeMaisons();
 }
 function updateCount(){
-  let el = document.getElementById('btnCountMaison');
-  if(el) el.innerText = maisons.length + ' maison' + (maisons.length>1?'s':'');
+  // 1. Compte maisons
+  let el = document.getElementById('btnCountMaison') || document.getElementById('btnMaison');
+  if(el){
+    el.innerText = maisons.length + ' maison' + (maisons.length>1?'s':'');
+    el.style.display = 'inline-block';
+    // quand on clique dessus, on montre la liste
+    el.onclick = function(){
+      let liste = document.getElementById('listeMaisons');
+      if(liste){
+        liste.scrollIntoView({behavior:'smooth'});
+        renderListeMaisons();
+      }
+    };
+  }
+
+  // 2. Force Gérant / Caisse en même temps
+  let totalG = maisons.length;
+  let totalC = 0;
+  maisons.forEach(m=>{ if(m.caisses) totalC += m.caisses.length; });
+  
+  let g = document.getElementById('totalGerant');
+  if(g) g.innerText = totalG;
+  let c = document.getElementById('totalCaisse');
+  if(c) c.innerText = totalC;
 }
 function updateStats(){
   let totalG = maisons.length;
