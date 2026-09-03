@@ -207,7 +207,7 @@ function renderListeMaisons(){
     });
     div.innerHTML = html;
   }
-  // ICI ON FORCE LES COMPTEURS APRES LE RENDU
+  // FORCE COMPTEURS - MAINTENANT A L'INTERIEUR
   let totalG = maisons.length;
   let totalC = 0;
   maisons.forEach(mm => { if(mm.caisses) totalC += mm.caisses.length; });
