@@ -174,10 +174,30 @@ function renderListeMaisons(){
 let div=document.getElementById('listeMaisons');
 if(maisons.length===0){div.innerHTML='<div style="color:#888;padding:12px;text-align:center;background:#fff;border-radius:12px">Aucune maison</div>'; div.style.display='block'; return;}
 let html='<div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee">';
-maisons.forEach((m,i)=>{html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee"><div><b>'+m.nom+'</b><br><small>Code: '+m.codeEtab+'</small></div><div style="display:flex;gap:6px;align-items:center"><button onclick="toggleListeMaisons()" style="background:#111;color:#fff;border:none;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700">Voir</button><button onclick="supprimerMaison('+i+')" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:8px">🗑️</button></div></div>';});
+maisons.forEach((m,i)=>{
+html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee"><div><b>'+m.nom+'</b><br><small>Code: '+m.codeEtab+'</small></div><div style="display:flex;background:#2f3640;border-radius:10px;overflow:hidden;border:1px solid #2f3640"><div onclick="editMaison('+i+')" style="width:34px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #4a5568"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div><div onclick="supprimerMaison('+i+')" style="width:34px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></div></div></div>';
+});
 html+='</div>'; div.innerHTML=html; div.style.display='block';
+}
+function editMaison(idx){
+let m=maisons[idx];
+let newNom=prompt("Nom de la maison:", m.nom); if(newNom===null) return;
+let newTel=prompt("Téléphone de la maison:", m.tel||""); if(newTel===null) return;
+let newAdresse=prompt("Adresse de la maison:", m.adresse||""); if(newAdresse===null) return;
+let newGerant=prompt("Nom du Gérant:", m.gerant||""); if(newGerant===null) return;
+maisons[idx].nom=newNom.trim()||m.nom;
+maisons[idx].tel=newTel.trim();
+maisons[idx].adresse=newAdresse.trim();
+maisons[idx].gerant=newGerant.trim();
+saveData(); renderStatsDG(); renderListeMaisons();
+alert("Maison modifiée!");
+}
+function supprimerMaison(idx){
+if(!confirm("Supprimer la maison "+maisons[idx].nom+" et toutes ses caisses? Cette action est irréversible.")) return;
+maisons.splice(idx,1);
+saveData(); renderStatsDG(); renderListeMaisons();
+alert("Maison supprimée");
   }
-function supprimerMaison(i){if(confirm('Supprimer cette maison?')){maisons.splice(i,1); sauvegarder(); updateCount(); updateStats(); renderListeMaisons();}}
 function sauvegarder(){localStorage.setItem('maisons',JSON.stringify(maisons));}
 function showGerant(){
 if(!curMaison) return;
