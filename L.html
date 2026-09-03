@@ -156,8 +156,7 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
 
 <div id="dashCaisse" style="display:none"><div class="card"><h3 id="caisseTitre"></h3><div id="caisseInfo"></div></div></div>
 
-<div id="modalLogout" class="modal"><div class="modal-box"><h3>Voulez-vous vous déconnecter?</h3><br><button class="btn btn-b" onclick="confirmerLogout()">Oui</button><br><br><button class="btn btn-w" onclick="closeModalLogout()">Non</button></div></div>
-
+<div id="modalLogout" class="modal"><div class="modal-box"><h3>Voulez-vous vous déconnecter?</h3><br><div style="display:flex;gap:10px"><button class="btn btn-b" onclick="confirmerLogout()">Oui</button><button class="btn btn-w" onclick="closeModalLogout()">Non</button></div></div></div>
 <script>
 let maisons = JSON.parse(localStorage.getItem('maisons') || '[]');
 let curMaison = null; let curCaisse = null; let curRole = null; let enModeDG = false;
@@ -268,8 +267,12 @@ document.getElementById('btnTopLogout').style.display='block';
 updateStats(); renderListeMaisons();
 }
 
-function demanderLogout(){document.getElementById('modalLogout').classList.add('open');}
-function annulerLogout(){document.getElementById('modalLogout').classList.remove('open');}
+function demanderLogout(){
+document.getElementById('modalLogout').classList.add('open');
+  }
+function annulerLogout(){
+document.getElementById('modalLogout').classList.remove('open');
+}
 function openMaisonForm(){document.getElementById('formMaison').style.display='block';}
 function closeMaisonForm(){document.getElementById('formMaison').style.display='none';}
 function fermerMsgMaison(){document.getElementById('msgMaison').style.display='none';}
@@ -501,12 +504,15 @@ document.getElementById('headerDG').style.display='none';
 document.getElementById('dashDG').style.display='none';
 document.getElementById('dashGerant').style.display='none';
 document.getElementById('dashCaisse').style.display='none';
-document.getElementById('btnTopLogout').style.display='none';
+document.getElementById('btnTopLogout').style.display='block';
+document.getElementById('btnTopRetour').style.display='none';
 resetEtabLogin();
 showPortal('DG');
-}
+  }
 
-function closeModalLogout(){document.getElementById('modalLogout').classList.remove('open');}
+function closeModalLogout(){
+document.getElementById('modalLogout').classList.remove('open');
+  }
 </script>
 </body>
 </html>
