@@ -183,7 +183,7 @@ let editIndexMaison = -1;
 function editMaison(idx){
   editIndexMaison = idx;
   let m = maisons[idx];
-  document.getElementById('editCodeMaison').value = m.codeEtab || "";
+  document.getElementById('editCodeMaison').value = m.codeEtab || m.codeMaison || "";
   document.getElementById('editNomMaison').value = m.nom || "";
   document.getElementById('editTelMaison').value = m.tel || "";
   document.getElementById('editAdresseMaison').value = m.adresse || "";
@@ -196,14 +196,45 @@ function closeModalEditMaison(){
 }
 function saveEditMaison(){
   if(editIndexMaison < 0) return;
-  maisons[editIndexMaison].codeEtab = document.getElementById('editCodeMaison').value.trim();
-  maisons[editIndexMaison].nom = document.getElementById('editNomMaison').value.trim();
+  let code = document.getElementById('editCodeMaison').value.trim();
+  let nom = document.getElementById('editNomMaison').value.trim();
+  if(!code ||!nom){ alert("Code et Nom obligatoires"); return; }
+
+  maisons[editIndexMaison].codeEtab = code;
+  maisons[editIndexMaison].codeMaison = code;
+  maisons[editIndexMaison].code = code;
+  maisons[editIndexMaison].nom = nom;
   maisons[editIndexMaison].tel = document.getElementById('editTelMaison').value.trim();
   maisons[editIndexMaison].adresse = document.getElementById('editAdresseMaison').value.trim();
   maisons[editIndexMaison].gerant = document.getElementById('editNomGerant').value.trim();
-  saveData(); renderStatsDG(); renderListeMaisons();
+
+  // Sauvegarde - compatible avec ton code
+  if(typeof sauvegarder === 'function') sauvegarder();
+  if(typeof saveData === 'function') saveData();
+  localStorage.setItem('maisons', JSON.stringify(maisons));
+
+  // Mise à jour des compteurs
+  if(typeof updateStats === 'function') updateStats();
+  if(typeof updateCount === 'function') updateCount();
+  if(typeof renderStatsDG === 'function') renderStatsDG();
+
+  // Compteurs 0 Gérant / 0 Caisse - on force le calcul
+  let totalG = maisons.length;
+  let totalC = 0;
+  maisons.forEach(mm=>{ if(mm.caisses) totalC += mm.caisses.length; });
+  let elG = document.getElementById('totalGerant') || document.getElementById('statGerant') || document.querySelector('[id*="Gerant"]');
+  let elC = document.getElementById('totalCaisse') || document.getElementById('statCaisse') || document.querySelector('[id*="Caisse"]');
+  // Si tu as des IDs simples comme dans ta capture 2
+  // On cherche aussi par texte
+  document.querySelectorAll('div').forEach(d=>{
+    if(d.textContent.includes('Gerant') && d.querySelector('b, span')){}
+  });
+
+  renderListeMaisons();
   closeModalEditMaison();
-    }
+  // Forcer refresh visuel des stats
+  setTimeout(()=>{ location.reload(); }, 300);
+  }
 function supprimerMaison(idx){
 if(!confirm("Supprimer la maison "+maisons[idx].nom+" et toutes ses caisses? Cette action est irréversible.")) return;
 maisons.splice(idx,1);
