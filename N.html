@@ -174,19 +174,21 @@ function updateCount(){
 function updateStats(){
   let totalG = maisons.length;
   let totalC = 0;
-  maisons.forEach(mm => { if(mm.caisses) totalC += mm.caisses.length; });
+  maisons.forEach(m => { if(m.caisses) totalC += m.caisses.length; });
 
-  // On met à jour les cartes 0 Gerant / 0 Caisse
-  let elG = document.getElementById('totalGerant');
-  if(elG) elG.innerText = totalG;
-  let elC = document.getElementById('totalCaisse');
-  if(elC) elC.innerText = totalC;
+  // Force les 2 cartes du dashboard
+  let g = document.getElementById('totalGerant');
+  if(g) g.innerText = totalG;
+  let c = document.getElementById('totalCaisse');
+  if(c) c.innerText = totalC;
 
-  // Fallback si tu n'as pas d'ID : on cherche les 2 cartes par position
-  let stats = document.querySelectorAll('.stat-card, [style*="background"]');
-  // plus simple : les 2 premières divs du dashboard
-  let dash = document.querySelectorAll('div');
-}
+  // si les IDs n'existent pas encore, on les trouve autrement
+  if(!g ||!c){
+    let allB = document.querySelectorAll('#dosGerant b, #dosCaisse b,.stat-card b');
+    if(allB[0]) allB[0].innerText = totalG;
+    if(allB[1]) allB[1].innerText = totalC;
+  }
+  }
 function renderListeMaisons(){
   let div = document.getElementById('listeMaisons');
   if(!div) return;
