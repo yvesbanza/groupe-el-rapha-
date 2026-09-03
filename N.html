@@ -304,21 +304,24 @@ document.getElementById('btnTopRetour').style.display='none';
 resetEtabLogin(); showPortal('DG');
 }
 </script>
+
 <div id="modalEditMaison" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:16px">
- <div style="background:#fff;border-radius:20px;padding:20px;width:100%;max-width:380px;box-shadow:0 10px 30px rgba(0,0,0,0.3)">
-  <b style="font-size:18px">Modifier la maison</b>
-  <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
-    <input id="editCodeMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Code Maison">
-    <input id="editNomMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Nom Maison">
-    <input id="editTelMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Téléphone de la maison">
-    <input id="editAdresseMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Adresse de la maison">
-    <input id="editNomGerant" style="padding:12px;border-radius:12px;border:1px solid #ddd" placeholder="Nom Gerant">
+  <div style="background:#fff;border-radius:20px;padding:20px;width:100%;max-width:380px">
+    <b style="font-size:18px">Modifier la maison</b>
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+      <input id="editCodeMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd">
+      <input id="editNomMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd">
+      <input id="editTelMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd">
+      <input id="editAdresseMaison" style="padding:12px;border-radius:12px;border:1px solid #ddd">
+      <input id="editNomGerant" style="padding:12px;border-radius:12px;border:1px solid #ddd">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="closeModalEditMaison()" style="flex:1;padding:12px;border-radius:12px;border:1px solid #ccc;background:#fff;font-weight:700">Annuler</button>
+      <button onclick="saveEditMaison()" style="flex:1;padding:12px;border-radius:12px;border:2px solid #111;background:#ffcc00;font-weight:800">Modifier</button>
+    </div>
   </div>
-  <div style="display:flex;gap:10px;margin-top:16px">
-    <button onclick="closeModalEditMaison()" style="flex:1;padding:12px;border-radius:12px;border:1px solid #ccc;background:#fff;font-weight:700">Annuler</button>
-    <button onclick="saveEditMaison()" style="flex:1;padding:12px;border-radius:12px;border:2px solid #111;background:#ffcc00;font-weight:800">Modifier</button>
-  </div>
- </div>
 </div>
+
 </body>
+</html>
 </html>
