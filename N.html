@@ -178,6 +178,32 @@ maisons.forEach((m,i)=>{
 html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee"><div><b>'+m.nom+'</b><br><small>Code: '+m.codeEtab+'</small></div><div style="display:flex;background:#2f3640;border-radius:10px;overflow:hidden;border:1px solid #2f3640"><div onclick="editMaison('+i+')" style="width:34px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #4a5568"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div><div onclick="supprimerMaison('+i+')" style="width:34px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></div></div></div>';
 });
 html+='</div>'; div.innerHTML=html; div.style.display='block';
+// FORCE COMPTEURS GERANT / CAISSE
+let totalG = maisons.length;
+let totalC = 0;
+maisons.forEach(mm => { if(mm.caisses) totalC += mm.caisses.length; });
+
+let cards = document.querySelectorAll('.stat-card, div');
+cards.forEach(card=>{
+  let txt = card.innerText || "";
+  if(txt.includes('Gerant')){
+    let b = card.querySelector('div, b, span');
+    // le premier chiffre dans la carte
+    let numEl = card.firstElementChild || card.querySelector('b');
+    if(numEl) numEl.innerText = totalG;
+    // sinon on cherche le 0
+    if(card.innerHTML.includes('>0<')) card.innerHTML = card.innerHTML.replace('>0<', '>'+totalG+'<');
+  }
+  if(txt.includes('Caisse') &&!txt.includes('CaisseGerant')){
+    if(card.innerHTML.includes('>0<')) card.innerHTML = card.innerHTML.replace('>0<', '>'+totalC+'<');
+  }
+});
+
+// version simple si tu as les IDs
+let el1 = document.getElementById('totalGerant');
+if(el1) el1.innerText = totalG;
+let el2 = document.getElementById('totalCaisse');
+if(el2) el2.innerText = totalC;
 }
 let editIndexMaison = -1;
 function editMaison(idx){
@@ -195,46 +221,21 @@ function closeModalEditMaison(){
   editIndexMaison = -1;
 }
 function saveEditMaison(){
-  if(editIndexMaison < 0) return;
-  let code = document.getElementById('editCodeMaison').value.trim();
-  let nom = document.getElementById('editNomMaison').value.trim();
-  if(!code ||!nom){ alert("Code et Nom obligatoires"); return; }
+  let idx = editIndexMaison;
+  if(idx < 0) return;
+  maisons[idx].codeEtab = document.getElementById('editCodeMaison').value;
+  maisons[idx].codeMaison = document.getElementById('editCodeMaison').value;
+  maisons[idx].nom = document.getElementById('editNomMaison').value;
+  maisons[idx].tel = document.getElementById('editTelMaison').value;
+  maisons[idx].adresse = document.getElementById('editAdresseMaison').value;
+  maisons[idx].gerant = document.getElementById('editNomGerant').value;
 
-  maisons[editIndexMaison].codeEtab = code;
-  maisons[editIndexMaison].codeMaison = code;
-  maisons[editIndexMaison].code = code;
-  maisons[editIndexMaison].nom = nom;
-  maisons[editIndexMaison].tel = document.getElementById('editTelMaison').value.trim();
-  maisons[editIndexMaison].adresse = document.getElementById('editAdresseMaison').value.trim();
-  maisons[editIndexMaison].gerant = document.getElementById('editNomGerant').value.trim();
-
-  // Sauvegarde - compatible avec ton code
-  if(typeof sauvegarder === 'function') sauvegarder();
-  if(typeof saveData === 'function') saveData();
+  localStorage.setItem('elrapha_maisons', JSON.stringify(maisons));
   localStorage.setItem('maisons', JSON.stringify(maisons));
 
-  // Mise à jour des compteurs
-  if(typeof updateStats === 'function') updateStats();
-  if(typeof updateCount === 'function') updateCount();
-  if(typeof renderStatsDG === 'function') renderStatsDG();
-
-  // Compteurs 0 Gérant / 0 Caisse - on force le calcul
-  let totalG = maisons.length;
-  let totalC = 0;
-  maisons.forEach(mm=>{ if(mm.caisses) totalC += mm.caisses.length; });
-  let elG = document.getElementById('totalGerant') || document.getElementById('statGerant') || document.querySelector('[id*="Gerant"]');
-  let elC = document.getElementById('totalCaisse') || document.getElementById('statCaisse') || document.querySelector('[id*="Caisse"]');
-  // Si tu as des IDs simples comme dans ta capture 2
-  // On cherche aussi par texte
-  document.querySelectorAll('div').forEach(d=>{
-    if(d.textContent.includes('Gerant') && d.querySelector('b, span')){}
-  });
-
-  renderListeMaisons();
-  closeModalEditMaison();
-  // Forcer refresh visuel des stats
-  setTimeout(()=>{ location.reload(); }, 300);
-  }
+  document.getElementById('modalEditMaison').style.display = 'none';
+  location.reload();
+                                             }
 function supprimerMaison(idx){
 if(!confirm("Supprimer la maison "+maisons[idx].nom+" et toutes ses caisses? Cette action est irréversible.")) return;
 maisons.splice(idx,1);
