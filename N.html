@@ -62,12 +62,38 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bo
 let maisons=JSON.parse(localStorage.getItem('maisons')||'[]');
 let curMaison=null; let curCaisse=null; let curRole=null; let enModeDG=false;
 function showPortal(t){
-document.getElementById('paneDG').style.display=t==='DG'?'block':'none';
-document.getElementById('paneEtab').style.display=t==='ETAB'?'block':'none';
-document.getElementById('tabDG').className=t==='DG'?'btn btn-b portal-tab active':'btn btn-w portal-tab';
-document.getElementById('tabEtab').className=t==='ETAB'?'btn btn-b portal-tab active':'btn btn-w portal-tab';
-resetEtabLogin();
-}
+  // Onglets
+  let paneDG = document.getElementById('paneDG');
+  let paneEtab = document.getElementById('paneEtab');
+  let dashDG = document.getElementById('dashDG');
+  let detailsEtab = document.getElementById('detailsEtab') || document.getElementById('etabDetails') || document.getElementById('gerantDashboard');
+  
+  if(t === 'DG'){
+    if(paneDG) paneDG.style.display = 'block';
+    if(paneEtab) paneEtab.style.display = 'none';
+    if(dashDG) dashDG.style.display = 'block';
+    if(detailsEtab) detailsEtab.style.display = 'none';
+  } else {
+    // ETAB
+    if(paneDG) paneDG.style.display = 'none';
+    if(paneEtab) paneEtab.style.display = 'block';
+    if(dashDG) dashDG.style.display = 'none'; // <-- ÇA C'EST LE BUG
+    if(detailsEtab) detailsEtab.style.display = 'none';
+  }
+  
+  // couleur des boutons
+  let btnDG = document.getElementById('btnTabDG');
+  let btnEtab = document.getElementById('btnTabEtab');
+  if(btnDG && btnEtab){
+    if(t === 'DG'){
+      btnDG.style.background = '#111'; btnDG.style.color = '#fff';
+      btnEtab.style.background = '#fff'; btnEtab.style.color = '#111';
+    } else {
+      btnEtab.style.background = '#111'; btnEtab.style.color = '#fff';
+      btnDG.style.background = '#fff'; btnDG.style.color = '#111';
+    }
+  }
+        }
 function resetEtabLogin(){
 document.getElementById('etabRoleChoice').style.display='none';
 document.getElementById('etabLoginGerant').style.display='none';
