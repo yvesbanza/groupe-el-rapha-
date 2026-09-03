@@ -196,20 +196,17 @@ function updateCount(){
 function updateStats(){
   let totalG = maisons.length;
   let totalC = 0;
-  maisons.forEach(m => { if(m.caisses) totalC += m.caisses.length; });
-
-  // Force les 2 cartes du dashboard
+  maisons.forEach(mm=>{ if(mm.caisses) totalC += mm.caisses.length; });
+  
+  // maisons
+  let bm = document.getElementById('btnCountMaison');
+  if(bm) bm.innerText = maisons.length + ' maison' + (maisons.length>1?'s':'');
+  
+  // gerant / caisse
   let g = document.getElementById('totalGerant');
   if(g) g.innerText = totalG;
   let c = document.getElementById('totalCaisse');
   if(c) c.innerText = totalC;
-
-  // si les IDs n'existent pas encore, on les trouve autrement
-  if(!g ||!c){
-    let allB = document.querySelectorAll('#dosGerant b, #dosCaisse b,.stat-card b');
-    if(allB[0]) allB[0].innerText = totalG;
-    if(allB[1]) allB[1].innerText = totalC;
-  }
   }
 function renderListeMaisons(){
   let div = document.getElementById('listeMaisons');
@@ -229,14 +226,6 @@ function renderListeMaisons(){
     });
     div.innerHTML = html;
   }
-  // FORCE COMPTEURS - MAINTENANT A L'INTERIEUR
-  let totalG = maisons.length;
-  let totalC = 0;
-  maisons.forEach(mm => { if(mm.caisses) totalC += mm.caisses.length; });
-  let g = document.getElementById('totalGerant');
-  if(g) g.innerText = totalG;
-  let c = document.getElementById('totalCaisse');
-  if(c) c.innerText = totalC;
   }
 let editIndexMaison = -1;
 function editMaison(idx){
