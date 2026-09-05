@@ -111,15 +111,15 @@ function changeTimezone(tz){ currentTimezone=tz; localStorage.setItem('elrapha_t
 function updateDateTime(){
   let now=new Date();
   try{
-    let t=now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:currentTimezone,hour12:false});
+    // Heure avec secondes 01:21:45
+    let t=now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:currentTimezone,hour12:false});
     let weekday=now.toLocaleDateString('fr-FR',{weekday:'short',timeZone:currentTimezone});
     let ddmm=now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',timeZone:currentTimezone});
-    let y=now.toLocaleDateString('fr-FR',{year:'numeric',timeZone:currentTimezone});
-    // Format Dim. 06/09 avec majuscule
     let wd = weekday.charAt(0).toUpperCase()+weekday.slice(1);
-    let fullDate = wd+" "+ddmm;
+    let fullDate = wd+" "+ddmm; // Dim. 06/09
+
     document.getElementById('clockTitleTimeDG').innerText=t;
-    document.getElementById('clockTitleDateDG').innerHTML=fullDate+"<br>"+y;
+    document.getElementById('clockTitleDateDG').innerText=fullDate;
   }catch(e){}
   }
 function showPortal(t){let pd=document.getElementById('paneDG'),pe=document.getElementById('paneEtab'),dg=document.getElementById('dashDG'),gr=document.getElementById('dashGerant'),ca=document.getElementById('dashCaisse'); if(t==='DG'){if(pd) pd.style.display='block'; if(pe) pe.style.display='none'; if(gr) gr.style.display='none'; if(ca) ca.style.display='none'; if(enModeDG&&dg) dg.style.display='block';} else {if(pd) pd.style.display='none'; if(pe) pe.style.display='block'; if(dg) dg.style.display='none'; if(gr) gr.style.display='none'; if(ca) ca.style.display='none';}}
