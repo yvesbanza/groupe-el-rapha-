@@ -112,17 +112,16 @@ function updateDateTime(){
   let now=new Date();
   try{
     let t=now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:currentTimezone,hour12:false});
-    let d=now.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',timeZone:currentTimezone});
+    let weekday=now.toLocaleDateString('fr-FR',{weekday:'short',timeZone:currentTimezone});
+    let ddmm=now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',timeZone:currentTimezone});
     let y=now.toLocaleDateString('fr-FR',{year:'numeric',timeZone:currentTimezone});
-    let fullDate=d+"<br>"+y;
+    // Format Dim. 06/09 avec majuscule
+    let wd = weekday.charAt(0).toUpperCase()+weekday.slice(1);
+    let fullDate = wd+" "+ddmm;
     document.getElementById('clockTitleTimeDG').innerText=t;
-    document.getElementById('clockTitleDateDG').innerHTML=fullDate;
-    // Gerant aussi si besoin
-    let elT=document.getElementById('clockTitleTimeGerant'); if(elT) elT.innerText=t;
-    let elD=document.getElementById('clockTitleDateGerant'); if(elD) elD.innerHTML=fullDate;
+    document.getElementById('clockTitleDateDG').innerHTML=fullDate+"<br>"+y;
   }catch(e){}
-}
-setInterval(updateDateTime,1000);
+  }
 function showPortal(t){let pd=document.getElementById('paneDG'),pe=document.getElementById('paneEtab'),dg=document.getElementById('dashDG'),gr=document.getElementById('dashGerant'),ca=document.getElementById('dashCaisse'); if(t==='DG'){if(pd) pd.style.display='block'; if(pe) pe.style.display='none'; if(gr) gr.style.display='none'; if(ca) ca.style.display='none'; if(enModeDG&&dg) dg.style.display='block';} else {if(pd) pd.style.display='none'; if(pe) pe.style.display='block'; if(dg) dg.style.display='none'; if(gr) gr.style.display='none'; if(ca) ca.style.display='none';}}
 function resetEtabLogin(){['etabRoleChoice','etabLoginGerant','etabChoixCaisse','etabCreationEmail','etabLoginEmail','msgCodeInvalide'].forEach(id=>{let el=document.getElementById(id); if(el) el.style.display='none';});}
 function loginDG(){let e=document.getElementById('dgEmail').value.trim(),p=document.getElementById('dgPass').value.trim(); if(e.toLowerCase()!=='dg@elrapha.cd'||p!=='12345678'){alert('Identifiants DG invalides');return;} enModeDG=true; document.getElementById('paneDG').style.display='none'; document.getElementById('portal').style.display='none'; document.getElementById('headerPortal').style.display='none'; document.getElementById('dashDG').style.display='block'; renderListeMaisons(); updateStats(); updateDateTime();}
