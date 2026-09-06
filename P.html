@@ -77,3 +77,134 @@
   </div>
   <div class="card-white"><div class="kpi-grid"><div class="kpi"><small>CA Global Loyverse</small><b id="kpiTotal">0 CDF</b></div><div class="kpi"><small>Maisons</small><b id="kpiMaisons">0</b></div></div></div>
 </div>
+<div id="dashGerant" style="display:none">
+  <div class="top-label">SUPER-DASHBOARD - GERANT</div>
+  <div class="top-bar"><button class="btn-retour" onclick="logout()">← Retour</button><button class="btn-deco" onclick="logout()">Déconnexion</button></div>
+  <div class="card-white">
+    <h3 id="gerantTitre"></h3><p id="gerantCodeInfo" style="font-size:12px;color:#666"></p>
+    <h4>Créer Code Caisse</h4><p style="font-size:12px;color:#666">Ce code sera le Login du Caissier</p>
+    <input id="nCodeCaisse" placeholder="Ex: CAISSE-MAT-01"><br><br>
+    <button class="btn btn-y" onclick="ajouterCaisse()">Créer Code Caisse</button>
+    <div id="listeCaisses" style="margin-top:15px"></div>
+  </div>
+</div>
+
+<div id="dashCaisse" style="display:none">
+  <div class="top-label">CAISSE - LOYVERSE</div>
+  <div class="top-bar"><button class="btn-retour" onclick="logout()">← Retour</button><button class="btn-deco" onclick="logout()">Déconnexion</button></div>
+  <div class="card-white" style="text-align:center">
+    <h3 id="caisseTitre"></h3>
+    <p style="font-size:13px">Vous êtes connecté en tant que caissier. Cliquez ci-dessous pour ouvrir Loyverse POS.</p>
+    <button class="btn btn-y" onclick="enterLoyverse()">🟡 Ouvrir Loyverse POS</button>
+    <div style="margin-top:15px;background:#f5f5f7;padding:12px;border-radius:12px;font-size:12px;text-align:left">
+      <b>Instructions:</b><br>1. Installez Loyverse POS sur Play Store<br>2. Connectez-vous avec l'email que vous venez de créer<br>3. Vendez - ça remonte auto dans le dashboard DG
+    </div>
+  </div>
+</div>
+
+<script>
+let maisons = JSON.parse(localStorage.getItem('maisons_v2')||'[]');
+let caisses = JSON.parse(localStorage.getItem('caisses_v2')||'[]');
+let dgCode = localStorage.getItem('dg_code');
+let curMaison = null, curCaisse = null, tempCode = '';
+
+function init(){
+  if(!dgCode){ document.getElementById('firstDGSetup').style.display='block'; document.getElementById('loginTitle').innerText='Bienvenue DG - Créez votre code'; }
+}
+function save(){ localStorage.setItem('maisons_v2',JSON.stringify(maisons)); localStorage.setItem('caisses_v2',JSON.stringify(caisses)); }
+
+function creerCodeDG(){
+  let c = document.getElementById('newDGCode').value.trim();
+  if(c.length<4){alert('Code trop court');return;}
+  localStorage.setItem('dg_code',c); dgCode=c;
+  document.getElementById('firstDGSetup').style.display='none';
+  alert('Code DG créé: '+c); document.getElementById('loginCodeInput').value=c;
+}
+
+function verifierLoginCode(){
+  let code = document.getElementById('loginCodeInput').value.trim();
+  if(!code){alert('Entrez un code');return;}
+  if(!dgCode){alert('Créez d\'abord le code DG en bas');return;}
+  tempCode=code;
+  if(code===dgCode){
+    document.getElementById('modalEmailDG').classList.add('open');
+  } else if(maisons.find(m=>m.code===code)){
+    curMaison = maisons.find(m=>m.code===code);
+    document.getElementById('titreEmailGerant').innerText='Gérant - '+curMaison.nom;
+    document.getElementById('modalEmailGerant').classList.add('open');
+  } else if(caisses.find(c=>c.code===code)){
+    curCaisse = caisses.find(c=>c.code===code);
+    document.getElementById('modalEmailCaisse').classList.add('open');
+  } else {
+    alert('Code invalide');
+  }
+}
+
+// DG EMAIL
+function loginEmailDG(){
+  let e=document.getElementById('emailDG').value.trim(); if(!e){alert('Email requis');return;}
+  localStorage.setItem('dg_email',e);
+  document.getElementById('modalEmailDG').classList.remove('open');
+  document.getElementById('appLogin').style.display='none';
+  document.getElementById('dashDG').style.display='block';
+  renderMaisons();
+}
+
+// GERANT EMAIL
+function loginEmailGerant(){
+  let e=document.getElementById('emailGerant').value.trim(); if(!e){alert('Email requis');return;}
+  curMaison.gerantEmail=e; save();
+  document.getElementById('modalEmailGerant').classList.remove('open');
+  document.getElementById('appLogin').style.display='none';
+  document.getElementById('dashGerant').style.display='block';
+  document.getElementById('gerantTitre').innerText=curMaison.nom;
+  document.getElementById('gerantCodeInfo').innerText='Code: '+curMaison.code+' | Email: '+e;
+  renderCaisses();
+}
+
+// CAISSE EMAIL -> MESSAGE LOYVERSE
+function verifierEmailCaisse(){
+  let e=document.getElementById('emailCaisse').value.trim(); if(!e){alert('Email requis');return;}
+  curCaisse.email=e; save();
+  document.getElementById('modalEmailCaisse').classList.remove('open');
+  document.getElementById('modalLoyverse').classList.add('open');
+}
+function closeLoyverse(){ document.getElementById('modalLoyverse').classList.remove('open'); }
+function enterLoyverse(){
+  document.getElementById('modalLoyverse').classList.remove('open');
+  document.getElementById('appLogin').style.display='none';
+  document.getElementById('dashCaisse').style.display='block';
+  document.getElementById('caisseTitre').innerText='Caisse: '+curCaisse.code;
+  // Ouvre Loyverse dans un nouvel onglet
+  window.open('https://loyverse.com/login','_blank');
+}
+
+function ajouterMaison(){
+  let nom=document.getElementById('nNom').value.trim(), code=document.getElementById('nCodeEtab').value.trim();
+  if(!nom||!code){alert('Nom et code requis');return;}
+  if(maisons.find(m=>m.code===code)){alert('Code existe déjà');return;}
+  maisons.push({nom:nom,code:code,gerantEmail:''}); save(); renderMaisons();
+  document.getElementById('nNom').value=''; document.getElementById('nCodeEtab').value='';
+}
+function renderMaisons(){
+  let div=document.getElementById('listeMaisons'); let kpi=document.getElementById('kpiMaisons');
+  kpi.innerText=maisons.length; if(maisons.length===0){div.innerHTML='<small>Aucune maison</small>';return;}
+  let h=''; maisons.forEach((m,i)=>{ h+=`<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:10px;display:flex;justify-content:space-between;margin-top:8px"><div><b>${m.nom}</b><br><small>Code Login Gérant: ${m.code}</small></div><button onclick="suppM(${i})" style="border:none;background:#ff3b30;color:#fff;border-radius:8px;padding:6px 10px">X</button></div>`; }); div.innerHTML=h;
+}
+function ajouterCaisse(){
+  let code=document.getElementById('nCodeCaisse').value.trim(); if(!code){alert('Code requis');return;}
+  caisses.push({code:code,maisonCode:curMaison.code,email:''}); save(); renderCaisses();
+  document.getElementById('nCodeCaisse').value='';
+}
+function renderCaisses(){
+  let div=document.getElementById('listeCaisses'); let list=caisses.filter(c=>c.maisonCode===curMaison.code);
+  if(list.length===0){div.innerHTML='<small>Aucune caisse créée</small>';return;}
+  let h=''; list.forEach((c,i)=>{ h+=`<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:10px;display:flex;justify-content:space-between;margin-top:8px"><div><b>${c.code}</b><br><small>Login Caissier</small></div><span style="font-size:11px">${c.email||'pas encore connecté'}</span></div>`; }); div.innerHTML=h;
+}
+function suppM(i){ if(!confirm('Supprimer?')) return; let code=maisons[i].code; maisons.splice(i,1); caisses=caisses.filter(c=>c.maisonCode!==code); save(); renderMaisons(); }
+function logout(){ location.reload(); }
+
+init();
+</script>
+</body>
+                                                                                        </html>
