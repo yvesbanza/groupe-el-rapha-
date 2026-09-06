@@ -112,3 +112,184 @@
     <div id="listeVentesDG" style="margin-top:12px"></div>
   </div>
 </div>
+<div id="dashGerant" style="display:none">
+  <div class="top-label">SUPER-DASHBOARD - GERANT</div>
+  <div class="top-bar">
+    <button class="btn-retour" onclick="retourPortal()">← Retour</button>
+    <select id="timezoneSelectGerant" class="select-tz" onchange="changeTimezone(this.value)"></select>
+    <button class="btn-deco" onclick="demanderLogout()">Déconnexion</button>
+  </div>
+  <div class="card-white">
+    <h3 id="gerantTitre"></h3>
+    <div id="gerantInfo" style="font-size:13px;color:#555"></div>
+    <div class="kpi-grid">
+      <div class="kpi"><small>CA Aujourd'hui (Loyverse)</small><b id="gStatCA">0 CDF</b></div>
+      <div class="kpi"><small>Ventes du jour</small><b id="gStatCount">0</b></div>
+    </div>
+    <div style="background:#eef2ff;border-radius:12px;padding:10px;margin-top:10px;font-size:12px">
+      Les caissiers vendent sur <b>Loyverse POS</b>. Les données arrivent ici automatiquement après synchronisation DG.
+    </div>
+    <div id="listeCaissesGerant" style="margin-top:12px"></div>
+    <div id="listeVentesGerant" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<div id="modalLogout" class="modal">
+  <div class="modal-box">
+    <h3 style="font-size:17px;font-weight:700;margin:0 0 18px 0">Voulez-vous vous déconnecter?</h3>
+    <div style="display:flex;justify-content:space-between">
+      <button class="btn btn-b" style="min-width:90px;border-radius:12px" onclick="confirmerLogout()">Oui</button>
+      <button class="btn btn-w" style="min-width:90px;border-radius:12px" onclick="closeModalLogout()">Non</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let maisons = JSON.parse(localStorage.getItem('maisons') || '[]');
+let ventes = JSON.parse(localStorage.getItem('ventes_loyverse') || '[]');
+let curMaison = null, enModeDG = false;
+let currentTimezone = localStorage.getItem('elrapha_timezone') || 'Africa/Kinshasa';
+let loyverseToken = localStorage.getItem('loyverse_token') || '';
+const tauxUSD = 2850; const tauxEUR = 3100; // Taux CDF à mettre à jour via API
+
+const tzFlags = {"Africa/Kinshasa":"🇨🇩","Africa/Lubumbashi":"🇨🇩","Europe/Paris":"🇫🇷","Europe/Brussels":"🇧🇪"};
+function getFlag(tz){ return tzFlags[tz] || "🌍"; }
+function formatTZ(tz){ let p=tz.split('/'); let city=p[p.length-1].replace(/_/g,' '); return getFlag(tz)+city+"/"+p[0]; }
+function saveData(){ localStorage.setItem('maisons', JSON.stringify(maisons)); }
+function saveVentes(){ localStorage.setItem('ventes_loyverse', JSON.stringify(ventes)); }
+function saveToken(){ let t=document.getElementById('loyverseToken').value.trim(); localStorage.setItem('loyverse_token', t); loyverseToken=t; alert('Token sauvé'); }
+
+function initTimezones(){
+  let zones = ["Africa/Kinshasa","Africa/Lubumbashi","Africa/Brazzaville","Europe/Paris","Europe/Brussels","America/New_York"];
+  let sels=[document.getElementById('timezoneSelectDG'),document.getElementById('timezoneSelectGerant')];
+  sels.forEach(sel=>{ if(!sel) return; sel.innerHTML=''; zones.forEach(z=>{ let o=document.createElement('option'); o.value=z; o.textContent=formatTZ(z); if(z===currentTimezone) o.selected=true; sel.appendChild(o); }); });
+  document.getElementById('loyverseToken').value = loyverseToken;
+}
+function changeTimezone(tz){ currentTimezone=tz; localStorage.setItem('elrapha_timezone',tz); updateDateTime(); }
+function updateDateTime(){
+  let now=new Date();
+  try{
+    let t=now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:currentTimezone,hour12:false});
+    let wd=now.toLocaleDateString('fr-FR',{weekday:'short',timeZone:currentTimezone});
+    let ddmm=now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',timeZone:currentTimezone});
+    let W=wd.charAt(0).toUpperCase()+wd.slice(1);
+    document.getElementById('clockTitleTimeDG').innerText=t;
+    document.getElementById('clockTitleDateDG').innerText=W+" "+ddmm;
+  }catch(e){}
+}
+setInterval(updateDateTime,1000);
+
+async function syncLoyverse(){
+  if(!loyverseToken){ alert('Mets ton Token Loyverse d\'abord'); return; }
+  document.getElementById('lastSync').innerText='Synchronisation...';
+  try{
+    // NOTE: Pour prod, passe par un proxy Supabase à cause du CORS
+    let res = await fetch('https://api.loyverse.com/v1.0/receipts?limit=100', { headers: { 'Authorization': 'Bearer '+loyverseToken }});
+    if(!res.ok) throw new Error('Token invalide ou CORS - utilise un proxy');
+    let data = await res.json();
+    // data.receipts = [{total_money, store_id, created_at, line_items}]
+    ventes = data.receipts.map(r=>({
+      id: r.receipt_number,
+      store_id: r.store_id,
+      total: r.total_money,
+      date: r.created_at,
+      items: r.line_items
+    }));
+    saveVentes();
+    document.getElementById('lastSync').innerText='Sync OK - '+ventes.length+' ventes - '+new Date().toLocaleTimeString();
+    renderKPIs(); renderVentesDG();
+  }catch(err){
+    // MODE DEMO si pas de token - on génère des ventes fictives
+    console.log(err);
+    if(ventes.length===0){
+      ventes = [
+        {id:'001', store_id:'KIN001', total:150000, date:new Date().toISOString(), items:[{item_name:'Ciment'}]},
+        {id:'002', store_id:'LUB001', total:75000, date:new Date().toISOString(), items:[{item_name:'Fer 8'}]},
+      ];
+      saveVentes();
+    }
+    document.getElementById('lastSync').innerText='Mode DEMO (sans API) - '+ventes.length+' ventes';
+    renderKPIs(); renderVentesDG();
+  }
+}
+
+function renderKPIs(){
+  let totalCDF = ventes.reduce((s,v)=>s+(v.total||0),0);
+  document.getElementById('kpiCDF').innerText = totalCDF.toLocaleString()+' CDF';
+  document.getElementById('kpiUSD').innerText = (totalCDF/tauxUSD).toFixed(2)+' $';
+  document.getElementById('kpiEUR').innerText = (totalCDF/tauxEUR).toFixed(2)+' €';
+  document.getElementById('statCaisses').innerText = ventes.length;
+  // alert stock simulée
+  document.getElementById('kpiStock').innerText = ventes.length>5 ? '2 ruptures' : '0 rupture';
+}
+
+function showPortal(t){
+  let pd=document.getElementById('paneDG'), pe=document.getElementById('paneEtab');
+  if(t==='DG'){ pd.style.display='block'; pe.style.display='none'; }
+  else{ pd.style.display='none'; pe.style.display='block'; }
+}
+function loginDG(){
+  let e=document.getElementById('dgEmail').value.trim(), p=document.getElementById('dgPass').value.trim();
+  if(e.toLowerCase()!=='dg@elrapha.cd'||p!=='12345678'){alert('Identifiants invalides');return;}
+  enModeDG=true;
+  document.getElementById('portal').style.display='none';
+  document.getElementById('headerPortal').style.display='none';
+  document.getElementById('dashDG').style.display='block';
+  renderListeMaisons(); updateStats(); renderKPIs(); updateDateTime();
+}
+function updateStats(){
+  document.getElementById('statGerants').innerText=maisons.length;
+  document.getElementById('btnCountMaison').innerText=maisons.length+' maison'+(maisons.length>1?'s':'');
+}
+function toggleListeMaisons(){
+  let div=document.getElementById('listeMaisons');
+  div.style.display = (div.style.display==='none'||div.style.display==='') ? 'block' : 'none';
+}
+function verifierCodeEtab(){
+  let code=document.getElementById('etabCode').value.trim().toLowerCase();
+  let m=maisons.find(x=> (x.codeEtab||'').toLowerCase()===code);
+  if(!m){ document.getElementById('msgCodeInvalide').style.display='block'; document.getElementById('msgCodeInvalide').innerText='Code maison invalide'; return; }
+  curMaison=m;
+  document.getElementById('portal').style.display='none';
+  document.getElementById('headerPortal').style.display='none';
+  document.getElementById('dashGerant').style.display='block';
+  showGerant();
+}
+function showGerant(){
+  document.getElementById('gerantTitre').innerText=curMaison.nom;
+  document.getElementById('gerantInfo').innerHTML='Code: <b>'+curMaison.codeEtab+'</b> - Connecté via Loyverse';
+  let vMaison = ventes.filter(v=> (v.store_id||'').toLowerCase()===curMaison.codeEtab.toLowerCase());
+  let ca = vMaison.reduce((s,v)=>s+v.total,0);
+  document.getElementById('gStatCount').innerText=vMaison.length;
+  document.getElementById('gStatCA').innerText=ca.toLocaleString()+' CDF';
+  let html='';
+  vMaison.forEach(v=>{ html+=`<div class="maison-item"><div><b>Reçu ${v.id}</b><br><small>${new Date(v.date).toLocaleString()}</small></div><b>${v.total} CDF</b></div>`; });
+  document.getElementById('listeVentesGerant').innerHTML=html||'<div style="color:#888;padding:12px">Aucune vente sync pour cette maison</div>';
+}
+function renderListeMaisons(){
+  let div=document.getElementById('listeMaisons'); if(maisons.length===0){div.innerHTML='<div style="color:#888">Aucune maison</div>';return;}
+  let html=''; maisons.forEach((m,i)=>{ html+=`<div class="maison-item"><div><b>${m.nom}</b><br><small>${m.codeEtab}</small></div><div class="maison-actions"><button class="icon-btn" onclick="supprimerMaison(${i})">🗑️</button></div></div>`; }); div.innerHTML=html;
+}
+function renderVentesDG(){
+  let div=document.getElementById('listeVentesDG');
+  let html='<h4>Dernières ventes Loyverse</h4>';
+  ventes.slice(0,10).forEach(v=>{ html+=`<div class="maison-item"><div><b>${v.store_id}</b> - Reçu ${v.id}<br><small>${new Date(v.date).toLocaleString()}</small></div><b>${v.total} CDF</b></div>`; });
+  div.innerHTML=html;
+}
+function openMaisonForm(){ document.getElementById('formMaison').style.display='block'; }
+function closeMaisonForm(){ document.getElementById('formMaison').style.display='none'; }
+function ajouterMaison(){
+  let nom=document.getElementById('nNom').value.trim(), code=document.getElementById('nCodeEtab').value.trim();
+  if(!nom||!code){alert('Nom et Code obligatoires');return;}
+  maisons.push({codeEtab:code,code:code,nom:nom}); saveData(); closeMaisonForm(); renderListeMaisons(); updateStats();
+}
+function supprimerMaison(i){ if(!confirm('Supprimer?')) return; maisons.splice(i,1); saveData(); renderListeMaisons(); updateStats(); }
+function retourPortal(){ document.getElementById('dashDG').style.display='none'; document.getElementById('dashGerant').style.display='none'; document.getElementById('headerPortal').style.display='block'; document.getElementById('portal').style.display='block'; enModeDG=false; showPortal('DG'); }
+function demanderLogout(){ document.getElementById('modalLogout').classList.add('open'); }
+function closeModalLogout(){ document.getElementById('modalLogout').classList.remove('open'); }
+function confirmerLogout(){ document.getElementById('modalLogout').classList.remove('open'); document.getElementById('dashDG').style.display='none'; document.getElementById('dashGerant').style.display='none'; document.getElementById('headerPortal').style.display='block'; document.getElementById('portal').style.display='block'; showPortal('DG'); }
+
+initTimezones(); updateStats(); renderListeMaisons(); renderKPIs(); updateDateTime();
+</script>
+</body>
+      </html>
