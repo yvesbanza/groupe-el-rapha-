@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super-Dashboard EL-RAPHA</title>
+<style>
+  body { font-family: system-ui; background: #f5f5f7; margin: 0; padding: 14px; }
+  .top-label { text-align: center; color: #8a8a8e; letter-spacing: 2px; font-size: 12px; font-weight: 700; margin: 8px 0 14px; }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 6px; }
+  .btn-retour { background: #fff; border: 1px solid #e5e5e5; border-radius: 20px; padding: 8px 12px; font-weight: 600; cursor: pointer; }
+  .btn-deco { background: #ff3b30; color: #fff; border: none; border-radius: 20px; padding: 8px 14px; font-weight: 700; cursor: pointer; }
+  .select-tz { background: #111; color: #fff; border: none; border-radius: 12px; padding: 3px 6px; font-size: 11px; font-weight: 700; flex: 0 0 auto; max-width: 115px; height: 24px; cursor: pointer; line-height: 1; }
+  .title-dg { text-align: center; margin: 10px 0 14px; line-height: 1.2; }
+  .title-line1 { font-size: 18px; font-weight: 700; }
+  .title-line2 { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; font-weight: 800; font-size: 20px; }
+  .time-left { background: #111; color: #fff; border: none; border-radius: 12px; padding: 3px 6px; font-size: 12px; font-weight: 700; min-width: 65px; height: 24px; display: flex; align-items: center; justify-content: center; }
+  .date-right { background: #111; color: #aaa; border: none; border-radius: 12px; padding: 3px 6px; font-size: 12px; font-weight: 700; min-width: 65px; height: 24px; display: flex; align-items: center; justify-content: center; text-align: center; }
+  .stats { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
+  .stat { flex: 1; border-radius: 12px; padding: 8px 4px; text-align: center; min-height: 48px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .stat b { font-size: 16px; } .stat span { font-size: 10px; color: #6b7280; }
+  .stat-gerant { background: #eef2ff; border: 1.5px solid #c7d2fe; }
+  .stat-caisse { background: #fffbeb; border: 1.5px solid #fde68a; }
+  .stat-profile { flex: 0 0 62px; width: 62px; height: 62px; border-radius: 50%; background: #e5e5e5; border: 2.5px solid #111; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .card-white { background: #fff; border-radius: 18px; padding: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.06); margin-bottom: 10px; }
+  .btn-yellow { background: #facc15; color: #111; border: none; border-radius: 14px; padding: 11px 14px; font-weight: 800; cursor: pointer; font-size: 13px; }
+  .btn-blue { background: #3b82f6; color: #fff; border: none; border-radius: 14px; padding: 11px 14px; font-weight: 800; cursor: pointer; font-size: 13px; }
+  .maison-item { background: #fff; border: 1px solid #f0f0f0; border-radius: 14px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .maison-actions { background: #2b2d33; border-radius: 22px; display: flex; padding: 4px 6px; gap: 6px; }
+  .icon-btn { background: transparent; border: none; cursor: pointer; display: flex; padding: 6px; color: #fff; }
+  .portal-tabs { display: flex; gap: 8px; margin: 10px 0; }
+  .btn { padding: 12px 16px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
+  .btn-b { background: #111; color: #fff; } .btn-w { background: #fff; color: #111; border: 1px solid #ddd; }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: none; align-items: center; justify-content: center; z-index: 999; }
+  .modal.open { display: flex; } .modal-box { background: #fff; border-radius: 20px; padding: 20px; width: 90%; max-width: 420px; }
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+  .kpi { background: #111; color: #fff; border-radius: 14px; padding: 12px; }
+  .kpi small { color: #aaa; font-size: 11px; } .kpi b { font-size: 18px; display: block; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div id="headerPortal"><div class="top-label">GROUPE EL-RAPHA - SUPER DASHBOARD</div></div>
+
+<div id="portal">
+  <div class="portal-tabs">
+    <button class="btn btn-b" style="flex:1" onclick="showPortal('DG')">DG</button>
+    <button class="btn btn-w" style="flex:1" onclick="showPortal('ETAB')">Gérant (Loyverse)</button>
+  </div>
+  <div id="paneDG" class="card-white">
+    <h3>Connexion DG</h3>
+    <input id="dgEmail" value="dg@elrapha.cd" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc"><br><br>
+    <input id="dgPass" type="password" value="12345678" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc"><br><br>
+    <button class="btn btn-b" style="width:100%" onclick="loginDG()">Entrer</button>
+  </div>
+  <div id="paneEtab" class="card-white" style="display:none">
+    <p style="font-size:13px;color:#666">Les caissiers utilisent directement <b>Loyverse POS</b> sur tablette. Ici, le Gérant se connecte pour voir ses ventes synchronisées.</p>
+    <input id="etabCode" placeholder="Code Maison (ex: KIN001)" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc">
+    <div id="msgCodeInvalide" style="display:none;color:red;margin-top:8px"></div>
+    <button class="btn btn-b" style="width:100%;margin-top:12px" onclick="verifierCodeEtab()">Entrer comme Gérant</button>
+    <div id="nomMaisonTrouvee" style="font-weight:700;margin-top:8px"></div>
+  </div>
+</div>
+
+<div id="dashDG" style="display:none">
+  <div class="top-label">SUPER-DASHBOARD - DIRECTION</div>
+  <div class="top-bar">
+    <button class="btn-retour" onclick="retourPortal()">← Retour</button>
+    <select id="timezoneSelectDG" class="select-tz" onchange="changeTimezone(this.value)"></select>
+    <button class="btn-deco" onclick="demanderLogout()">Déconnexion</button>
+  </div>
+  <div class="title-dg">
+    <div class="title-line1">Tableau de bord - Direction</div>
+    <div class="title-line2">
+      <span class="time-left" id="clockTitleTimeDG">01:21:45</span><span>Générale</span><span class="date-right" id="clockTitleDateDG">Dim. 06/09</span>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat stat-gerant"><b id="statGerants">0</b><span>Maisons</span></div>
+    <div class="stat-profile"><span style="font-size:11px;font-weight:700">DG</span></div>
+    <div class="stat stat-caisse"><b id="statCaisses">0</b><span>Ventes API</span></div>
+  </div>
+
+  <div class="card-white">
+    <h4>Connecteur Loyverse API</h4>
+    <input id="loyverseToken" placeholder="Colle ton Loyverse API Token ici" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc">
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-blue" onclick="saveToken()">Sauver Token</button>
+      <button class="btn-yellow" onclick="syncLoyverse()">🔄 Synchroniser Ventes</button>
+    </div>
+    <small id="lastSync" style="color:#666;display:block;margin-top:6px">Jamais synchronisé</small>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><small>CA Global (CDF)</small><b id="kpiCDF">0 CDF</b></div>
+    <div class="kpi"><small>CA Global (USD)</small><b id="kpiUSD">0 $</b></div>
+    <div class="kpi"><small>CA Global (EUR)</small><b id="kpiEUR">0 €</b></div>
+    <div class="kpi" style="background:#ff3b30"><small>Alertes Stock</small><b id="kpiStock">0 ruptures</b></div>
+  </div>
+
+  <div class="card-white">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-yellow" onclick="openMaisonForm()">+ Ajouter Maison</button>
+      <button id="btnCountMaison" class="btn-yellow" onclick="toggleListeMaisons()">0 maison</button>
+    </div>
+    <div id="formMaison" style="display:none;margin-top:12px">
+      <input id="nNom" placeholder="Nom maison ex: Quincaillerie Kinshasa" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc"><br><br>
+      <input id="nCodeEtab" placeholder="Code ex: KIN001 (même que Loyverse Store ID)" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc"><br><br>
+      <button class="btn btn-b" onclick="ajouterMaison()">Enregistrer</button>
+      <button class="btn btn-w" onclick="closeMaisonForm()">Fermer</button>
+    </div>
+    <div id="listeMaisons" style="margin-top:12px"></div>
+    <div id="listeVentesDG" style="margin-top:12px"></div>
+  </div>
+</div>
